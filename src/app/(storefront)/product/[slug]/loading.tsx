@@ -4,16 +4,13 @@ import s from "@/features/products/styles/ProductSkeleton.module.css";
 export default function Loading() {
   return (
     <main className={s.page}>
-      {/* Breadcrumb */}
       <nav className={s.breadcrumb}>
         <Skeleton width={40} height={13} />
         <Skeleton width={80} height={13} />
         <Skeleton width={110} height={13} />
       </nav>
 
-      {/* Hero: Gallery + Info */}
       <section className={s.hero}>
-        {/* Gallery */}
         <div className={s.gallery}>
           <div className={s.mainImg}>
             <Skeleton width="100%" height="100%" />
@@ -27,9 +24,7 @@ export default function Loading() {
           </div>
         </div>
 
-        {/* Info */}
         <div className={s.info}>
-          {/* Tags */}
           <div className={s.tags}>
             <div className={`${s.tag} ${s.tagWide}`}>
               <Skeleton width="100%" height="100%" />
@@ -41,22 +36,12 @@ export default function Loading() {
               <Skeleton width="100%" height="100%" />
             </div>
           </div>
-
-          {/* Title */}
           <Skeleton width="85%" height={35} />
-
-          {/* Rating */}
           <Skeleton width="45%" height={14} />
-
-          {/* Price */}
           <Skeleton width="38%" height={35} />
-
-          {/* Description */}
           <Skeleton width="88%" height={17} />
           <Skeleton width="88%" height={16} />
           <Skeleton width="56%" height={16} />
-
-          {/* Meta boxes */}
           <div className={s.meta}>
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className={s.metaBox}>
@@ -68,16 +53,12 @@ export default function Loading() {
               </div>
             ))}
           </div>
-
-          {/* Actions */}
           <div className={s.actions}>
             <div className={s.qty}>
               <Skeleton width="100%" height="100%" />
             </div>
             <Skeleton width="100%" height={52} style={{ flex: 1 }} />
           </div>
-
-          {/* Features */}
           <div className={s.features}>
             {Array.from({ length: 2 }).map((_, i) => (
               <div key={i} className={s.featureItem}>
@@ -89,13 +70,11 @@ export default function Loading() {
         </div>
       </section>
 
-      {/* Related Products */}
       <section className={s.related}>
         <div className={s.relatedHeader}>
           <Skeleton width={260} height={21} />
           <Skeleton width={100} height={13} />
         </div>
-
         <div className={s.relatedGrid}>
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className={s.relatedCard}>

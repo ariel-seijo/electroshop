@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import FeaturedCarouselDynamic from "@/features/products/components/FeaturedCarouselDynamic";
@@ -22,7 +23,7 @@ const getFeaturedProducts = unstable_cache(
     { revalidate: 60, tags: ["home-featured"] }
 );
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "ElectroShop | Hardware Gamer y Componentes de PC",
 };
 

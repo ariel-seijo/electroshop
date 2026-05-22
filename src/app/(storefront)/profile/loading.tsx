@@ -4,25 +4,20 @@ import s from "./ProfileSkeleton.module.css";
 export default function Loading() {
   return (
     <div className={s.dashboard} role="status" aria-label="Cargando perfil">
-      {/* Sidebar */}
       <aside className={s.sidebar}>
         <div className={s.sidebarUser}>
           <Skeleton variant="circle" width={80} height={80} />
           <Skeleton width="60%" height={16} />
           <Skeleton width="72%" height={13} />
         </div>
-
         <nav className={s.sidebarNav}>
           <Skeleton width="90%" height={48} />
           <Skeleton width="85%" height={48} />
           <Skeleton width="70%" height={48} style={{ marginTop: "auto" }} />
         </nav>
       </aside>
-
-      {/* Content */}
       <main className={s.content}>
         <div className={s.section}>
-          {/* Card 1: Account Info */}
           <div className={s.card}>
             <div className={s.cardHeader}>
               <Skeleton width="55%" height={22} />
@@ -37,8 +32,6 @@ export default function Loading() {
               ))}
             </div>
           </div>
-
-          {/* Card 2: Change Password */}
           <div className={s.card}>
             <div className={s.cardHeader}>
               <Skeleton width="50%" height={22} />
@@ -53,9 +46,7 @@ export default function Loading() {
               <Skeleton width="55%" height={44} style={{ marginTop: 8 }} />
             </div>
           </div>
-
           <div className={s.divider} />
-
           <Skeleton width="48%" height={44} />
         </div>
       </main>

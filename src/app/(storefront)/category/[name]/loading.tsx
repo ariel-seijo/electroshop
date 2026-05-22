@@ -5,13 +5,11 @@ export default function Loading() {
   return (
     <main className={s.page}>
       <div className={s.container}>
-        {/* Breadcrumb */}
         <div className={s.breadcrumbRow}>
           <Skeleton width={45} height={14} />
           <Skeleton width={80} height={14} />
         </div>
 
-        {/* Topbar */}
         <div className={s.topbar}>
           <div className={s.topbarBread}>
             <Skeleton width={130} height={14} />
@@ -28,7 +26,6 @@ export default function Loading() {
           </div>
         </div>
 
-        {/* Active filter chips */}
         <div className={s.chips}>
           {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className={s.chip}>
@@ -37,10 +34,8 @@ export default function Loading() {
           ))}
         </div>
 
-        {/* Content: Sidebar + Products */}
         <div className={s.content}>
           <aside className={s.sidebar}>
-            {/* Filter group: Seleccionados */}
             <div className={s.filterGroup}>
               <Skeleton width="45%" height={12} />
               <div className={s.selectedChip}>
@@ -54,7 +49,6 @@ export default function Loading() {
               </div>
             </div>
 
-            {/* Filter group: Precio */}
             <div className={s.filterGroup}>
               <Skeleton width="45%" height={12} />
               <div className={s.rangeRow}>
@@ -67,7 +61,6 @@ export default function Loading() {
               </div>
             </div>
 
-            {/* Filter group: Marca */}
             <div className={s.filterGroup}>
               <Skeleton width="45%" height={12} />
               {Array.from({ length: 8 }).map((_, i) => (

@@ -5,6 +5,7 @@ export interface AuthUser {
   name: string | null;
   email: string;
   role: string;
+  createdAt?: string;
 }
 
 interface AuthState {

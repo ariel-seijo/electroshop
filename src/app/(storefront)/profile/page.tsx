@@ -42,8 +42,7 @@ export default function ProfilePage() {
   const [changingPassword, setChangingPassword] = useState(false);
   const [passwordError, setPasswordError] = useState("");
 
-  const displayName =
-    user?.name || user?.email?.split("@")[0] || "Usuario";
+  const displayName = user?.name || user?.email?.split("@")[0] || "Usuario";
   const memberSince = user?.createdAt
     ? new Date(user.createdAt).toLocaleDateString("es-AR", {
         year: "numeric",
@@ -79,7 +78,7 @@ export default function ProfilePage() {
       toast("Nombre actualizado exitosamente", "success");
       setIsEditing(false);
     } catch (err) {
-      toast(err.message, "error");
+      toast((err as Error).message, "error");
     } finally {
       setSaving(false);
     }
@@ -106,7 +105,7 @@ export default function ProfilePage() {
       toast("Cuenta eliminada exitosamente", "success");
       router.push("/");
     } catch (err) {
-      toast(err.message, "error");
+      toast((err as Error).message, "error");
       setDeleting(false);
       setShowDeleteConfirm(false);
     }
@@ -140,7 +139,7 @@ export default function ProfilePage() {
       setNewPassword("");
       setConfirmPassword("");
     } catch (err) {
-      setPasswordError(err.message);
+      setPasswordError((err as Error).message);
     } finally {
       setChangingPassword(false);
     }
@@ -190,10 +189,7 @@ export default function ProfilePage() {
             <div className={styles.cardHeader}>
               <h2 className={styles.cardTitle}>Información de la Cuenta</h2>
               {!isEditing && (
-                <button
-                  onClick={handleEditClick}
-                  className={styles.editBtn}
-                >
+                <button onClick={handleEditClick} className={styles.editBtn}>
                   <Pencil size={16} />
                   Editar
                 </button>
@@ -217,23 +213,11 @@ export default function ProfilePage() {
                         if (e.key === "Escape") handleCancelEdit();
                       }}
                     />
-                    <button
-                      onClick={handleSaveName}
-                      className={styles.saveBtn}
-                      disabled={saving || !nameInput.trim()}
-                    >
-                      {saving ? (
-                        <div className={styles.spinnerSmall} />
-                      ) : (
-                        <Check size={16} />
-                      )}
+                    <button onClick={handleSaveName} className={styles.saveBtn} disabled={saving || !nameInput.trim()}>
+                      {saving ? <div className={styles.spinnerSmall} /> : <Check size={16} />}
                       Guardar
                     </button>
-                    <button
-                      onClick={handleCancelEdit}
-                      className={styles.cancelBtn}
-                      disabled={saving}
-                    >
+                    <button onClick={handleCancelEdit} className={styles.cancelBtn} disabled={saving}>
                       <X size={16} />
                       Cancelar
                     </button>
@@ -247,12 +231,10 @@ export default function ProfilePage() {
                 <span className={styles.label}>Correo Electrónico</span>
                 <span className={styles.value}>{user?.email || "—"}</span>
               </div>
-
               <div className={styles.field}>
                 <span className={styles.label}>Rol</span>
                 <span className={styles.value}>{roleLabel}</span>
               </div>
-
               <div className={styles.field}>
                 <span className={styles.label}>Miembro desde</span>
                 <span className={styles.value}>{memberSince}</span>
@@ -269,87 +251,32 @@ export default function ProfilePage() {
             </div>
 
             <div className={styles.passwordFields}>
-              <div className={styles.passwordField}>
-                <span className={styles.label}>Contraseña Actual</span>
-                <div className={styles.passwordInputWrap}>
-                  <input
-                    type={showCurrentPassword ? "text" : "password"}
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                    className={styles.passwordInput}
-                    placeholder="••••••••"
-                  />
-                  <button
-                    type="button"
-                    className={styles.revealBtn}
-                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                    tabIndex={-1}
-                    aria-label={showCurrentPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-                  >
-                    {showCurrentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                  </button>
+              {[{ label: "Contraseña Actual", value: currentPassword, setter: setCurrentPassword, show: showCurrentPassword, setShow: setShowCurrentPassword },
+                { label: "Nueva Contraseña", value: newPassword, setter: setNewPassword, show: showNewPassword, setShow: setShowNewPassword, placeholder: "Mínimo 6 caracteres" },
+                { label: "Confirmar Nueva Contraseña", value: confirmPassword, setter: setConfirmPassword, show: showConfirmPassword, setShow: setShowConfirmPassword, placeholder: "Repetí la nueva contraseña" }]
+                .map((f, i) => (
+                <div key={i} className={styles.passwordField}>
+                  <span className={styles.label}>{f.label}</span>
+                  <div className={styles.passwordInputWrap}>
+                    <input
+                      type={f.show ? "text" : "password"}
+                      value={f.value}
+                      onChange={(e) => f.setter(e.target.value)}
+                      className={styles.passwordInput}
+                      placeholder={f.placeholder || "••••••••"}
+                    />
+                    <button type="button" className={styles.revealBtn} onClick={() => f.setShow(!f.show)} tabIndex={-1} aria-label={f.show ? "Ocultar contraseña" : "Mostrar contraseña"}>
+                      {f.show ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
                 </div>
-              </div>
-
-              <div className={styles.passwordField}>
-                <span className={styles.label}>Nueva Contraseña</span>
-                <div className={styles.passwordInputWrap}>
-                  <input
-                    type={showNewPassword ? "text" : "password"}
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    className={styles.passwordInput}
-                    placeholder="Mínimo 6 caracteres"
-                  />
-                  <button
-                    type="button"
-                    className={styles.revealBtn}
-                    onClick={() => setShowNewPassword(!showNewPassword)}
-                    tabIndex={-1}
-                    aria-label={showNewPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-                  >
-                    {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                  </button>
-                </div>
-              </div>
-
-              <div className={styles.passwordField}>
-                <span className={styles.label}>Confirmar Nueva Contraseña</span>
-                <div className={styles.passwordInputWrap}>
-                  <input
-                    type={showConfirmPassword ? "text" : "password"}
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className={styles.passwordInput}
-                    placeholder="Repetí la nueva contraseña"
-                  />
-                  <button
-                    type="button"
-                    className={styles.revealBtn}
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    tabIndex={-1}
-                    aria-label={showConfirmPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-                  >
-                    {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                  </button>
-                </div>
-              </div>
+              ))}
             </div>
 
-            {passwordError && (
-              <div className={styles.passwordError}>{passwordError}</div>
-            )}
+            {passwordError && <div className={styles.passwordError}>{passwordError}</div>}
 
-            <button
-              onClick={handleChangePassword}
-              className={styles.passwordSaveBtn}
-              disabled={changingPassword || !currentPassword || !newPassword || !confirmPassword}
-            >
-              {changingPassword ? (
-                <div className={styles.spinnerSmall} />
-              ) : (
-                <Lock size={16} />
-              )}
+            <button onClick={handleChangePassword} className={styles.passwordSaveBtn} disabled={changingPassword || !currentPassword || !newPassword || !confirmPassword}>
+              {changingPassword ? <div className={styles.spinnerSmall} /> : <Lock size={16} />}
               Cambiar Contraseña
             </button>
           </div>
@@ -362,14 +289,8 @@ export default function ProfilePage() {
           </button>
 
           {showDeleteConfirm && (
-            <div
-              className={styles.overlay}
-              onClick={deleting ? undefined : handleCancelDelete}
-            >
-              <div
-                className={styles.confirmModal}
-                onClick={(e) => e.stopPropagation()}
-              >
+            <div className={styles.overlay} onClick={deleting ? undefined : handleCancelDelete}>
+              <div className={styles.confirmModal} onClick={(e) => e.stopPropagation()}>
                 <div className={styles.confirmIconWrap}>
                   <AlertTriangle size={32} className={styles.confirmIcon} />
                 </div>
@@ -392,23 +313,9 @@ export default function ProfilePage() {
                   }}
                 />
                 <div className={styles.confirmActions}>
-                  <button
-                    onClick={handleCancelDelete}
-                    className={styles.confirmCancel}
-                    disabled={deleting}
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    onClick={handleConfirmDelete}
-                    className={styles.confirmDelete}
-                    disabled={deleteInput !== "ELIMINAR" || deleting}
-                  >
-                    {deleting ? (
-                      <div className={styles.spinnerSmall} />
-                    ) : (
-                      <AlertTriangle size={16} />
-                    )}
+                  <button onClick={handleCancelDelete} className={styles.confirmCancel} disabled={deleting}>Cancelar</button>
+                  <button onClick={handleConfirmDelete} className={styles.confirmDelete} disabled={deleteInput !== "ELIMINAR" || deleting}>
+                    {deleting ? <div className={styles.spinnerSmall} /> : <AlertTriangle size={16} />}
                     Eliminar Cuenta
                   </button>
                 </div>

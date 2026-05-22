@@ -32,7 +32,7 @@ function CheckoutFlow() {
   if (isConfirmed) {
     return (
       <div className={layout.page}>
-        <SuccessMessage email={shipping.email} order={orderData} />
+        <SuccessMessage email={shipping.email} order={orderData ?? undefined} />
       </div>
     );
   }

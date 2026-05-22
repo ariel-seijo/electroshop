@@ -4,12 +4,10 @@ import s from "./HomeSkeleton.module.css";
 export default function Loading() {
   return (
     <main>
-      {/* HeroSlider skeleton */}
       <section className={s.slider}>
         <Skeleton width="100%" height="100%" />
       </section>
 
-      {/* FeaturedCarousel skeleton */}
       <section className={s.section}>
         <div className={s.sectionTitle}>
           <Skeleton width={320} height={34} />
@@ -30,7 +28,6 @@ export default function Loading() {
         </div>
       </section>
 
-      {/* PromoBanner skeleton */}
       <section className={s.promo}>
         <div className={s.promoContainer}>
           <div className={s.promoFeatures}>
@@ -55,7 +52,6 @@ export default function Loading() {
         </div>
       </section>
 
-      {/* BrandSection skeleton */}
       <section className={s.section}>
         <div className={s.sectionTitle}>
           <Skeleton width={320} height={34} />

@@ -1,5 +1,4 @@
-// src/app/product/[slug]/page.jsx
-
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProductPage, getProductBySlug, getRelatedProducts } from "@/features/products";
 import { prisma } from "@/lib/prisma";
@@ -7,12 +6,12 @@ import { serializeProductForClient, serializeProductsForClient } from "@/lib/uti
 
 export const dynamic = "force-dynamic";
 
-function truncate(text, max) {
+function truncate(text: string, max: number): string {
   if (text.length <= max) return text;
   return text.slice(0, max - 1) + "…";
 }
 
-export async function generateMetadata({ params }) {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const product = await prisma.product.findUnique({
     where: { slug },
@@ -27,26 +26,19 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default async function Page({
-    params,
-}) {
-    const { slug } = await params;
+export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
 
-    const product =
-        await getProductBySlug(slug);
+  const product = await getProductBySlug(slug);
 
-    if (!product) notFound();
+  if (!product) notFound();
 
-    const relatedProducts =
-        await getRelatedProducts(
-            product.categoryId,
-            product.id
-        );
+  const relatedProducts = await getRelatedProducts(product.categoryId, product.id);
 
-    return (
-        <ProductPage
-            product={serializeProductForClient(product)}
-            relatedProducts={serializeProductsForClient(relatedProducts)}
-        />
-    );
+  return (
+    <ProductPage
+      product={serializeProductForClient(product) as never}
+      relatedProducts={serializeProductsForClient(relatedProducts) as never}
+    />
+  );
 }

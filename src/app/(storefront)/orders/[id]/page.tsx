@@ -21,7 +21,7 @@ const ReceiptDownload = dynamic(
   { ssr: false }
 );
 
-const STATUS_LABELS = {
+const STATUS_LABELS: Record<string, string> = {
   PENDING: "Pendiente",
   PAID: "Pagado",
   SHIPPED: "Enviado",
@@ -29,7 +29,7 @@ const STATUS_LABELS = {
   CANCELLED: "Cancelado",
 };
 
-const STATUS_CLASSES = {
+const STATUS_CLASSES: Record<string, string> = {
   PENDING: styles.statusPending,
   PAID: styles.statusPaid,
   SHIPPED: styles.statusShipped,
@@ -37,13 +37,13 @@ const STATUS_CLASSES = {
   CANCELLED: styles.statusCancelled,
 };
 
-const PAYMENT_LABELS = {
+const PAYMENT_LABELS: Record<string, string> = {
   card: "Tarjeta de Crédito/Débito",
   transfer: "Transferencia Bancaria",
   cash: "Efectivo (al retirar)",
 };
 
-function formatDate(dateStr) {
+function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString("es-AR", {
     year: "numeric",
     month: "long",
@@ -53,11 +53,32 @@ function formatDate(dateStr) {
   });
 }
 
+interface OrderItem {
+  id: number;
+  productTitle: string;
+  productSku: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+}
+
+interface Order {
+  orderNumber: string;
+  status: string;
+  subtotal: number;
+  shippingCost: number;
+  paymentMethod: string;
+  createdAt: string;
+  shippingAddress?: Record<string, string>;
+  cardDetails?: { last4?: string; holder?: string };
+  items: OrderItem[];
+}
+
 export default function OrderDetailPage() {
-  const params = useParams();
-  const [order, setOrder] = useState(null);
+  const params = useParams<{ id: string }>();
+  const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchOrder() {
@@ -71,7 +92,7 @@ export default function OrderDetailPage() {
         const data = await res.json();
         setOrder(data.order);
       } catch (err) {
-        setError(err.message);
+        setError((err as Error).message);
       } finally {
         setLoading(false);
       }
@@ -156,34 +177,12 @@ export default function OrderDetailPage() {
                 <h3>Dirección de envío</h3>
               </div>
               <div className={styles.infoGrid}>
-                <div className={styles.infoField}>
-                  <span className={styles.infoLabel}>Nombre</span>
-                  <span className={styles.infoValue}>{shipping.fullName || "—"}</span>
-                </div>
-                <div className={styles.infoField}>
-                  <span className={styles.infoLabel}>Email</span>
-                  <span className={styles.infoValue}>{shipping.email || "—"}</span>
-                </div>
-                <div className={styles.infoField}>
-                  <span className={styles.infoLabel}>Teléfono</span>
-                  <span className={styles.infoValue}>{shipping.phone || "—"}</span>
-                </div>
-                <div className={styles.infoField}>
-                  <span className={styles.infoLabel}>Dirección</span>
-                  <span className={styles.infoValue}>{shipping.address || "—"}</span>
-                </div>
-                <div className={styles.infoField}>
-                  <span className={styles.infoLabel}>Ciudad</span>
-                  <span className={styles.infoValue}>{shipping.city || "—"}</span>
-                </div>
-                <div className={styles.infoField}>
-                  <span className={styles.infoLabel}>Provincia</span>
-                  <span className={styles.infoValue}>{shipping.department || "—"}</span>
-                </div>
-                <div className={styles.infoField}>
-                  <span className={styles.infoLabel}>CP</span>
-                  <span className={styles.infoValue}>{shipping.zip || "—"}</span>
-                </div>
+                {["fullName", "email", "phone", "address", "city", "department", "zip"].map((field) => (
+                  <div key={field} className={styles.infoField}>
+                    <span className={styles.infoLabel}>{field === "fullName" ? "Nombre" : field === "email" ? "Email" : field === "phone" ? "Teléfono" : field === "address" ? "Dirección" : field === "city" ? "Ciudad" : field === "department" ? "Provincia" : "CP"}</span>
+                    <span className={styles.infoValue}>{shipping[field] || "—"}</span>
+                  </div>
+                ))}
               </div>
               {shipping.notes && (
                 <p className={styles.notes}>Nota: {shipping.notes}</p>
