@@ -2,7 +2,7 @@
 
 import styles from "./Pagination.module.css";
 import Link from "next/link";
-import { buildCategoryUrl } from "@/features/category";
+import { buildCategoryUrl } from "@/features/category/utils/buildCategoryUrl";
 
 interface PaginationProps {
   name: string;
