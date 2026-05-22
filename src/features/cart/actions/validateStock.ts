@@ -1,14 +1,12 @@
 import { prisma } from "@/lib/prisma";
 
-/**
- * Reusable stock validation for future quantity-update endpoints (PATCH).
- * Checks both stock availability and product active status.
- *
- * @param {number} productId
- * @param {number} requestedQuantity
- * @returns {Promise<{valid: boolean, maxAvailable: number, error?: string}>}
- */
-export async function validateStock(productId, requestedQuantity) {
+interface StockValidationResult {
+  valid: boolean;
+  maxAvailable: number;
+  error?: string;
+}
+
+export async function validateStock(productId: number, requestedQuantity: number): Promise<StockValidationResult> {
   const product = await prisma.product.findUnique({
     where: { id: productId },
     select: { id: true, stock: true, active: true },

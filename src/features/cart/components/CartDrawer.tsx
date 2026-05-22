@@ -3,7 +3,7 @@
 import styles from "../styles/Cart.module.css";
 import Image from "next/image";
 import { ShoppingBag, Trash2 } from "lucide-react";
-import { useCart } from "../hooks/useCart";
+import { useCart } from "../context/CartContext";
 import { useRouter } from "next/navigation";
 import { formatPrice } from "@/lib/utils/currency";
 
@@ -21,9 +21,9 @@ export function Cart() {
   const router = useRouter();
 
   const total = cart
-    .reduce((acc, product) => acc + product.price * product.quantity, 0);
+    .reduce((acc: number, product) => acc + product.price * product.quantity, 0);
 
-  const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+  const totalItems = cart.reduce((acc: number, item) => acc + item.quantity, 0);
   const isEmpty = cart.length === 0;
 
   return (

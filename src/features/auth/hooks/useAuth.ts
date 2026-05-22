@@ -1,6 +1,27 @@
 import { create } from "zustand";
 
-export const useAuthStore = create((set) => ({
+export interface AuthUser {
+  id: string;
+  name: string | null;
+  email: string;
+  role: string;
+}
+
+interface AuthState {
+  user: AuthUser | null;
+  loading: boolean;
+  error: string | null;
+  initialized: boolean;
+  setUser: (user: AuthUser | null) => void;
+  login: (email: string, password: string) => Promise<AuthUser>;
+  register: (name: string, email: string, password: string, confirmPassword: string) => Promise<AuthUser>;
+  logout: () => Promise<void>;
+  fetchUser: () => Promise<void>;
+  updateUser: (userData: Partial<AuthUser>) => void;
+  clearError: () => void;
+}
+
+export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   loading: false,
   error: null,
@@ -21,7 +42,7 @@ export const useAuthStore = create((set) => ({
       set({ user: data.user, loading: false });
       return data.user;
     } catch (error) {
-      set({ error: error.message, loading: false });
+      set({ error: (error as Error).message, loading: false });
       throw error;
     }
   },
@@ -39,7 +60,7 @@ export const useAuthStore = create((set) => ({
       set({ user: data.user, loading: false });
       return data.user;
     } catch (error) {
-      set({ error: error.message, loading: false });
+      set({ error: (error as Error).message, loading: false });
       throw error;
     }
   },

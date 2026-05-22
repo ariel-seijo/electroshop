@@ -3,19 +3,50 @@
 import { getIronSession } from "iron-session";
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
-import { sessionOptions } from "@/lib/session";
+import { sessionOptions, SessionData } from "@/lib/session";
 
-/**
- * Merges a guest cart (from localStorage) into the user's permanent DB cart.
- * Uses Prisma $transaction for atomicity — entire merge succeeds or rolls back.
- * Caps each item at Product.stock; skips inactive products and zero-stock items.
- *
- * @param {Array<{productId: number, quantity: number}>} items
- * @returns {Promise<Array>} The full synced cart with product data included
- */
-export async function syncCart(items) {
+interface SyncItem {
+  productId: number;
+  quantity: number;
+}
+
+interface StockInfo {
+  stock: number;
+  active: boolean;
+}
+
+interface SyncedCartItem {
+  id: number;
+  quantity: number;
+  userId: string;
+  productId: number;
+  createdAt: Date;
+  updatedAt: Date;
+  product: {
+    id: number;
+    title: string;
+    slug: string;
+    description: string;
+    price: number;
+    oldPrice: number | null;
+    thumbnail: string;
+    images: string[];
+    stock: number;
+    brand: string;
+    sku: string;
+    rating: number;
+    sold: number;
+    featured: boolean;
+    active: boolean;
+    categoryId: number;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+}
+
+export async function syncCart(items: SyncItem[]): Promise<SyncedCartItem[]> {
   const cookieStore = await cookies();
-  const session = await getIronSession(cookieStore, sessionOptions);
+  const session = await getIronSession<SessionData>(cookieStore, sessionOptions);
 
   if (!session.userId) {
     throw new Error("Not authenticated");
@@ -24,7 +55,6 @@ export async function syncCart(items) {
   const userId = session.userId;
 
   return prisma.$transaction(async (tx) => {
-    // Step 1 — Fetch current stock + active status for all involved products
     const productIds = items.map((i) => i.productId);
 
     const products = await tx.product.findMany({
@@ -32,26 +62,21 @@ export async function syncCart(items) {
       select: { id: true, stock: true, active: true },
     });
 
-    const stockMap = new Map(
+    const stockMap = new Map<number, StockInfo>(
       products.map((p) => [p.id, { stock: p.stock, active: p.active }])
     );
 
-    // Step 2 — Fetch existing DB cart items for this user
     const existing = await tx.cartItem.findMany({
       where: { userId, productId: { in: productIds } },
     });
 
-    const existingMap = new Map(
+    const existingMap = new Map<number, number>(
       existing.map((e) => [e.productId, e.quantity])
     );
 
-    // Step 3 — Merge: take the higher of guest vs existing DB quantity
-    // Using Math.max ensures idempotency: calling sync twice yields the same result.
-    // Capped at product.stock. Skips inactive products and zero-stock items.
     for (const item of items) {
       const product = stockMap.get(item.productId);
 
-      // Product doesn't exist, is inactive, or has no stock — remove from cart
       if (!product || !product.active || product.stock <= 0) {
         await tx.cartItem.deleteMany({
           where: { userId, productId: item.productId },
@@ -83,8 +108,6 @@ export async function syncCart(items) {
       });
     }
 
-    // Step 4 — Return the full synced cart with product data
-    // The database is now the single source of truth
     return tx.cartItem.findMany({
       where: { userId },
       include: { product: true },

@@ -7,27 +7,56 @@ import {
   useReducer,
   useRef,
   useState,
+  useContext,
 } from "react";
 import { useAuthStore } from "@/features/auth";
 import { useToastStore } from "@/features/toast";
-import { cartReducer, initialState } from "./CartReducer";
+import { cartReducer, initialState, CartItem, CartAction } from "./CartReducer";
 import { syncCart } from "../actions/syncCart";
 import { fetchCart } from "../actions/fetchCart";
 import { saveCart } from "../actions/saveCart";
 
-export const CartContext = createContext();
+interface DbCartItem {
+  product: {
+    id: number;
+    title: string;
+    slug: string;
+    price: number;
+    oldPrice: number | null;
+    thumbnail: string;
+    stock: number;
+    sku: string;
+    brand: string;
+    categoryId: number;
+  };
+  quantity: number;
+}
+
+interface CartContextValue {
+  cart: CartItem[];
+  addToCart: (product: CartItem, quantity?: number) => void;
+  increaseQuantity: (id: number) => void;
+  decreaseQuantity: (id: number) => void;
+  removeFromCart: (id: number) => void;
+  clearCart: () => void;
+  syncGuestCart: () => Promise<void>;
+  isSyncing: boolean;
+  isCartOpen: boolean;
+  openCart: () => void;
+  closeCart: () => void;
+  toggleCart: () => void;
+}
+
+export const CartContext = createContext<CartContextValue | undefined>(undefined);
 
 const CART_STORAGE_KEY = "cart";
 const CART_SYNCED_KEY = "cart_is_synced";
 
-function isClient() {
+function isClient(): boolean {
   return typeof window !== "undefined";
 }
 
-/**
- * Maps server CartItem (with product include) to the client cart item shape.
- */
-function mapDbCartToClient(dbCart) {
+function mapDbCartToClient(dbCart: DbCartItem[]): CartItem[] {
   return dbCart.map((item) => ({
     id: item.product.id,
     title: item.product.title,
@@ -43,7 +72,7 @@ function mapDbCartToClient(dbCart) {
   }));
 }
 
-export function CartProvider({ children }) {
+export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, dispatch] = useReducer(cartReducer, initialState);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
@@ -51,9 +80,6 @@ export function CartProvider({ children }) {
   const user = useAuthStore((s) => s.user);
   const prevUser = useRef(user);
 
-  // -------------------------------------------------------
-  // Hydrate from localStorage on mount (SSR-safe)
-  // -------------------------------------------------------
   useEffect(() => {
     if (!isClient()) return;
     try {
@@ -66,9 +92,6 @@ export function CartProvider({ children }) {
     }
   }, []);
 
-  // -------------------------------------------------------
-  // Persist cart to localStorage on every change
-  // -------------------------------------------------------
   useEffect(() => {
     if (!isClient()) return;
     try {
@@ -78,13 +101,10 @@ export function CartProvider({ children }) {
     }
   }, [cart]);
 
-  // -------------------------------------------------------
-  // Multi-tab synchronization via storage event
-  // -------------------------------------------------------
   useEffect(() => {
     if (!isClient()) return;
 
-    const handleStorage = (e) => {
+    const handleStorage = (e: StorageEvent) => {
       if (e.key === CART_SYNCED_KEY && e.newValue === "true") {
         const currentUser = useAuthStore.getState().user;
         if (currentUser) {
@@ -92,7 +112,7 @@ export function CartProvider({ children }) {
             .then((dbCart) => {
               dispatch({
                 type: "SET_CART",
-                payload: mapDbCartToClient(dbCart),
+                payload: mapDbCartToClient(dbCart as DbCartItem[]),
               });
             })
             .catch(() => {
@@ -106,11 +126,7 @@ export function CartProvider({ children }) {
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
 
-  // -------------------------------------------------------
-  // Auto-persist cart to DB on every change (debounced 2s)
-  // Keeps the DB in sync during the session so logout never loses changes
-  // -------------------------------------------------------
-  const saveTimerRef = useRef(null);
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!isClient() || !user) return;
@@ -128,13 +144,13 @@ export function CartProvider({ children }) {
           if (result && result.warnings && result.warnings.length > 0) {
             fetchCart()
               .then((dbCart) => {
-                dispatch({ type: "SET_CART", payload: mapDbCartToClient(dbCart) });
+                dispatch({ type: "SET_CART", payload: mapDbCartToClient(dbCart as DbCartItem[]) });
               })
               .catch(() => {});
           }
         })
         .catch((err) => {
-          console.error("Auto-save cart failed:", err.message);
+          console.error("Auto-save cart failed:", (err as Error).message);
         });
     }, 2000);
 
@@ -143,9 +159,6 @@ export function CartProvider({ children }) {
     };
   }, [cart, user]);
 
-  // -------------------------------------------------------
-  // Core sync logic
-  // -------------------------------------------------------
   const performSync = useCallback(async () => {
     if (isSyncing) return;
     setIsSyncing(true);
@@ -154,17 +167,15 @@ export function CartProvider({ children }) {
       const wasSynced =
         isClient() && localStorage.getItem(CART_SYNCED_KEY) === "true";
 
-      // Already synced — just fetch DB cart (handles multi-tab / re-login)
       if (wasSynced) {
         const dbCart = await fetchCart();
-        dispatch({ type: "SET_CART", payload: mapDbCartToClient(dbCart) });
+        dispatch({ type: "SET_CART", payload: mapDbCartToClient(dbCart as DbCartItem[]) });
         return;
       }
 
-      // Guest cart is empty but user is logged in — load DB cart
       if (cart.length === 0) {
         const dbCart = await fetchCart();
-        dispatch({ type: "SET_CART", payload: mapDbCartToClient(dbCart) });
+        dispatch({ type: "SET_CART", payload: mapDbCartToClient(dbCart as DbCartItem[]) });
         try {
           localStorage.setItem(CART_SYNCED_KEY, "true");
         } catch {
@@ -173,7 +184,6 @@ export function CartProvider({ children }) {
         return;
       }
 
-      // Guest cart has items — merge with DB
       const items = cart.map((item) => ({
         productId: item.id,
         quantity: item.quantity,
@@ -181,7 +191,6 @@ export function CartProvider({ children }) {
 
       const dbCart = await syncCart(items);
 
-      // Server confirmed success — safe to clear localStorage guest cart
       try {
         localStorage.removeItem(CART_STORAGE_KEY);
         localStorage.setItem(CART_SYNCED_KEY, "true");
@@ -189,47 +198,36 @@ export function CartProvider({ children }) {
         /* ignore */
       }
 
-      // DB is the source of truth — replace client state entirely
-      dispatch({ type: "SET_CART", payload: mapDbCartToClient(dbCart) });
+      dispatch({ type: "SET_CART", payload: mapDbCartToClient(dbCart as unknown as DbCartItem[]) });
     } catch (error) {
-      console.error("Cart sync failed — guest cart preserved:", error.message);
-      // localStorage is NOT cleared — guest cart remains intact
+      console.error("Cart sync failed — guest cart preserved:", (error as Error).message);
     } finally {
       setIsSyncing(false);
     }
   }, [cart, isSyncing]);
 
-  // Ref to latest performSync so the login effect doesn't need it as a dep
   const performSyncRef = useRef(performSync);
   performSyncRef.current = performSync;
 
-  // Ref to latest cart so the logout flush reads current items without [cart] dep
   const cartRef = useRef(cart);
   cartRef.current = cart;
 
-  // Prevents double sync from React Strict Mode double-mount in development
   const syncAttemptedRef = useRef(false);
 
-  // -------------------------------------------------------
-  // Handle login / logout transitions
-  // -------------------------------------------------------
   useEffect(() => {
     if (!isClient()) return;
 
     const wasLoggedIn = !!prevUser.current;
     const isLoggedIn = !!user;
 
-    // User just logged in — restore DB cart automatically (guard against Strict Mode double-mount)
     if (!wasLoggedIn && isLoggedIn && !syncAttemptedRef.current) {
       syncAttemptedRef.current = true;
       performSyncRef.current();
     }
 
-    // User just logged out — flush cart to DB, then reset state
     if (wasLoggedIn && !isLoggedIn) {
       syncAttemptedRef.current = false;
 
-      // Clear any pending auto-save timer and flush immediately
       if (saveTimerRef.current) {
         clearTimeout(saveTimerRef.current);
         saveTimerRef.current = null;
@@ -240,7 +238,6 @@ export function CartProvider({ children }) {
           productId: item.id,
           quantity: item.quantity,
         }));
-        // Fire-and-forget — cookie may still be valid at this point
         saveCart(items).catch(() => {});
       }
 
@@ -256,18 +253,12 @@ export function CartProvider({ children }) {
     prevUser.current = user;
   }, [user]);
 
-  /**
-   * Public method callable from login page or any consumer.
-   * Safe to call multiple times — idempotent via cart_is_synced flag.
-   */
   const syncGuestCart = useCallback(async () => {
     if (!useAuthStore.getState().user) return;
     await performSync();
   }, [performSync]);
 
-  // --- Standard cart operations ---
-
-  const addToCart = (product, quantity = 1) => {
+  const addToCart = (product: CartItem, quantity = 1) => {
     const cartItem = cart.find((item) => item.id === product.id);
     const cartQty = cartItem ? cartItem.quantity : 0;
 
@@ -284,15 +275,15 @@ export function CartProvider({ children }) {
     dispatch({ type: "ADD_TO_CART", payload: { product, quantity } });
   };
 
-  const increaseQuantity = (id) => {
+  const increaseQuantity = (id: number) => {
     dispatch({ type: "INCREASE_QUANTITY", payload: id });
   };
 
-  const decreaseQuantity = (id) => {
+  const decreaseQuantity = (id: number) => {
     dispatch({ type: "DECREASE_QUANTITY", payload: id });
   };
 
-  const removeFromCart = (id) => {
+  const removeFromCart = (id: number) => {
     dispatch({ type: "REMOVE_FROM_CART", payload: id });
   };
 
@@ -324,4 +315,14 @@ export function CartProvider({ children }) {
       {children}
     </CartContext.Provider>
   );
+}
+
+export function useCart(): CartContextValue {
+  const context = useContext(CartContext);
+
+  if (context === undefined) {
+    throw new Error("useCart must be used within a CartProvider");
+  }
+
+  return context;
 }

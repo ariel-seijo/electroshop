@@ -3,19 +3,27 @@
 import { getIronSession } from "iron-session";
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
-import { sessionOptions } from "@/lib/session";
+import { sessionOptions, SessionData } from "@/lib/session";
 
-/**
- * Persists the current cart state to the database with stock validation.
- * Each item's quantity is capped to the product's available stock.
- * Returns warnings for any items that were capped.
- *
- * @param {Array<{productId: number, quantity: number}>} items
- * @returns {{ warnings: Array<{productId: number, requested: number, capped: number, maxStock: number}> }}
- */
-export async function saveCart(items) {
+interface SaveCartItem {
+  productId: number;
+  quantity: number;
+}
+
+interface SaveCartWarning {
+  productId: number;
+  requested: number;
+  capped: number;
+  maxStock: number;
+}
+
+interface SaveCartResult {
+  warnings: SaveCartWarning[];
+}
+
+export async function saveCart(items: SaveCartItem[]): Promise<SaveCartResult> {
   const cookieStore = await cookies();
-  const session = await getIronSession(cookieStore, sessionOptions);
+  const session = await getIronSession<SessionData>(cookieStore, sessionOptions);
 
   if (!session.userId) {
     return { warnings: [] };
@@ -24,7 +32,7 @@ export async function saveCart(items) {
   const userId = session.userId;
 
   const result = await prisma.$transaction(async (tx) => {
-    const warnings = [];
+    const warnings: SaveCartWarning[] = [];
 
     if (items.length === 0) {
       await tx.cartItem.deleteMany({ where: { userId } });
@@ -40,7 +48,6 @@ export async function saveCart(items) {
       products.map((p) => [p.id, { stock: p.stock, active: p.active }])
     );
 
-    // Remove DB items no longer present in the request
     await tx.cartItem.deleteMany({
       where: { userId, productId: { notIn: productIds } },
     });
