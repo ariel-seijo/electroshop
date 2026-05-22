@@ -161,14 +161,17 @@ npm run lint               # ESLint must still pass
 ## Current Status
 
 - [x] Phase 1 — Configuration & tooling
-- [ ] Phase 2 Layer 0 — Zod schemas (lib/validations/)
-- [ ] Phase 2 Layer 1 — Pure utilities (lib/utils/)
-- [ ] Phase 2 Layer 2 — Core lib (lib/*.js)
-- [ ] Phase 2 Layer 3 — Cart + Auth + Toast features
-- [ ] Phase 2 Layer 4 — Checkout + Orders features
-- [ ] Phase 2 Layer 5 — Products + Category + Shop features
-- [ ] Phase 2 Layer 6 — Admin feature
-- [ ] Phase 2 Layer 7 — API routes + Pages
+- [x] Phase 2 Layer 0 — Zod schemas (lib/validations/)
+- [x] Phase 2 Layer 1 — Pure utilities (lib/utils/)
+- [x] Phase 2 Layer 2 — Core lib (lib/\*.js → lib/\*.ts)
+- [x] Phase 2 Layer 3 — Cart + Auth + Toast features
+- [x] Phase 2 Layer 4 — Checkout + Orders features
+- [x] Phase 2 Layer 5 — Products + Category + Shop features
+- [x] Phase 2 Layer 6 — Admin services + barrels + global components
+- [~] Phase 2 Layer 7 — API routes + Pages (pending, JS tolerated via allowJs)
+  - Admin components (JSX) — 57 files remaining under allowJs
+  - API routes (JS) — 18 files remaining
+  - App pages (JS/JSX) — ~30 files remaining
 
 ---
 
