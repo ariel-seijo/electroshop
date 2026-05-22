@@ -1,3 +1,5 @@
+import "server-only";
+
 import { prisma } from "@/lib/prisma";
 import { VALID_STATUSES, canTransitionOrderStatus, type OrderStatus } from "@/lib/order-state";
 
