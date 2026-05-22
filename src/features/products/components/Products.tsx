@@ -26,9 +26,11 @@ interface ProductsProps {
 export default function Products({ products, view = "grid" }: ProductsProps) {
   return (
     <div className={`${styles.products} ${view === "list" ? styles.list : ""}`}>
-      {products.map((product) => (
-        <ProductCard key={product.id} product={product} view={view} />
-      ))}
+      <ul>
+        {products.map((product) => (
+          <ProductCard key={product.id} product={product} view={view} />
+        ))}
+      </ul>
     </div>
   );
 }

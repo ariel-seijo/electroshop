@@ -32,7 +32,7 @@ export default function ProductGallery({ product }: ProductGalleryProps) {
 
   return (
     <div className={styles.gallery}>
-      <div className={styles.mainImage}>
+      <div className={styles.main}>
         <Image
           src={optimizeCloudinaryUrl(displayImages[selectedIndex].url)}
           alt={`${product.title} - Imagen ${selectedIndex + 1}`}
@@ -45,7 +45,7 @@ export default function ProductGallery({ product }: ProductGalleryProps) {
           {displayImages.map((img, i) => (
             <button
               key={i}
-              className={`${styles.thumb} ${i === selectedIndex ? styles.active : ""}`}
+              className={`${styles.thumb} ${i === selectedIndex ? styles.thumbActive : ""}`}
               onClick={() => setSelectedIndex(i)}
             >
               <Image

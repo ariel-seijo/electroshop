@@ -330,6 +330,14 @@
   z-index: 1;
 }
 
+.buy-btn .text {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+}
+
 .buy-btn .content svg {
   width: 13px;
   height: 13px;
