@@ -2,7 +2,9 @@ import { prisma } from "@/lib/prisma";
 
 const VALID_ROLES = ["CUSTOMER", "ADMIN"];
 const VALID_STATUSES = ["ACTIVE", "BANNED"];
-const SUCCESSFUL_ORDER_STATUSES = ["PAID", "SHIPPED", "DELIVERED"];
+import { type OrderStatus } from "@prisma/client";
+
+const SUCCESSFUL_ORDER_STATUSES: OrderStatus[] = ["PAID", "SHIPPED", "DELIVERED"] as OrderStatus[];
 
 const USER_LIST_SELECT = {
   id: true,
@@ -15,7 +17,7 @@ const USER_LIST_SELECT = {
   _count: {
     select: { orders: true },
   },
-};
+} as const;
 
 const ORDER_HISTORY_SELECT = {
   id: true,
@@ -28,29 +30,25 @@ const ORDER_HISTORY_SELECT = {
   _count: {
     select: { items: true },
   },
-};
+} as const;
 
-/**
- * Fetches a paginated, filtered, and searchable list of users
- * with commercial aggregate data (order count and LTV).
- *
- * @param {object} [params]
- * @param {number} [params.page=1]
- * @param {number} [params.limit=10] - Max 50
- * @param {string} [params.search] - Searches name or email (case-insensitive)
- * @param {string} [params.role] - Filter by "CUSTOMER" or "ADMIN"
- * @param {string} [params.status] - Filter by "ACTIVE", "BANNED", or "DELETED"
- * @param {'createdAt'|'name'|'email'|'orders'|'lifetimeValue'} [params.sort=createdAt]
- * @param {'asc'|'desc'} [params.order=desc]
- * @returns {Promise<{ users: Array, total: number, page: number, totalPages: number }>}
- */
-export async function getAllUsers(params = {}) {
-  const page = Math.max(1, parseInt(params.page) || 1);
-  const limit = Math.min(50, Math.max(1, parseInt(params.limit) || 10));
+interface UserFilters {
+  page?: string | number;
+  limit?: string | number;
+  search?: string;
+  role?: string;
+  status?: string;
+  sort?: string;
+  order?: string;
+}
+
+export async function getAllUsers(params: UserFilters = {}) {
+  const page = Math.max(1, parseInt(String(params.page)) || 1);
+  const limit = Math.min(50, Math.max(1, parseInt(String(params.limit)) || 10));
   const skip = (page - 1) * limit;
   const sortDir = params.order === "asc" ? "asc" : "desc";
 
-  const where = {};
+  const where: Record<string, unknown> = {};
 
   if (params.search) {
     where.OR = [
@@ -72,15 +70,13 @@ export async function getAllUsers(params = {}) {
     }
   }
 
-  const orderBy = {};
+  const orderBy: Record<string, unknown> = {};
   if (params.sort === "name") {
     orderBy.name = sortDir;
   } else if (params.sort === "email") {
     orderBy.email = sortDir;
   } else if (params.sort === "orders") {
     orderBy.orders = { _count: sortDir };
-  } else if (params.sort === "lifetimeValue") {
-    // LTV sort handled in-memory after aggregation
   } else {
     orderBy.createdAt = sortDir;
   }
@@ -88,7 +84,6 @@ export async function getAllUsers(params = {}) {
   const isLtvSort = params.sort === "lifetimeValue";
 
   if (isLtvSort) {
-    // Fetch all matching users, then sort by LTV in JS and paginate
     const [allUsers, total, ltvRows] = await Promise.all([
       prisma.user.findMany({
         where,
@@ -103,7 +98,7 @@ export async function getAllUsers(params = {}) {
     ]);
 
     const ltvMap = new Map(
-      ltvRows.map((row) => [row.userId, (row._sum.total || 0)])
+      ltvRows.map((row) => [row.userId, (row._sum?.total || 0)])
     );
 
     const enriched = allUsers
@@ -158,14 +153,7 @@ export async function getAllUsers(params = {}) {
   };
 }
 
-/**
- * Fetches a specific user's order history summary
- * without exposing sensitive auth data.
- *
- * @param {string} id - User ID (cuid)
- * @returns {Promise<{ user: object, orders: Array }>}
- */
-export async function getUserOrderHistory(id) {
+export async function getUserOrderHistory(id: string) {
   const user = await prisma.user.findUnique({
     where: { id },
     select: {
@@ -191,14 +179,7 @@ export async function getUserOrderHistory(id) {
   return { user, orders };
 }
 
-/**
- * Soft-deletes a user by setting deletedAt and anonymizing PII,
- * preserving the ID for referential integrity with order history.
- *
- * @param {string} id - User ID (cuid)
- * @returns {Promise<object>}
- */
-export async function softDeleteUser(id) {
+export async function softDeleteUser(id: string) {
   const existing = await prisma.user.findUnique({
     where: { id },
     select: { id: true, deletedAt: true },
@@ -244,13 +225,7 @@ export async function softDeleteUser(id) {
   return user;
 }
 
-/**
- * Toggles a user's account status between ACTIVE and BANNED.
- *
- * @param {string} id - User ID (cuid)
- * @returns {Promise<object>}
- */
-export async function toggleUserStatus(id) {
+export async function toggleUserStatus(id: string) {
   const existing = await prisma.user.findUnique({
     where: { id },
     select: { id: true, status: true, deletedAt: true },
@@ -281,14 +256,7 @@ export async function toggleUserStatus(id) {
   return user;
 }
 
-/**
- * Updates a user's role (CUSTOMER or ADMIN).
- *
- * @param {string} id - User ID (cuid)
- * @param {string} newRole - "CUSTOMER" or "ADMIN"
- * @returns {Promise<object>}
- */
-export async function updateUserRole(id, newRole) {
+export async function updateUserRole(id: string, newRole: string) {
   if (!VALID_ROLES.includes(newRole)) {
     throw new Error("Rol no válido");
   }
@@ -312,7 +280,7 @@ export async function updateUserRole(id, newRole) {
 
   const user = await prisma.user.update({
     where: { id },
-    data: { role: newRole },
+    data: { role: newRole as "CUSTOMER" | "ADMIN" },
     select: {
       id: true,
       name: true,

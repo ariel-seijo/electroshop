@@ -1,17 +1,17 @@
 import { prisma } from "@/lib/prisma";
 import { unstable_cache } from "next/cache";
 
-function getStartOfCurrentMonth() {
+function getStartOfCurrentMonth(): Date {
   const now = new Date();
   return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
 }
 
-function getStartOfPreviousMonth() {
+function getStartOfPreviousMonth(): Date {
   const now = new Date();
   return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 1));
 }
 
-function getEndOfPreviousMonth() {
+function getEndOfPreviousMonth(): Date {
   const now = new Date();
   return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 0, 23, 59, 59, 999));
 }
@@ -19,7 +19,7 @@ function getEndOfPreviousMonth() {
 const BA_TIMEZONE = "America/Argentina/Buenos_Aires";
 const BA_UTC_OFFSET = 3;
 
-function formatBuenosAiresDate(date) {
+function formatBuenosAiresDate(date: Date): string {
   return new Intl.DateTimeFormat("en-CA", {
     timeZone: BA_TIMEZONE,
     year: "numeric",
@@ -28,21 +28,21 @@ function formatBuenosAiresDate(date) {
   }).format(date);
 }
 
-function getBuenosAiresTodayMidnight() {
+function getBuenosAiresTodayMidnight(): Date {
   const now = new Date();
   const dateStr = formatBuenosAiresDate(now);
   const [year, month, day] = dateStr.split("-").map(Number);
   return new Date(Date.UTC(year, month - 1, day, BA_UTC_OFFSET));
 }
 
-function getSevenDaysAgo() {
+function getSevenDaysAgo(): Date {
   const todayMidnight = getBuenosAiresTodayMidnight();
   return new Date(todayMidnight.getTime() - 6 * 24 * 60 * 60 * 1000);
 }
 
-function generateDateRange(days = 7) {
+function generateDateRange(days = 7): string[] {
   const todayMidnight = getBuenosAiresTodayMidnight();
-  const dates = [];
+  const dates: string[] = [];
   for (let i = days - 1; i >= 0; i--) {
     const d = new Date(todayMidnight.getTime() - i * 24 * 60 * 60 * 1000);
     dates.push(formatBuenosAiresDate(d));
@@ -74,7 +74,6 @@ export async function getCoreMetrics() {
 }
 
 export async function getGrowthRate() {
-  const now = new Date();
   const startOfCurrentMonth = getStartOfCurrentMonth();
   const startOfPreviousMonth = getStartOfPreviousMonth();
   const endOfPreviousMonth = getEndOfPreviousMonth();
@@ -128,7 +127,7 @@ export async function getGrowthRate() {
   const usersCurrent = currentUsers;
   const usersPrevious = previousUsers;
 
-  function calculateGrowth(current, previous) {
+  function calculateGrowth(current: number, previous: number): number {
     if (previous === 0) {
       return current > 0 ? 100 : 0;
     }
@@ -154,7 +153,7 @@ export async function getSalesTimeline() {
     select: { total: true, createdAt: true },
   });
 
-  const salesByDate = {};
+  const salesByDate: Record<string, number> = {};
   orders.forEach((order) => {
     const dateKey = formatBuenosAiresDate(order.createdAt);
     salesByDate[dateKey] = (salesByDate[dateKey] || 0) + Number(order.total);
