@@ -1,6 +1,6 @@
 "use client";
 
-import styles from "../styles/Pagination.module.css";
+import styles from "./Pagination.module.css";
 import Link from "next/link";
 import { buildCategoryUrl } from "@/features/category";
 
