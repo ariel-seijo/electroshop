@@ -205,13 +205,13 @@ export default function ProductPage({ product, relatedProducts }: ProductPagePro
               onClick={handleAdd}
               disabled={isOutOfStock || isMaxReached}
             >
-              {added ? (
+              {isMaxReached ? (
+                "Máx. alcanzado"
+              ) : added ? (
                 <>
                   <Check size={18} />
                   Añadido
                 </>
-              ) : isMaxReached ? (
-                "Máx. alcanzado"
               ) : isOutOfStock ? (
                 "Sin stock"
               ) : (
