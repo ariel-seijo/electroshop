@@ -95,8 +95,9 @@ export default function UserTable({
     const result = await updateUserRoleAction(roleConfirm.userId, roleConfirm.newRole);
     setRoleLoading(null);
 
-    if ("error" in result) {
-      toast(result.error, "error");
+    const roleErrorMsg = "error" in result ? result.error : undefined;
+    if (roleErrorMsg) {
+      toast(roleErrorMsg, "error");
     } else {
       toast("Rol actualizado", "success");
     }

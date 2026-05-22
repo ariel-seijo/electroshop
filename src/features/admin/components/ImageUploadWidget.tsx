@@ -138,11 +138,13 @@ export default function ImageUploadWidget({
             collectedRef.current
           );
 
-          if ("error" in saveResult) {
-            toast(saveResult.error, "error");
+          const saveErrorMsg = "error" in saveResult ? saveResult.error : undefined;
+          if (saveErrorMsg) {
+            toast(saveErrorMsg, "error");
           } else {
+            const savedImages = (saveResult as { images: unknown[] }).images;
             toast(
-              `${saveResult.images.length} imagen(es) guardada(s)`,
+              `${savedImages.length} imagen(es) guardada(s)`,
               "success"
             );
             onImagesUploaded?.();
@@ -178,23 +180,27 @@ export default function ImageUploadWidget({
     try {
       const sigResult = await getCloudinarySignatureAction();
 
-      if ("error" in sigResult) {
-        toast(sigResult.error, "error");
+      const sigErrorMsg = "error" in sigResult ? sigResult.error : undefined;
+      if (sigErrorMsg) {
+        toast(sigErrorMsg, "error");
         return;
       }
 
+      const successSig = sigResult as unknown as { cloudName: string; apiKey: string; signature: string; timestamp: string };
+
       const widget = window.cloudinary!.createUploadWidget(
         {
-          cloudName: sigResult.cloudName,
-          apiKey: sigResult.apiKey,
+          cloudName: successSig.cloudName,
+          apiKey: successSig.apiKey,
           uploadSignature: async (callback: (signature: string) => void, paramsToSign: Record<string, string | number>) => {
             try {
               const res = await getCloudinarySignatureAction(paramsToSign);
-              if ("error" in res) {
-                toast(res.error, "error");
+              const resErrorMsg = "error" in res ? res.error : undefined;
+              if (resErrorMsg) {
+                toast(resErrorMsg, "error");
                 return;
               }
-              callback(res.signature);
+              callback((res as { signature: string }).signature);
             } catch {
               toast("Error al firmar la subida", "error");
             }

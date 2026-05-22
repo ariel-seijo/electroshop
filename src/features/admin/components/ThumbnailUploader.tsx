@@ -95,23 +95,27 @@ export default function ThumbnailUploader({ value, onChange }: ThumbnailUploader
     try {
       const sigResult = await getCloudinarySignatureAction();
 
-      if ("error" in sigResult) {
-        toast(sigResult.error, "error");
+      const sigErrorMsg = "error" in sigResult ? sigResult.error : undefined;
+      if (sigErrorMsg) {
+        toast(sigErrorMsg, "error");
         return;
       }
 
+      const successSig = sigResult as unknown as { cloudName: string; apiKey: string; signature: string; timestamp: string };
+
       const widget = window.cloudinary!.createUploadWidget(
         {
-          cloudName: sigResult.cloudName,
-          apiKey: sigResult.apiKey,
+          cloudName: successSig.cloudName,
+          apiKey: successSig.apiKey,
           uploadSignature: async (callback: (signature: string) => void, paramsToSign: Record<string, string | number>) => {
             try {
               const res = await getCloudinarySignatureAction(paramsToSign);
-              if ("error" in res) {
-                toast(res.error, "error");
+              const resErrorMsg = "error" in res ? res.error : undefined;
+              if (resErrorMsg) {
+                toast(resErrorMsg, "error");
                 return;
               }
-              callback(res.signature);
+              callback((res as { signature: string }).signature);
             } catch {
               toast("Error al firmar la subida", "error");
             }

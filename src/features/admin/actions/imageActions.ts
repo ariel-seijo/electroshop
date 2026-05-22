@@ -10,18 +10,7 @@ import {
 } from "@/lib/cloudinary";
 import { saveProductImagesSchema, formatZodError } from "@/lib/validations";
 
-/**
- * Generates a signed upload signature for the Cloudinary Upload Widget.
- * When called without params, returns a default signature for widget initialization.
- * When called with paramsToSign (from the upload widget callback), signs those exact
- * parameters for per-file authenticated upload.
- *
- * Must be called from an admin-authenticated context.
- *
- * @param {Record<string, string | number>} [paramsToSign]
- * @returns {{ timestamp: number, signature: string, cloudName: string, apiKey: string } | { error: string }}
- */
-export async function getCloudinarySignatureAction(paramsToSign) {
+export async function getCloudinarySignatureAction(paramsToSign?: Record<string, string | number>) {
   try {
     await requireAdmin();
 
@@ -30,7 +19,7 @@ export async function getCloudinarySignatureAction(paramsToSign) {
 
     return { timestamp, signature, cloudName, apiKey };
   } catch (error) {
-    if (error.message === "Unauthorized") {
+    if ((error as Error).message === "Unauthorized") {
       return { error: "No autorizado" };
     }
     console.error("[SIGNATURE ERROR]", error);
@@ -38,15 +27,15 @@ export async function getCloudinarySignatureAction(paramsToSign) {
   }
 }
 
-/**
- * Persists uploaded image metadata to the database.
- * Generates a blurDataURL placeholder for each image before saving.
- *
- * @param {number} productId
- * @param {Array<{ url: string, publicId: string, width: number, height: number, format: string }>} images
- * @returns {{ images: Array } | { error: string }}
- */
-export async function saveProductImagesAction(productId, images) {
+interface CloudinaryImage {
+  url: string;
+  publicId: string;
+  width: number;
+  height: number;
+  format: string;
+}
+
+export async function saveProductImagesAction(productId: number, images: CloudinaryImage[]) {
   try {
     await requireAdmin();
 
@@ -112,7 +101,7 @@ export async function saveProductImagesAction(productId, images) {
 
     return { images: imageRecords };
   } catch (error) {
-    if (error.message === "Unauthorized") {
+    if ((error as Error).message === "Unauthorized") {
       return { error: "No autorizado" };
     }
     console.error("[SAVE IMAGES ERROR]", error);
@@ -120,15 +109,7 @@ export async function saveProductImagesAction(productId, images) {
   }
 }
 
-/**
- * Deletes an image asset from Cloudinary and removes its database record.
- * Cloudinary deletion is attempted first; the DB record is only removed
- * after confirming Cloudinary cleanup (or if the asset was already gone).
- *
- * @param {string} imageId - ProductImage cuid
- * @returns {{ success: boolean } | { error: string }}
- */
-export async function deleteProductImageAction(imageId) {
+export async function deleteProductImageAction(imageId: string) {
   try {
     await requireAdmin();
 
@@ -168,9 +149,9 @@ export async function deleteProductImageAction(imageId) {
       }
     }
 
-    return { success: true };
+    return { success: true as const };
   } catch (error) {
-    if (error.message === "Unauthorized") {
+    if ((error as Error).message === "Unauthorized") {
       return { error: "No autorizado" };
     }
     console.error("[DELETE IMAGE ERROR]", error);
@@ -178,15 +159,7 @@ export async function deleteProductImageAction(imageId) {
   }
 }
 
-/**
- * Reorders product images by updating their sortOrder values.
- * The order of imageIds in the array determines the new sortOrder (0-based).
- *
- * @param {number} productId
- * @param {string[]} imageIds - Ordered array of ProductImage cuid values
- * @returns {{ success: boolean } | { error: string }}
- */
-export async function reorderProductImagesAction(productId, imageIds) {
+export async function reorderProductImagesAction(productId: number, imageIds: string[]) {
   try {
     await requireAdmin();
 
@@ -214,9 +187,9 @@ export async function reorderProductImagesAction(productId, imageIds) {
       }
     }
 
-    return { success: true };
+    return { success: true as const };
   } catch (error) {
-    if (error.message === "Unauthorized") {
+    if ((error as Error).message === "Unauthorized") {
       return { error: "No autorizado" };
     }
     console.error("[REORDER IMAGES ERROR]", error);

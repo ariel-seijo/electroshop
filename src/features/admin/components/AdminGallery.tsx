@@ -168,8 +168,9 @@ export default function AdminGallery({ images, onImageDeleted, onDelete, onReord
     try {
       const result = await deleteProductImageAction(imageId);
 
-      if ("error" in result) {
-        toast(result.error, "error");
+      const errorMsg = "error" in result ? result.error : undefined;
+      if (errorMsg) {
+        toast(errorMsg, "error");
       } else {
         toast("Imagen eliminada", "success");
         const filtered = items.filter((img) => img.id !== imageId);

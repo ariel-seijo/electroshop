@@ -263,8 +263,9 @@ export default function ProductForm({
     );
     setIsGeneratingSku(false);
 
-    if ("error" in result) {
-      toast(result.error, "error");
+    const skuErrorMsg = "error" in result ? result.error : undefined;
+    if (skuErrorMsg) {
+      toast(skuErrorMsg, "error");
     } else {
       setFormData((prev) => ({ ...prev, sku: result.sku } as FormData));
       toast("SKU generado", "success");
@@ -312,8 +313,9 @@ export default function ProductForm({
       ? await createProductAction(data)
       : await updateProductAction(effectiveProductId!, data);
 
-    if ("error" in result) {
-      toast(result.error, "error");
+    const submitErrorMsg = "error" in result ? result.error : undefined;
+    if (submitErrorMsg) {
+      toast(submitErrorMsg, "error");
       setIsSubmitting(false);
       return;
     }

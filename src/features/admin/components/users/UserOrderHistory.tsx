@@ -64,10 +64,12 @@ export default function UserOrderHistory({ userId, isOpen, onClose }: UserOrderH
       const result = await getUserOrderHistoryAction(userId!);
       setLoading(false);
 
-      if ("error" in result) {
-        setError(result.error);
+      const orderErrorMsg = "error" in result ? result.error : undefined;
+      if (orderErrorMsg) {
+        setError(orderErrorMsg);
       } else {
-        setData({ user: result.user as UserData, orders: result.orders as OrderItem[] });
+        const successResult = result as { user: UserData; orders: unknown };
+        setData({ user: successResult.user, orders: successResult.orders as OrderItem[] });
       }
     }
 

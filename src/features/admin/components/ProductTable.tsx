@@ -127,8 +127,9 @@ export default function ProductTable({
     setConfirmingActive(false);
     setActiveModal({ isOpen: false, product: null });
 
-    if ("error" in result) {
-      toast(result.error, "error");
+    const activeErrorMsg = "error" in result ? result.error : undefined;
+    if (activeErrorMsg) {
+      toast(activeErrorMsg, "error");
     } else {
       toast(newActive ? "Producto activado" : "Producto desactivado", "success");
     }
@@ -154,8 +155,9 @@ export default function ProductTable({
     setConfirmingFeatured(false);
     setFeaturedModal({ isOpen: false, product: null });
 
-    if ("error" in result) {
-      toast(result.error, "error");
+    const featuredErrorMsg = "error" in result ? result.error : undefined;
+    if (featuredErrorMsg) {
+      toast(featuredErrorMsg, "error");
     } else {
       toast(newFeatured ? "Producto destacado" : "Producto no destacado", "success");
     }
@@ -187,8 +189,9 @@ export default function ProductTable({
     setConfirmingStock(false);
     setStockModal({ isOpen: false, product: null });
 
-    if ("error" in result) {
-      toast(result.error, "error");
+    const stockErrorMsg = "error" in result ? result.error : undefined;
+    if (stockErrorMsg) {
+      toast(stockErrorMsg, "error");
     } else {
       toast("Stock actualizado", "success");
     }
@@ -213,8 +216,9 @@ export default function ProductTable({
     setIsDeleting(false);
     setDeleteModal({ isOpen: false, product: null });
 
-    if ("error" in result) {
-      toast(result.error, "error");
+    const deleteErrorMsg = "error" in result ? result.error : undefined;
+    if (deleteErrorMsg) {
+      toast(deleteErrorMsg, "error");
     } else {
       toast("Producto eliminado", "success");
     }

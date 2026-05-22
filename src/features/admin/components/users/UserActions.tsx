@@ -118,8 +118,9 @@ export default function UserActions({ user, onViewOrders }: UserActionsProps) {
     setLoading(false);
     setConfirm((prev) => ({ ...prev, isOpen: false }));
 
-    if ("error" in result) {
-      toast(result.error, "error");
+    const statusErrorMsg = "error" in result ? result.error : undefined;
+    if (statusErrorMsg) {
+      toast(statusErrorMsg, "error");
     } else {
       const user = result.user as { status?: string };
       toast(
@@ -135,8 +136,9 @@ export default function UserActions({ user, onViewOrders }: UserActionsProps) {
     setLoading(false);
     setConfirm((prev) => ({ ...prev, isOpen: false }));
 
-    if ("error" in result) {
-      toast(result.error, "error");
+    const deleteUserErrorMsg = "error" in result ? result.error : undefined;
+    if (deleteUserErrorMsg) {
+      toast(deleteUserErrorMsg, "error");
     } else {
       toast("Usuario eliminado", "success");
     }
