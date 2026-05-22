@@ -4,25 +4,48 @@ import styles from "../styles/ProductCard.module.css";
 import Link from "next/link";
 import Image from "next/image";
 import { ShoppingCart, Star, Check, Flame } from "lucide-react";
-import { useCart } from "@/features/cart";
+import { useCart, type CartItem } from "@/features/cart";
 import { formatPrice } from "@/lib/utils/currency";
 import { optimizeCloudinaryUrl } from "@/lib/utils/cloudinary-url";
 
-export default function ProductCard({ product, view = "grid", priority = false }) {
+interface ProductCardProduct {
+  id: number;
+  title: string;
+  slug: string;
+  price: number;
+  oldPrice: number | null;
+  thumbnail: string;
+  stock: number;
+  brand: string;
+  sku: string;
+  rating: number;
+  sold: number;
+  featured: boolean;
+  categoryId: number;
+  category?: { name: string } | null;
+}
+
+interface ProductCardProps {
+  product: ProductCardProduct;
+  view?: "grid" | "list";
+  priority?: boolean;
+}
+
+export default function ProductCard({ product, view = "grid", priority = false }: ProductCardProps) {
   const { addToCart, cart } = useCart();
   const isOutOfStock = product.stock <= 0;
   const cartQty = cart.find((item) => item.id === product.id)?.quantity ?? 0;
   const isMaxReached = cartQty >= product.stock;
   const isInCart = cartQty > 0;
   const discountPercent =
-    product.oldPrice > product.price
+    product.oldPrice && product.oldPrice > product.price
       ? Math.round((1 - product.price / product.oldPrice) * 100)
       : 0;
   const isLowStock = product.stock > 0 && product.stock <= 3;
 
   const formattedPrice = formatPrice(product.price);
   const formattedOldPrice =
-    product.oldPrice > product.price ? formatPrice(product.oldPrice) : null;
+    product.oldPrice && product.oldPrice > product.price ? formatPrice(product.oldPrice) : null;
 
   const buyLabel = isMaxReached
     ? `${product.title} - stock máximo alcanzado`
@@ -113,7 +136,7 @@ export default function ProductCard({ product, view = "grid", priority = false }
         className={`${styles["buy-btn"]} ${isInCart ? styles["in-cart"] : ""} ${isOutOfStock ? styles["out-stock"] : ""} ${isMaxReached ? styles["in-cart"] : ""}`}
         onClick={(e) => {
           e.preventDefault();
-          addToCart(product);
+          addToCart(product as unknown as CartItem);
         }}
         disabled={isOutOfStock || isMaxReached}
         aria-label={buyLabel}

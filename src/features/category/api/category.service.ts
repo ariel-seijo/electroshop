@@ -2,6 +2,16 @@ import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { arsToUsd, usdToArs } from "@/lib/utils/currency";
 
+interface CategoryProductsParams {
+    categoryName: string;
+    sort?: string;
+    brand?: string;
+    min?: string | number;
+    max?: string | number;
+    page?: string | number;
+    limit?: number;
+}
+
 export function getCategoryProducts({
     categoryName,
     sort,
@@ -10,13 +20,13 @@ export function getCategoryProducts({
     max,
     page = 1,
     limit = 9,
-}) {
+}: CategoryProductsParams) {
     const pageNum = Math.max(1, Number(page));
     const skip = (pageNum - 1) * limit;
 
     return unstable_cache(
         async () => {
-            const where = {
+            const where: Record<string, unknown> = {
                 category: {
                     name: categoryName,
                 },
@@ -28,18 +38,18 @@ export function getCategoryProducts({
             }
 
             if (min || max) {
-                where.price = {};
+                where.price = {} as Record<string, number>;
 
                 if (min) {
-                    where.price.gte = arsToUsd(Number(min));
+                    (where.price as Record<string, number>).gte = arsToUsd(Number(min));
                 }
 
                 if (max) {
-                    where.price.lte = arsToUsd(Number(max));
+                    (where.price as Record<string, number>).lte = arsToUsd(Number(max));
                 }
             }
 
-            let orderBy = {
+            let orderBy: Record<string, string> = {
                 createdAt: "desc",
             };
 
@@ -59,7 +69,7 @@ export function getCategoryProducts({
                 orderBy = { price: "desc" };
             }
 
-            const rangeWhere = {
+            const rangeWhere: Record<string, unknown> = {
                 category: {
                     name: categoryName,
                 },

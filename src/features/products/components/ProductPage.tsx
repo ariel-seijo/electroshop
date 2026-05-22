@@ -1,8 +1,8 @@
 "use client";
 
-import styles from "../styles/ProductPage.module.css";
 import { useState } from "react";
-import { useCart } from "@/features/cart";
+import { useCart, type CartItem } from "@/features/cart";
+import styles from "../styles/ProductPage.module.css";
 import { formatPrice } from "@/lib/utils/currency";
 import ProductCard from "./ProductCard";
 import ProductGallery from "./ProductGallery";
@@ -20,7 +20,31 @@ import {
   ChevronRight,
 } from "lucide-react";
 
-export default function ProductPage({ product, relatedProducts }) {
+interface ProductPageProduct {
+  id: number;
+  title: string;
+  slug: string;
+  description: string;
+  price: number;
+  oldPrice: number | null;
+  thumbnail: string;
+  stock: number;
+  brand: string;
+  sku: string;
+  rating: number;
+  sold: number;
+  featured: boolean;
+  categoryId: number;
+  category: { id: number; name: string };
+  imagesRel?: { url: string; width: number; height: number; format: string; blurDataURL?: string }[];
+}
+
+interface ProductPageProps {
+  product: ProductPageProduct;
+  relatedProducts: ProductPageProduct[];
+}
+
+export default function ProductPage({ product, relatedProducts }: ProductPageProps) {
   const { addToCart, cart } = useCart();
 
   const [quantity, setQuantity] = useState(1);
@@ -32,16 +56,16 @@ export default function ProductPage({ product, relatedProducts }) {
   const isOutOfStock = product.stock <= 0;
   const hasDiscount = product.oldPrice && product.oldPrice > product.price;
   const discount = hasDiscount
-    ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
+    ? Math.round(((product.oldPrice! - product.price) / product.oldPrice!) * 100)
     : 0;
   const isLowStock = product.stock > 0 && product.stock <= 5;
 
   const formattedPrice = formatPrice(product.price);
-  const formattedOldPrice = hasDiscount ? formatPrice(product.oldPrice) : null;
-  const formattedSavings = hasDiscount ? formatPrice(product.oldPrice - product.price) : null;
+  const formattedOldPrice = hasDiscount ? formatPrice(product.oldPrice!) : null;
+  const formattedSavings = hasDiscount ? formatPrice(product.oldPrice! - product.price) : null;
 
   const handleAdd = () => {
-    addToCart(product, quantity);
+    addToCart(product as unknown as CartItem, quantity);
     setAdded(true);
     setTimeout(() => setAdded(false), 1800);
   };

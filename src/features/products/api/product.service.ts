@@ -1,7 +1,7 @@
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 
-export const getProductBySlug = (slug) =>
+export const getProductBySlug = (slug: string) =>
     unstable_cache(
         async () =>
             prisma.product.findUnique({
@@ -19,7 +19,7 @@ export const getProductBySlug = (slug) =>
         { revalidate: 60, tags: [`product-${slug}`] }
     )();
 
-export const getRelatedProducts = (categoryId, excludeId) =>
+export const getRelatedProducts = (categoryId: number, excludeId: number) =>
     unstable_cache(
         async () =>
             prisma.product.findMany({
@@ -32,6 +32,6 @@ export const getRelatedProducts = (categoryId, excludeId) =>
                 },
                 take: 4,
             }),
-        ["related", categoryId, excludeId],
+        ["related", String(categoryId), String(excludeId)],
         { revalidate: 120 }
     )();

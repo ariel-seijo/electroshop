@@ -1,5 +1,14 @@
-export function buildCategoryUrl(category, current, override) {
-    const final = {
+interface CategoryUrlParams {
+    sort?: string;
+    brand?: string;
+    min?: string;
+    max?: string;
+    view?: string;
+    page?: string;
+}
+
+export function buildCategoryUrl(category: string, current: CategoryUrlParams = {}, override: CategoryUrlParams = {}): string {
+    const final: CategoryUrlParams = {
         sort: "",
         brand: "",
         min: "",

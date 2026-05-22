@@ -1,5 +1,3 @@
-// Public API — products feature
-
 export { default as ProductCard } from "./components/ProductCard";
 export { default as Products } from "./components/Products";
 export { default as FeaturedCarousel } from "./components/FeaturedCarousel";
