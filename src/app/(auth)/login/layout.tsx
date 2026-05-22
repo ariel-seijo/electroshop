@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense, type ReactNode } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import "@/features/auth/styles/auth.css";
 
 export const metadata: Metadata = {
   title: "Iniciar Sesión - Acceso Clientes | ElectroShop",

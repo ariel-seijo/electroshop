@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuthStore } from "@/features/auth";
+import "@/features/auth/styles/auth.css";
 
 export default function AccountPage() {
   const { user, logout } = useAuthStore();

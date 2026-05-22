@@ -1,6 +1,5 @@
 "use client";
 
-import "@/features/auth/styles/auth.css";
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
