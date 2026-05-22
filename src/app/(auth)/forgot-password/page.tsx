@@ -1,7 +1,7 @@
 "use client";
 
 import styles from "./ForgotPassword.module.css";
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { Mail, ArrowLeft } from "lucide-react";
 import { useToastStore } from "@/features/toast";
@@ -13,7 +13,7 @@ export default function ForgotPasswordPage() {
   const [error, setError] = useState("");
   const [sent, setSent] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
 

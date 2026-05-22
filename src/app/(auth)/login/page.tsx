@@ -1,7 +1,7 @@
 "use client";
 
 import "@/features/auth/styles/auth.css";
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useAuthStore } from "@/features/auth";
@@ -17,7 +17,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
       const user = await login(email, password);

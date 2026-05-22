@@ -1,12 +1,13 @@
-import { Suspense } from "react";
+import type { Metadata } from "next";
+import { Suspense, type ReactNode } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Iniciar Sesión - Acceso Clientes | ElectroShop",
 };
 
-export default function LoginLayout({ children }) {
+export default function LoginLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <Navbar />

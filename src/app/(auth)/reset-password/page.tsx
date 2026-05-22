@@ -1,7 +1,7 @@
 "use client";
 
 import styles from "./ResetPassword.module.css";
-import { useState, Suspense } from "react";
+import { useState, Suspense, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { KeyRound, Eye, EyeOff, Check, ArrowLeft } from "lucide-react";
@@ -36,7 +36,7 @@ function ResetPasswordForm() {
     return { level: 3, label: "Fuerte", color: "#22c55e" };
   })();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
 

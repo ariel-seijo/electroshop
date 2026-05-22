@@ -1,12 +1,13 @@
-import { Suspense } from "react";
+import type { Metadata } from "next";
+import { Suspense, type ReactNode } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-export const metadata = {
-  title: "Recuperar Contraseña - Acceso Clientes | ElectroShop",
+export const metadata: Metadata = {
+  title: "Crear Cuenta - Acceso Clientes | ElectroShop",
 };
 
-export default function ForgotPasswordLayout({ children }) {
+export default function RegisterLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <Navbar />

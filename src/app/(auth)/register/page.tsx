@@ -1,7 +1,7 @@
 "use client";
 
 import "@/features/auth/styles/auth.css";
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useAuthStore } from "@/features/auth";
@@ -36,7 +36,7 @@ export default function RegisterPage() {
     return { level: 3, label: "Fuerte", color: "#22c55e" };
   })();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (passwordsMismatch) return;
     try {
