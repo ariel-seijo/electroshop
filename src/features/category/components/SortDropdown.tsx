@@ -1,17 +1,17 @@
 "use client";
 
-import Link from "next/link";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import styles from "./SortDropdown.module.css";
-import { cn } from "@/lib/utils/cn";
 import { buildCategoryUrl } from "../utils/buildCategoryUrl";
+import { cn } from "@/lib/utils/cn";
+import styles from "./SortDropdown.module.css";
 
-const SORT_OPTIONS = [
-  { value: "recent", label: "Más recientes" },
-  { value: "asc", label: "Precio: menor a mayor" },
-  { value: "desc", label: "Precio: mayor a menor" },
-  { value: "popular", label: "Más vendidos" },
-  { value: "rating", label: "Mejor rating" },
+const OPTIONS = [
+  { label: "Más reciente", value: "recent" },
+  { label: "Más vendido", value: "popular" },
+  { label: "Mejor valorado", value: "rating" },
+  { label: "Menor precio", value: "asc" },
+  { label: "Mayor precio", value: "desc" },
 ] as const;
 
 interface SortDropdownProps {
@@ -24,20 +24,72 @@ interface SortDropdownProps {
 }
 
 export default function SortDropdown({ name, sort, brand, min, max, view = "grid" }: SortDropdownProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const val = e.target.value;
-    router.push(buildCategoryUrl(name, { sort, brand, min, max, view }, { sort: val, page: "1" }));
-  };
+  const current = { sort, brand, min, max, view };
+
+  const currentLabel =
+    OPTIONS.find((item) => item.value === sort)?.label || "Más reciente";
+
+  const close = useCallback(() => setIsOpen(false), []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        close();
+      }
+    }
+
+    function handleEscape(e: KeyboardEvent) {
+      if (e.key === "Escape") close();
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [isOpen, close]);
+
+  function handleSelect(value: string) {
+    close();
+    router.push(buildCategoryUrl(name, current, { sort: value }));
+  }
 
   return (
-    <select value={sort || "recent"} onChange={handleChange} className={styles.select}>
-      {SORT_OPTIONS.map((opt) => (
-        <option key={opt.value} value={opt.value}>
-          {opt.label}
-        </option>
-      ))}
-    </select>
+    <div className={styles.sortDropdown} ref={dropdownRef}>
+      <span className={styles.sortLabel}>Ordenar por:</span>
+
+      <button
+        className={cn(styles.trigger, isOpen && styles.triggerActive)}
+        onClick={() => setIsOpen((prev) => !prev)}
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+      >
+        {currentLabel}
+        <span className={cn(styles.arrow, isOpen && styles.arrowOpen)} aria-hidden="true">▾</span>
+      </button>
+
+      {isOpen && (
+        <ul className={styles.menu} role="listbox">
+          {OPTIONS.map((item) => (
+            <li key={item.value} role="option" aria-selected={item.value === sort}>
+              <button
+                className={cn(styles.option, item.value === sort && styles.optionActive)}
+                onClick={() => handleSelect(item.value)}
+              >
+                {item.label}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }

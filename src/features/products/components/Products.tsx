@@ -24,13 +24,15 @@ interface ProductsProps {
 }
 
 export default function Products({ products, view = "grid" }: ProductsProps) {
+  const isList = view === "list";
+
   return (
-    <div className={`${styles.products} ${view === "list" ? styles.list : ""}`}>
+    <main className={`${styles.products} ${isList ? styles.list : ""}`}>
       <ul>
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} view={view} />
+        {products.map((product, index) => (
+          <ProductCard key={product.id} product={product} view={view} priority={index < 2} />
         ))}
       </ul>
-    </div>
+    </main>
   );
 }
