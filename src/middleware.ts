@@ -1,12 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getIronSession } from "iron-session";
-import { sessionOptions } from "@/lib/session";
-
-interface SessionData {
-  userId: string;
-  email: string;
-  role: string;
-}
+import { sessionOptions, SessionData } from "@/lib/session";
 
 export async function middleware(request: NextRequest) {
   const session = await getIronSession<SessionData>(request, new NextResponse(), sessionOptions);

@@ -1,3 +1,5 @@
+import { SessionOptions } from "iron-session";
+
 const SESSION_SECRET = process.env.SESSION_SECRET;
 
 if (!SESSION_SECRET) {
@@ -7,20 +9,19 @@ if (!SESSION_SECRET) {
   );
 }
 
-export const sessionOptions = {
+export interface SessionData {
+  userId: string;
+  email: string;
+  role: string;
+}
+
+export const sessionOptions: SessionOptions = {
   password: SESSION_SECRET,
   cookieName: "ecommerce-session",
   cookieOptions: {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: "lax" as const,
     maxAge: 60 * 60 * 24 * 7,
   },
 };
-
-/**
- * @typedef {Object} Session
- * @property {string} userId
- * @property {string} email
- * @property {string} role
- */

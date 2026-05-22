@@ -1,4 +1,4 @@
-import { v2 as cloudinary } from "cloudinary";
+import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 
 const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 const API_KEY = process.env.CLOUDINARY_API_KEY;
@@ -20,14 +20,14 @@ cloudinary.config({
 
 export { cloudinary };
 
-/**
- * Generates a signed upload signature for the Cloudinary Upload Widget.
- * The API_SECRET is never exposed to the client.
- *
- * @param {Record<string, string | number>} [params]
- * @returns {{ timestamp: number, signature: string, cloudName: string, apiKey: string }}
- */
-export function generateSignature(params = {}) {
+interface GenerateSignatureResult {
+  timestamp: number;
+  signature: string;
+  cloudName: string;
+  apiKey: string;
+}
+
+export function generateSignature(params: Record<string, string | number> = {}): GenerateSignatureResult {
   const paramsToSign = { ...params };
 
   if (!paramsToSign.timestamp) {
@@ -36,30 +36,18 @@ export function generateSignature(params = {}) {
 
   const signature = cloudinary.utils.api_sign_request(
     paramsToSign,
-    API_SECRET
+    API_SECRET as string
   );
 
   return {
-    timestamp: paramsToSign.timestamp,
+    timestamp: paramsToSign.timestamp as number,
     signature,
-    cloudName: CLOUD_NAME,
-    apiKey: API_KEY,
+    cloudName: CLOUD_NAME as string,
+    apiKey: API_KEY as string,
   };
 }
 
-/**
- * Downloads a tiny blurred placeholder of a Cloudinary asset and converts
- * it to a Base64 data URI. Uses URL-level transformations — no external
- * image processing libraries required.
- *
- * Transformation applied: w_10 (10px wide), q_10 (quality 10%), f_webp.
- * The result is a ~100-300 byte Base64 string suitable for next/image
- * placeholder="blur".
- *
- * @param {string} url - Cloudinary secure_url
- * @returns {Promise<string>} Base64 data URI (e.g. data:image/webp;base64,...)
- */
-export async function generateBlurDataURL(url) {
+export async function generateBlurDataURL(url: string): Promise<string> {
   const tinyUrl = url.replace(
     /\/image\/upload(\/[^/]*)*\/v/,
     "/image/upload/w_10,q_10,f_webp/v"
@@ -81,13 +69,7 @@ export async function generateBlurDataURL(url) {
   return `data:${contentType};base64,${buffer.toString("base64")}`;
 }
 
-/**
- * Deletes an asset from Cloudinary by its publicId.
- *
- * @param {string} publicId - Cloudinary public_id
- * @returns {Promise<{ result: string }>}
- */
-export async function deleteAsset(publicId) {
+export async function deleteAsset(publicId: string): Promise<UploadApiResponse> {
   const result = await cloudinary.uploader.destroy(publicId);
   return result;
 }

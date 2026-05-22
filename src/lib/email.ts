@@ -10,13 +10,7 @@ const transporter = createTransport({
   },
 });
 
-/**
- * Sends a password reset email using nodemailer.
- * @param {string} to - Recipient email address
- * @param {string} token - The reset token
- * @param {string} origin - The origin URL (e.g. https://example.com)
- */
-export async function sendResetEmail(to, token, origin) {
+export async function sendResetEmail(to: string, token: string, origin: string): Promise<void> {
   const resetLink = `${origin}/reset-password?token=${token}`;
 
   const mailOptions = {
