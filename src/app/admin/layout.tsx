@@ -1,4 +1,5 @@
-import { Suspense } from "react";
+import type { Metadata } from "next";
+import { Suspense, type ReactNode } from "react";
 import Sidebar from "@/components/admin/Sidebar";
 import AdminHeader from "@/features/admin/components/AdminHeader";
 import AdminMobileMenuButton from "@/features/admin/components/AdminMobileMenuButton";
@@ -11,7 +12,7 @@ import "@/features/admin/styles/forms.css";
 import "@/features/admin/styles/table.css";
 import "@/features/admin/styles/print-order.css";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Panel de Administración | ElectroShop",
   description: "Panel de administración para gestionar tu tienda online",
 };
@@ -26,7 +27,7 @@ function HeaderSkeleton() {
   );
 }
 
-export default function AdminLayout({ children }) {
+export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <SidebarProvider>
       <div className={layoutStyles.layout} data-admin-root="true">

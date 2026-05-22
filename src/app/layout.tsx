@@ -1,7 +1,8 @@
+import type { Metadata } from "next";
 import "./globals.css";
-
 import localFont from "next/font/local";
 import { Inter } from "next/font/google";
+import { type ReactNode } from "react";
 
 const fuenteGamer = localFont({
   src: "./fonts/cosmic-lager-regular.otf",
@@ -20,13 +21,13 @@ import { AuthProvider } from "@/features/auth";
 import { ToastContainer } from "@/features/toast";
 import { CartProvider } from "@/features/cart";
 
-export const metadata = {
+export const metadata: Metadata = {
   icons: {
     icon: "/favicon.png",
   },
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="es" data-scroll-behavior="smooth">
       <body className={`${fuenteGamer.variable} ${inter.variable}`}>

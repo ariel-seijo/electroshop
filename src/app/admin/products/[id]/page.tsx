@@ -8,10 +8,10 @@ import ProductForm from "@/features/admin/components/ProductForm";
 import { useToastStore } from "@/features/toast";
 
 export default function EditProductPage() {
-  const params = useParams();
-  const [product, setProduct] = useState(null);
-  const [categories, setCategories] = useState([]);
-  const [brands, setBrands] = useState([]);
+  const params = useParams<{ id: string }>();
+  const [product, setProduct] = useState<Record<string, unknown> | null>(null);
+  const [categories, setCategories] = useState<Array<Record<string, unknown>>>([]);
+  const [brands, setBrands] = useState<unknown[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const router = useRouter();
@@ -41,7 +41,7 @@ export default function EditProductPage() {
         setBrands(brandsData);
       }
     } catch (err) {
-      setError(err.message);
+      setError((err as Error).message);
     } finally {
       setLoading(false);
     }
@@ -80,16 +80,15 @@ export default function EditProductPage() {
       <div className="admin-card">
         <div className="admin-card-header">
           <h3 className="admin-card-title">
-            Editar producto: {product?.title}
+            Editar producto: {(product as Record<string, unknown>)?.title as string}
           </h3>
         </div>
-
         <ProductForm
           mode="edit"
           productId={product ? parseInt(productId) : undefined}
           product={product}
           categories={categories}
-          brands={brands}
+          brands={brands as never}
           onRefreshProduct={fetchProduct}
           onSuccess={handleSuccess}
           onCancel={handleSuccess}

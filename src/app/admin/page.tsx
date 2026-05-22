@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { LayoutDashboard } from "lucide-react";
 import { getDashboardData } from "@/features/admin/services/dashboard.service";
@@ -9,7 +10,7 @@ import RecentActivity from "@/features/admin/components/dashboard/RecentActivity
 import LowStockAlert from "@/features/admin/components/dashboard/LowStockAlert";
 import DashboardSkeleton from "@/features/admin/components/dashboard/DashboardSkeleton";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Panel de Control | ElectroShop Admin",
   description: "Centro de control con métricas, tendencias y actividad reciente",
 };
@@ -26,19 +27,9 @@ async function DashboardContent() {
   return (
     <>
       <StatsCards data={data} formattedRevenue={formattedRevenue} />
-
-      <LowStockAlert
-        lowStockCount={data.lowStockCount}
-        lowStockProducts={data.lowStockProducts}
-      />
-
+      <LowStockAlert lowStockCount={data.lowStockCount} lowStockProducts={data.lowStockProducts} />
       <RevenueChart data={data.timeline} totalRevenue={data.totalRevenue} exchangeRate={exchangeRate} />
-
-      <RecentActivity
-        latestOrders={data.latestOrders}
-        topProducts={data.topProducts}
-        exchangeRate={exchangeRate}
-      />
+      <RecentActivity latestOrders={data.latestOrders} topProducts={data.topProducts} exchangeRate={exchangeRate} />
     </>
   );
 }
@@ -50,7 +41,6 @@ export default function AdminDashboardPage() {
         <LayoutDashboard size={20} color="var(--admin-primary-glow)" aria-hidden="true" />
         Panel de Control
       </h2>
-
       <Suspense fallback={<DashboardSkeleton />}>
         <DashboardContent />
       </Suspense>

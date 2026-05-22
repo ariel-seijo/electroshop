@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { AlertCircle } from "lucide-react";
 import { getOrdersAction, getDashboardMetricsAction } from "@/features/orders/actions/orderActions";
@@ -6,12 +7,12 @@ import OrderFilters from "@/features/orders/components/OrderFilters";
 import OrderTable from "@/features/orders/components/OrderTable";
 import OrderTableSkeleton from "@/features/orders/components/OrderTableSkeleton";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Pedidos | Panel de Administración",
   description: "Gestión de pedidos — ElectroShop Admin",
 };
 
-async function OrdersContent({ searchParams }) {
+async function OrdersContent({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
   const params = await searchParams;
   const [ordersResult, metricsResult] = await Promise.all([
     getOrdersAction({
@@ -33,7 +34,7 @@ async function OrdersContent({ searchParams }) {
     );
   }
 
-  const { orders, total, page, totalPages } = ordersResult;
+  const { orders, total, page, totalPages } = ordersResult as { orders: unknown[]; total: number; page: number; totalPages: number };
 
   return (
     <>
@@ -49,7 +50,7 @@ async function OrdersContent({ searchParams }) {
   );
 }
 
-export default function AdminOrdersPage({ searchParams }) {
+export default function AdminOrdersPage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
   return (
     <div>
       <h2 className="visually-hidden">Gestión de pedidos</h2>
