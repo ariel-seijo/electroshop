@@ -5,7 +5,29 @@ import { formatArs } from "@/lib/utils/currency";
 import Link from "next/link";
 import styles from "./RecentActivity.module.css";
 
-const STATUS_MAP = {
+interface RecentOrder {
+  id: string;
+  orderNumber: string;
+  status: string;
+  total: number;
+  user?: { name?: string | null; email?: string } | null;
+}
+
+interface TopProduct {
+  id: number;
+  title: string;
+  brand: string;
+  sold: number;
+  stock: number;
+}
+
+interface RecentActivityProps {
+  latestOrders?: RecentOrder[];
+  topProducts?: TopProduct[];
+  exchangeRate?: number;
+}
+
+const STATUS_MAP: Record<string, { class: string; label: string }> = {
   PENDING: { class: "badge-warning", label: "Pendiente" },
   PAID: { class: "badge-info", label: "Pagado" },
   SHIPPED: { class: "badge-info", label: "Enviado" },
@@ -13,7 +35,7 @@ const STATUS_MAP = {
   CANCELLED: { class: "badge-danger", label: "Cancelado" },
 };
 
-export default function RecentActivity({ latestOrders, topProducts, exchangeRate = 1400 }) {
+export default function RecentActivity({ latestOrders, topProducts, exchangeRate = 1400 }: RecentActivityProps) {
   return (
     <div className={styles.grid}>
       <div className={styles.column}>
@@ -106,7 +128,7 @@ export default function RecentActivity({ latestOrders, topProducts, exchangeRate
                     <div className={styles.progressWrapper}>
                       <div
                         className={styles.progressBar}
-                        style={{ width: `${stockPct}%` }}
+                        style={{ width: `${stockPct}%` } as React.CSSProperties}
                         data-stock-green={isGreen ? "true" : undefined}
                         data-stock-amber={isAmber ? "true" : undefined}
                         data-stock-red={isRed ? "true" : undefined}

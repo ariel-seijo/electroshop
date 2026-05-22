@@ -3,7 +3,11 @@
 import Skeleton from "@/components/ui/Skeleton";
 import styles from "./OrderTableSkeleton.module.css";
 
-export default function OrderTableSkeleton({ rows = 8 }) {
+interface OrderTableSkeletonProps {
+  rows?: number;
+}
+
+export default function OrderTableSkeleton({ rows = 8 }: OrderTableSkeletonProps) {
   return (
     <div className={styles.wrapper} role="status" aria-label="Cargando pedidos">
       {/* Filter bar (standalone) */}

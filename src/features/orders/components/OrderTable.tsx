@@ -12,7 +12,22 @@ import {
 import { formatPrice } from "@/lib/utils/currency";
 import styles from "./OrderTable.module.css";
 
-const STATUS_LABELS = {
+interface OrderTableProps {
+  orders: Array<{
+    id: string;
+    orderNumber: string;
+    status: string;
+    total: number;
+    createdAt: string | Date;
+    user?: { name?: string | null; email?: string | null } | null;
+    _count?: { items?: number };
+  }>;
+  total: number;
+  page: number;
+  totalPages: number;
+}
+
+const STATUS_LABELS: Record<string, string> = {
   PENDING: "Pendiente",
   PAID: "Pagado",
   SHIPPED: "Enviado",
@@ -20,7 +35,7 @@ const STATUS_LABELS = {
   DELIVERED: "Entregado",
 };
 
-function getStatusClass(status) {
+function getStatusClass(status: string): string {
   switch (status) {
     case "PENDING": return "badge-warning";
     case "PAID": return "badge-info";
@@ -31,7 +46,7 @@ function getStatusClass(status) {
   }
 }
 
-function formatDate(dateStr) {
+function formatDate(dateStr: string | Date): string {
   return new Date(dateStr).toLocaleDateString("es-AR", {
     year: "numeric",
     month: "short",
@@ -39,12 +54,17 @@ function formatDate(dateStr) {
   });
 }
 
-function Pagination({ page, totalPages }) {
+interface PaginationProps {
+  page: number;
+  totalPages: number;
+}
+
+function Pagination({ page, totalPages }: PaginationProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const goToPage = useCallback(
-    (newPage) => {
+    (newPage: number) => {
       const params = new URLSearchParams(searchParams.toString());
       if (newPage <= 1) {
         params.delete("page");
@@ -114,7 +134,7 @@ function Pagination({ page, totalPages }) {
   );
 }
 
-export default function OrderTable({ orders, total, page, totalPages }) {
+export default function OrderTable({ orders, total, page, totalPages }: OrderTableProps) {
   if (!orders || orders.length === 0) {
     return (
       <div className={styles.empty} role="status">

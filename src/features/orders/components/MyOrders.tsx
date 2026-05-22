@@ -2,11 +2,25 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, ShoppingBag, Loader2, AlertCircle } from "lucide-react";
+import { ArrowLeft, ShoppingBag, AlertCircle } from "lucide-react";
 import { formatPrice, formatArs, usdToArs } from "@/lib/utils/currency";
 import styles from "./MyOrders.module.css";
 
-const STATUS_LABELS = {
+interface MyOrdersProps {
+  embedded?: boolean;
+}
+
+interface MyOrder {
+  id: string;
+  orderNumber: string;
+  status: string;
+  subtotal: number;
+  shippingCost: number | null;
+  createdAt: string;
+  items: Array<{ quantity: number }>;
+}
+
+const STATUS_LABELS: Record<string, string> = {
   PENDING: "Pendiente",
   PAID: "Pagado",
   SHIPPED: "Enviado",
@@ -14,7 +28,7 @@ const STATUS_LABELS = {
   CANCELLED: "Cancelado",
 };
 
-const STATUS_CLASSES = {
+const STATUS_CLASSES: Record<string, string> = {
   PENDING: styles.statusPending,
   PAID: styles.statusPaid,
   SHIPPED: styles.statusShipped,
@@ -22,7 +36,7 @@ const STATUS_CLASSES = {
   CANCELLED: styles.statusCancelled,
 };
 
-function formatDate(dateStr) {
+function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString("es-AR", {
     year: "numeric",
     month: "long",
@@ -30,10 +44,10 @@ function formatDate(dateStr) {
   });
 }
 
-export default function MyOrders({ embedded = false }) {
-  const [orders, setOrders] = useState([]);
+export default function MyOrders({ embedded = false }: MyOrdersProps) {
+  const [orders, setOrders] = useState<MyOrder[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchOrders() {
@@ -43,7 +57,7 @@ export default function MyOrders({ embedded = false }) {
         const data = await res.json();
         setOrders(data.orders);
       } catch (err) {
-        setError(err.message);
+        setError(err instanceof Error ? err.message : "Error desconocido");
       } finally {
         setLoading(false);
       }

@@ -1,8 +1,25 @@
-import { DollarSign, Clock, Percent, TrendingUp } from "lucide-react";
+import { DollarSign, Clock, Percent, TrendingUp, type LucideIcon } from "lucide-react";
 import { formatPrice } from "@/lib/utils/currency";
 import styles from "./OrderMetrics.module.css";
 
-const METRICS = [
+interface OrderMetricsProps {
+  metrics?: {
+    totalRevenue?: number;
+    pendingCount?: number;
+    cancellationRate?: number;
+    averageTicket?: number;
+  };
+}
+
+interface MetricConfig {
+  key: keyof NonNullable<OrderMetricsProps["metrics"]>;
+  label: string;
+  icon: LucideIcon;
+  color: string;
+  format: (v: number) => string;
+}
+
+const METRICS: MetricConfig[] = [
   {
     key: "totalRevenue",
     label: "Ingresos Totales",
@@ -33,7 +50,7 @@ const METRICS = [
   },
 ];
 
-export default function OrderMetrics({ metrics }) {
+export default function OrderMetrics({ metrics }: OrderMetricsProps) {
   return (
     <div className={styles.grid}>
       {METRICS.map((m) => {

@@ -3,9 +3,13 @@
 import { useCallback, useState } from "react";
 import { Download, Loader2 } from "lucide-react";
 import { pdf } from "@react-pdf/renderer";
-import ReceiptDocument from "./ReceiptDocument";
+import ReceiptDocument, { type ReceiptOrder } from "./ReceiptDocument";
 
-export default function ReceiptDownload({ order }) {
+interface ReceiptDownloadProps {
+  order: ReceiptOrder;
+}
+
+export default function ReceiptDownload({ order }: ReceiptDownloadProps) {
   const [generating, setGenerating] = useState(false);
 
   const handleDownload = useCallback(async () => {
@@ -21,7 +25,7 @@ export default function ReceiptDownload({ order }) {
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
-    } catch (error) {
+    } catch {
       // silently fail, user can retry
     } finally {
       setGenerating(false);

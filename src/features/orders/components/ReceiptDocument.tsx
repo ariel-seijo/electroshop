@@ -3,6 +3,32 @@
 import { Document, Page, Text, View, StyleSheet, Font } from "@react-pdf/renderer";
 import { formatPrice, formatArs, usdToArs } from "@/lib/utils/currency";
 
+export interface ReceiptOrder {
+  orderNumber: string;
+  createdAt: string;
+  subtotal: number;
+  shippingCost: number;
+  paymentMethod: string;
+  cardDetails?: { last4?: string } | null;
+  shippingAddress?: {
+    fullName?: string;
+    email?: string;
+    phone?: string;
+    address?: string;
+    city?: string;
+    department?: string;
+    zip?: string;
+    notes?: string;
+  };
+  items: Array<{
+    productTitle: string;
+    productSku: string;
+    quantity: number;
+    unitPrice: number;
+    totalPrice: number;
+  }>;
+}
+
 Font.register({
   family: "Helvetica",
   fonts: [
@@ -190,13 +216,13 @@ const styles = StyleSheet.create({
   },
 });
 
-const PAYMENT_LABELS = {
+const PAYMENT_LABELS: Record<string, string> = {
   card: "Tarjeta de Crédito/Débito",
   transfer: "Transferencia Bancaria",
   cash: "Efectivo (al retirar)",
 };
 
-function formatDate(dateStr) {
+function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString("es-AR", {
     year: "numeric",
     month: "long",
@@ -204,19 +230,23 @@ function formatDate(dateStr) {
   });
 }
 
-function formatTime(dateStr) {
+function formatTime(dateStr: string): string {
   return new Date(dateStr).toLocaleTimeString("es-AR", {
     hour: "2-digit",
     minute: "2-digit",
   });
 }
 
-function formatSku(sku) {
+function formatSku(sku: string): string {
   if (!sku) return "";
   return sku.length > 15 ? sku.slice(0, 15) + "..." : sku;
 }
 
-export default function ReceiptDocument({ order }) {
+interface ReceiptDocumentProps {
+  order: ReceiptOrder;
+}
+
+export default function ReceiptDocument({ order }: ReceiptDocumentProps) {
   const shipping = order.shippingAddress || {};
 
   return (

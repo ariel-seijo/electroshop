@@ -10,7 +10,7 @@ export default function DashboardSkeleton() {
     <div>
       <div className={styles.grid}>
         {[...Array(4)].map((_, i) => (
-          <div key={i} className={styles.card} style={{ "--accent-color": "#24abf3" }}>
+          <div key={i} className={styles.card} style={{ "--accent-color": "#24abf3" } as React.CSSProperties}>
             <div className={styles.cardHeader}>
               <Skeleton width="50%" height={14} />
               <Skeleton width={20} height={20} variant="circle" />

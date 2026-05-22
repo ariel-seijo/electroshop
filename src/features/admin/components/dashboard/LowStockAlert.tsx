@@ -4,7 +4,18 @@ import { AlertTriangle, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import styles from "./LowStockAlert.module.css";
 
-export default function LowStockAlert({ lowStockCount, lowStockProducts }) {
+interface LowStockProduct {
+  id: number;
+  title: string;
+  stock: number;
+}
+
+interface LowStockAlertProps {
+  lowStockCount?: number;
+  lowStockProducts?: LowStockProduct[];
+}
+
+export default function LowStockAlert({ lowStockCount, lowStockProducts }: LowStockAlertProps) {
   if (!lowStockCount || lowStockCount === 0) {
     return null;
   }

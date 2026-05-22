@@ -25,16 +25,25 @@ async function OrdersContent({ searchParams }: { searchParams: Promise<Record<st
     getDashboardMetricsAction(),
   ]);
 
-  if (ordersResult.error || metricsResult.error) {
+  if ("error" in metricsResult) {
     return (
       <div className="error-message" role="alert">
         <AlertCircle size={18} aria-hidden="true" />
-        {ordersResult.error || metricsResult.error}
+        {metricsResult.error}
       </div>
     );
   }
 
-  const { orders, total, page, totalPages } = ordersResult as { orders: unknown[]; total: number; page: number; totalPages: number };
+  if ("error" in ordersResult) {
+    return (
+      <div className="error-message" role="alert">
+        <AlertCircle size={18} aria-hidden="true" />
+        {ordersResult.error}
+      </div>
+    );
+  }
+
+  const { orders, total, page, totalPages } = ordersResult;
 
   return (
     <>

@@ -3,7 +3,18 @@
 import { formatArs } from "@/lib/utils/currency";
 import styles from "./RevenueChart.module.css";
 
-export default function RevenueChart({ data, totalRevenue, exchangeRate = 1400 }) {
+interface RevenueDataPoint {
+  date: string;
+  revenue: number;
+}
+
+interface RevenueChartProps {
+  data?: RevenueDataPoint[];
+  totalRevenue?: number;
+  exchangeRate?: number;
+}
+
+export default function RevenueChart({ data, totalRevenue, exchangeRate = 1400 }: RevenueChartProps) {
   if (!data || data.length === 0) {
     return (
       <div className={styles.wrapper}>
@@ -28,11 +39,11 @@ export default function RevenueChart({ data, totalRevenue, exchangeRate = 1400 }
   const maxRevenue = Math.max(...values);
   const computedMax = maxRevenue > 0 ? maxRevenue : 1000;
 
-  function xPos(i) {
-    return padding.left + (i / (data.length - 1)) * chartWidth;
+  function xPos(i: number) {
+    return padding.left + (i / (data!.length - 1)) * chartWidth;
   }
 
-  function yPos(value) {
+  function yPos(value: number) {
     return padding.top + chartHeight - (value / computedMax) * chartHeight;
   }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search, X, Filter, Check } from "lucide-react";
 import styles from "./OrderFilters.module.css";
@@ -17,7 +17,7 @@ const STATUS_OPTIONS = [
 export default function OrderFilters() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const searchRef = useRef(null);
+  const searchRef = useRef<HTMLInputElement>(null);
 
   const status = searchParams.get("status") || "";
   const search = searchParams.get("search") || "";
@@ -36,7 +36,7 @@ export default function OrderFilters() {
   const hasFilters = status || search || dateFrom || dateTo;
 
   const pushParams = useCallback(
-    (updates) => {
+    (updates: Record<string, string>) => {
       const params = new URLSearchParams(searchParams.toString());
       Object.entries(updates).forEach(([key, value]) => {
         if (value) {
@@ -51,7 +51,7 @@ export default function OrderFilters() {
     [router, searchParams]
   );
 
-  function handleSearch(e) {
+  function handleSearch(e: FormEvent) {
     e.preventDefault();
     const value = searchRef.current?.value?.trim() || "";
     pushParams({ search: value || "" });

@@ -1,14 +1,41 @@
 "use client";
 
-import { DollarSign, ShoppingCart, Users, AlertTriangle } from "lucide-react";
+import { DollarSign, ShoppingCart, Users, AlertTriangle, type LucideIcon } from "lucide-react";
 import styles from "./StatsCards.module.css";
 
-const STATS_CONFIG = [
+interface DashboardData {
+  totalRevenue: number;
+  totalOrders: number;
+  totalUsers: number;
+  lowStockCount: number;
+  revenueGrowth: number;
+  ordersGrowth: number;
+  usersGrowth: number;
+}
+
+interface StatConfig {
+  key: keyof DashboardData;
+  label: string;
+  icon: LucideIcon;
+  color: string;
+  format: (v: number) => string;
+  trendKey: keyof DashboardData | null;
+  isRevenue?: boolean;
+  isLowStock?: boolean;
+}
+
+interface StatsCardsProps {
+  data?: DashboardData;
+  formattedRevenue?: string;
+}
+
+const STATS_CONFIG: StatConfig[] = [
   {
     key: "totalRevenue",
     label: "Ingresos Totales",
     icon: DollarSign,
     color: "#24abf3",
+    format: (v) => String(v),
     trendKey: "revenueGrowth",
     isRevenue: true,
   },
@@ -39,19 +66,19 @@ const STATS_CONFIG = [
   },
 ];
 
-export default function StatsCards({ data, formattedRevenue }) {
+export default function StatsCards({ data, formattedRevenue }: StatsCardsProps) {
   return (
     <div className={styles.grid}>
       {STATS_CONFIG.map((stat) => {
         const Icon = stat.icon;
         const value = data?.[stat.key] ?? 0;
-        const trend = stat.trendKey ? data?.[stat.trendKey] : null;
+        const trend = stat.trendKey ? data?.[stat.trendKey] ?? null : null;
         const isLowStock = stat.isLowStock && value > 0;
         const color = isLowStock ? "#ef4444" : stat.color;
         const formattedValue = stat.isRevenue ? formattedRevenue : stat.format(value);
 
-        const isPositiveTrend = trend > 0;
-        const isNegativeTrend = trend < 0;
+        const isPositiveTrend = typeof trend === "number" && trend > 0;
+        const isNegativeTrend = typeof trend === "number" && trend < 0;
 
         const isMono = stat.key === "totalRevenue";
 
@@ -59,7 +86,7 @@ export default function StatsCards({ data, formattedRevenue }) {
           <article
             key={stat.key}
             className={styles.card}
-            style={{ "--accent-color": color }}
+            style={{ "--accent-color": color } as React.CSSProperties}
           >
             <div className={styles.cardHeader}>
               <span className={styles.label}>{stat.label}</span>
@@ -72,11 +99,11 @@ export default function StatsCards({ data, formattedRevenue }) {
             >
               {formattedValue}
             </p>
-            {trend !== null && (
+            {typeof trend === "number" && (
               <div
                 className={styles.trend}
-                data-positive={isPositiveTrend}
-                data-negative={isNegativeTrend}
+                data-positive={isPositiveTrend || undefined}
+                data-negative={isNegativeTrend || undefined}
               >
                 <span>{isPositiveTrend ? "▲" : isNegativeTrend ? "▼" : "–"}</span>
                 <span className={styles.trendValue}>{Math.abs(trend)}%</span>

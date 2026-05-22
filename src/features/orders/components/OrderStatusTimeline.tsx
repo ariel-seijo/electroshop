@@ -7,14 +7,22 @@ import { useToastStore } from "@/features/toast";
 import ConfirmModal from "@/features/admin/components/ConfirmModal";
 import styles from "./OrderStatusTimeline.module.css";
 
-const STATUSES = [
+type StatusKey = "PENDING" | "PAID" | "SHIPPED" | "DELIVERED" | "CANCELLED";
+
+interface StatusOption {
+  key: StatusKey;
+  label: string;
+  icon: null;
+}
+
+const STATUSES: StatusOption[] = [
   { key: "PENDING", label: "Pendiente", icon: null },
   { key: "PAID", label: "Pagado", icon: null },
   { key: "SHIPPED", label: "Enviado", icon: null },
   { key: "DELIVERED", label: "Entregado", icon: null },
 ];
 
-const STATUS_TRANSITIONS = {
+const STATUS_TRANSITIONS: Record<StatusKey, StatusKey[]> = {
   PENDING: ["PAID", "CANCELLED"],
   PAID: ["SHIPPED", "CANCELLED"],
   SHIPPED: ["DELIVERED", "CANCELLED"],
@@ -22,29 +30,37 @@ const STATUS_TRANSITIONS = {
   CANCELLED: [],
 };
 
-const TRANSITION_LABELS = {
+const TRANSITION_LABELS: Record<string, string> = {
   PAID: "Marcar como Pagado",
   SHIPPED: "Marcar como Enviado",
   DELIVERED: "Marcar como Entregado",
   CANCELLED: "Cancelar Pedido",
 };
 
-function getStatusIndex(status) {
+function getStatusIndex(status: string): number {
   return STATUSES.findIndex((s) => s.key === status);
 }
 
-export default function OrderStatusTimeline({ order }) {
+interface OrderStatusTimelineProps {
+  order: {
+    id: string;
+    orderNumber: string;
+    status: string;
+  };
+}
+
+export default function OrderStatusTimeline({ order }: OrderStatusTimelineProps) {
   const toast = useToastStore((s) => s.toast);
-  const [localStatus, setLocalStatus] = useState(order.status);
+  const [localStatus, setLocalStatus] = useState<string>(order.status);
   const [updating, setUpdating] = useState(false);
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
-  const [transitioningTo, setTransitioningTo] = useState(null);
+  const [transitioningTo, setTransitioningTo] = useState<string | null>(null);
 
   const status = localStatus;
   const currentIdx = getStatusIndex(status);
   const isCancelled = status === "CANCELLED";
 
-  const handleTransition = async (newStatus) => {
+  const handleTransition = async (newStatus: string) => {
     if (updating) return;
 
     if (newStatus === "CANCELLED") {
@@ -58,7 +74,7 @@ export default function OrderStatusTimeline({ order }) {
     setUpdating(false);
     setTransitioningTo(null);
 
-    if (result.error) {
+    if ("error" in result && result.error) {
       toast(result.error, "error");
     } else {
       setLocalStatus(newStatus);
@@ -74,7 +90,7 @@ export default function OrderStatusTimeline({ order }) {
     setUpdating(false);
     setTransitioningTo(null);
 
-    if (result.error) {
+    if ("error" in result && result.error) {
       toast(result.error, "error");
     } else {
       setLocalStatus("CANCELLED");
@@ -82,9 +98,9 @@ export default function OrderStatusTimeline({ order }) {
     }
   };
 
-  const availableTransitions = isCancelled
+  const availableTransitions: StatusKey[] = isCancelled
     ? []
-    : STATUS_TRANSITIONS[status] || [];
+    : (STATUS_TRANSITIONS[status as StatusKey] || []);
 
   return (
     <>
@@ -92,14 +108,14 @@ export default function OrderStatusTimeline({ order }) {
         <h3 className={styles.title}>Progresión del pedido</h3>
 
         <div className={styles.timeline}>
-          {STATUSES.map((status, idx) => {
+          {STATUSES.map((statusObj, idx) => {
             const isActive = idx <= currentIdx && !isCancelled;
             const isCurrent = idx === currentIdx && !isCancelled;
             const isCompleted = idx < currentIdx && !isCancelled;
 
             return (
               <div
-                key={status.key}
+                key={statusObj.key}
                 className={`${styles.node} ${
                   isCompleted ? styles.completed : ""
                 } ${isCurrent ? styles.current : ""} ${
@@ -122,7 +138,7 @@ export default function OrderStatusTimeline({ order }) {
                     isActive ? styles.labelActive : styles.labelMuted
                   }`}
                 >
-                  {status.label}
+                  {statusObj.label}
                 </span>
               </div>
             );
