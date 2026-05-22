@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { VALID_STATUSES, canTransitionOrderStatus } from "@/lib/order-state";
+import { VALID_STATUSES, canTransitionOrderStatus, type OrderStatus } from "@/lib/order-state";
 
 const VALID_SORT_FIELDS = ["createdAt", "total", "status"];
 
@@ -17,7 +17,7 @@ const ORDER_LIST_SELECT = {
   _count: {
     select: { items: true },
   },
-};
+} as const;
 
 const ORDER_DETAIL_INCLUDE = {
   items: {
@@ -35,31 +35,36 @@ const ORDER_DETAIL_INCLUDE = {
   user: {
     select: { id: true, name: true, email: true },
   },
-};
+} as const;
 
-/**
- * Fetches a paginated, filtered, and searchable list of orders.
- * Uses `select` to avoid loading order items in list view.
- *
- * @param {object} [params]
- * @param {number} [params.page=1]
- * @param {number} [params.limit=10] - Max 50
- * @param {string} [params.status] - Filter by OrderStatus enum value
- * @param {string} [params.search] - Searches orderNumber or user email (case-insensitive)
- * @param {string} [params.dateFrom] - ISO date string for createdAt >=
- * @param {string} [params.dateTo] - ISO date string for createdAt <=
- * @param {'createdAt'|'total'|'status'} [params.sort=createdAt]
- * @param {'asc'|'desc'} [params.order=desc]
- * @returns {Promise<{ orders: Array, total: number, page: number, totalPages: number }>}
- */
-export async function getAllOrders(params = {}) {
-  const page = Math.max(1, parseInt(params.page) || 1);
-  const limit = Math.min(50, Math.max(1, parseInt(params.limit) || 10));
+interface OrderFilters {
+  page?: string | number;
+  limit?: string | number;
+  status?: string;
+  search?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  sort?: string;
+  order?: string;
+}
+
+export interface DashboardMetrics {
+  totalRevenue: number;
+  pendingCount: number;
+  totalOrders: number;
+  cancelledCount: number;
+  cancellationRate: number;
+  averageTicket: number;
+}
+
+export async function getAllOrders(params: OrderFilters = {}) {
+  const page = Math.max(1, parseInt(String(params.page)) || 1);
+  const limit = Math.min(50, Math.max(1, parseInt(String(params.limit)) || 10));
   const skip = (page - 1) * limit;
 
-  const where = {};
+  const where: Record<string, unknown> = {};
 
-  if (params.status && VALID_STATUSES.includes(params.status)) {
+  if (params.status && VALID_STATUSES.includes(params.status as OrderStatus)) {
     where.status = params.status;
   }
 
@@ -71,20 +76,20 @@ export async function getAllOrders(params = {}) {
   }
 
   if (params.dateFrom || params.dateTo) {
-    where.createdAt = {};
+    where.createdAt = {} as Record<string, Date>;
     if (params.dateFrom) {
-      where.createdAt.gte = new Date(params.dateFrom);
+      (where.createdAt as Record<string, Date>).gte = new Date(params.dateFrom);
     }
     if (params.dateTo) {
       const endDate = new Date(params.dateTo);
       endDate.setHours(23, 59, 59, 999);
-      where.createdAt.lte = endDate;
+      (where.createdAt as Record<string, Date>).lte = endDate;
     }
   }
 
-  const orderBy = {};
-  if (VALID_SORT_FIELDS.includes(params.sort)) {
-    orderBy[params.sort] = params.order === "asc" ? "asc" : "desc";
+  const orderBy: Record<string, string> = {};
+  if (VALID_SORT_FIELDS.includes(params.sort || "")) {
+    orderBy[params.sort!] = params.order === "asc" ? "asc" : "desc";
   } else {
     orderBy.createdAt = "desc";
   }
@@ -108,13 +113,7 @@ export async function getAllOrders(params = {}) {
   };
 }
 
-/**
- * Fetches a single order with full detail: items, user, shipping address.
- *
- * @param {string} id - Order ID (cuid)
- * @returns {Promise<object>}
- */
-export async function getOrderById(id) {
+export async function getOrderById(id: string) {
   const order = await prisma.order.findUnique({
     where: { id },
     include: ORDER_DETAIL_INCLUDE,
@@ -127,16 +126,8 @@ export async function getOrderById(id) {
   return order;
 }
 
-/**
- * Updates the status of an order with state machine validation.
- * Cancelling an order automatically restores product stock.
- *
- * @param {string} id - Order ID (cuid)
- * @param {string} newStatus - Target OrderStatus value
- * @returns {Promise<object>} Updated order with full detail
- */
-export async function updateOrderStatus(id, newStatus) {
-  if (!VALID_STATUSES.includes(newStatus)) {
+export async function updateOrderStatus(id: string, newStatus: string) {
+  if (!VALID_STATUSES.includes(newStatus as OrderStatus)) {
     throw new Error("Estado no válido");
   }
 
@@ -154,7 +145,7 @@ export async function updateOrderStatus(id, newStatus) {
       throw new Error("El pedido ya tiene este estado");
     }
 
-    if (!canTransitionOrderStatus(existing.status, newStatus)) {
+    if (!canTransitionOrderStatus(existing.status as OrderStatus, newStatus as OrderStatus)) {
       throw new Error(
         `Transición inválida: no se puede cambiar de ${existing.status} a ${newStatus}`
       );
@@ -179,7 +170,7 @@ export async function updateOrderStatus(id, newStatus) {
 
     const updated = await tx.order.update({
       where: { id },
-      data: { status: newStatus },
+      data: { status: newStatus as OrderStatus },
       include: ORDER_DETAIL_INCLUDE,
     });
 
@@ -189,19 +180,7 @@ export async function updateOrderStatus(id, newStatus) {
   return order;
 }
 
-/**
- * Computes dashboard metrics for the admin overview.
- *
- * @returns {Promise<{
- *   totalRevenue: number,
- *   pendingCount: number,
- *   totalOrders: number,
- *   cancelledCount: number,
- *   cancellationRate: number,
- *   averageTicket: number
- * }>}
- */
-export async function getDashboardMetrics() {
+export async function getDashboardMetrics(): Promise<DashboardMetrics> {
   const [revenueAgg, pendingCount, totalOrders, cancelledCount, completedCount] = await Promise.all([
     prisma.order.aggregate({
       where: {

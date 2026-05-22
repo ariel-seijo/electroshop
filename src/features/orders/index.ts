@@ -6,6 +6,7 @@ export {
   updateOrderStatus,
   getDashboardMetrics,
 } from "./services/order.service";
+export type { DashboardMetrics } from "./services/order.service";
 
 export {
   getOrdersAction,

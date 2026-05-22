@@ -1,6 +1,16 @@
 import { prisma } from "@/lib/prisma";
 
-export async function generateOrderNumber(tx) {
+interface PrismaTx {
+  order: {
+    findFirst(args: {
+      where: { orderNumber: { startsWith: string } };
+      orderBy: { orderNumber: "desc" };
+      select: { orderNumber: true };
+    }): Promise<{ orderNumber: string } | null>;
+  };
+}
+
+export async function generateOrderNumber(tx?: PrismaTx): Promise<string> {
   const db = tx || prisma;
   const year = new Date().getFullYear();
   const prefix = `#ORD-${year}-`;
@@ -15,7 +25,7 @@ export async function generateOrderNumber(tx) {
     return `${prefix}0001`;
   }
 
-  const lastNumber = parseInt(lastOrder.orderNumber.split("-").pop(), 10);
+  const lastNumber = parseInt(lastOrder.orderNumber.split("-").pop()!, 10);
   const nextNumber = lastNumber + 1;
   return `${prefix}${String(nextNumber).padStart(4, "0")}`;
 }
