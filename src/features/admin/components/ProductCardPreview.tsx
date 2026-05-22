@@ -4,17 +4,34 @@ import cardStyles from "@/features/products/styles/ProductCard.module.css";
 import { ShoppingCart, Star, Flame } from "lucide-react";
 import { formatPrice } from "@/lib/utils/currency";
 
-export default function ProductCardPreview({ product }) {
+interface ProductCardPreviewProduct {
+  thumbnail?: string;
+  title?: string;
+  brand?: string;
+  price: number;
+  oldPrice?: number;
+  stock: number;
+  rating: number;
+  sold: number;
+  featured: boolean;
+  category?: { name: string } | null;
+}
+
+interface ProductCardPreviewProps {
+  product: ProductCardPreviewProduct;
+}
+
+export default function ProductCardPreview({ product }: ProductCardPreviewProps) {
   const isOutOfStock = product.stock <= 0;
   const isLowStock = product.stock > 0 && product.stock <= 3;
   const discountPercent =
-    product.oldPrice > product.price
+    product.oldPrice && product.oldPrice > product.price
       ? Math.round((1 - product.price / product.oldPrice) * 100)
       : 0;
 
   const formattedPrice = formatPrice(product.price);
   const formattedOldPrice =
-    product.oldPrice > product.price ? formatPrice(product.oldPrice) : null;
+    product.oldPrice && product.oldPrice > product.price ? formatPrice(product.oldPrice) : null;
 
   return (
     <div className={cardStyles.card}>

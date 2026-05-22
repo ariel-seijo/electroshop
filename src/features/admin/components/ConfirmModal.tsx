@@ -1,39 +1,65 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import { AlertTriangle, X } from 'lucide-react';
+import { useEffect, useRef, type MouseEvent } from "react";
+import { AlertTriangle, X } from "lucide-react";
 
-export default function ConfirmModal({ isOpen, title, message, onConfirm, onCancel, isConfirming, confirmLabel = "Eliminar", variant = "danger" }) {
-  const modalRef = useRef(null);
-  const confirmBtnRef = useRef(null);
+interface ConfirmModalProps {
+  isOpen: boolean;
+  title: string;
+  message: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+  isConfirming?: boolean;
+  confirmLabel?: string;
+  variant?: "danger" | "primary";
+}
+
+export default function ConfirmModal({
+  isOpen,
+  title,
+  message,
+  onConfirm,
+  onCancel,
+  isConfirming,
+  confirmLabel = "Eliminar",
+  variant = "danger",
+}: ConfirmModalProps) {
+  const modalRef = useRef<HTMLDivElement>(null);
+  const confirmBtnRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!isOpen) return;
 
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape' && !isConfirming) {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && !isConfirming) {
         onCancel();
       }
-      if (e.key === 'Tab') {
-        const focusable = modalRef.current?.querySelectorAll(
+      if (e.key === "Tab") {
+        const focusable = modalRef.current?.querySelectorAll<HTMLElement>(
           'button:not(:disabled), [href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])'
         );
-        if (focusable.length && !modalRef.current?.contains(document.activeElement)) {
+        if (focusable && focusable.length && !modalRef.current?.contains(document.activeElement)) {
           focusable[0].focus();
         }
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
     confirmBtnRef.current?.focus();
 
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onCancel, isConfirming]);
 
   if (!isOpen) return null;
 
+  const handleOverlayClick = (e: MouseEvent) => {
+    if (isConfirming) return;
+    e.stopPropagation();
+    onCancel();
+  };
+
   return (
-    <div className="modal-overlay" onClick={isConfirming ? undefined : onCancel} role="presentation">
+    <div className="modal-overlay" onClick={isConfirming ? undefined : handleOverlayClick} role="presentation">
       <div
         className="modal-content modal-content-confirm"
         onClick={(e) => e.stopPropagation()}
@@ -44,7 +70,7 @@ export default function ConfirmModal({ isOpen, title, message, onConfirm, onCanc
         aria-describedby="confirm-message"
       >
         <div className="modal-header modal-header-confirm">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", flex: 1 }}>
             <div className="modal-icon-warning">
               <AlertTriangle size={24} aria-hidden="true" />
             </div>

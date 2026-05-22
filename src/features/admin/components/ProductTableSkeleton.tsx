@@ -3,7 +3,11 @@
 import Skeleton from "@/components/ui/Skeleton";
 import styles from "./ProductTableSkeleton.module.css";
 
-export default function ProductTableSkeleton({ rows = 8 }) {
+interface ProductTableSkeletonProps {
+  rows?: number;
+}
+
+export default function ProductTableSkeleton({ rows = 8 }: ProductTableSkeletonProps) {
   return (
     <div className={styles.wrapper} role="status" aria-label="Cargando productos">
       {/* Search bar placeholder (standalone) */}

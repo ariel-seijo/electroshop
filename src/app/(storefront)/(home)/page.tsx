@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import FeaturedCarouselDynamic from "@/features/products/components/FeaturedCarouselDynamic";
+import FeaturedCarouselDynamic, { type Product } from "@/features/products/components/FeaturedCarouselDynamic";
 import Slider from "@/components/Slider";
 import SectionTitle from "@/components/SectionTitle";
 import Brands from "@/components/Brands";
@@ -35,7 +35,7 @@ export default async function Home() {
             <Slider />
             <section>
                 <SectionTitle>PRODUCTOS DESTACADOS</SectionTitle>
-                <FeaturedCarouselDynamic products={serializeProductsForClient(products)} />
+                <FeaturedCarouselDynamic products={serializeProductsForClient(products) as unknown as Product[]} />
             </section>
             <PromoBanner />
             <section>

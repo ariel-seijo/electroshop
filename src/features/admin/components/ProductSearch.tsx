@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, type ChangeEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search, X } from "lucide-react";
 import styles from "./ProductSearch.module.css";
@@ -11,7 +11,7 @@ export default function ProductSearch() {
   const urlValue = searchParams.get("search") || "";
 
   const [local, setLocal] = useState(urlValue);
-  const timerRef = useRef(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const committedRef = useRef(urlValue);
 
   /* Sync local state when URL changes externally (browser back/forward, direct navigation).
@@ -26,7 +26,7 @@ export default function ProductSearch() {
     }
   }, [urlValue]);
 
-  function pushToUrl(v) {
+  function pushToUrl(v: string) {
     committedRef.current = v;
     const params = new URLSearchParams(searchParams.toString());
     if (v) {
@@ -38,7 +38,7 @@ export default function ProductSearch() {
     router.push(`/admin/products?${params.toString()}`, { scroll: false });
   }
 
-  function handleChange(e) {
+  function handleChange(e: ChangeEvent<HTMLInputElement>) {
     const v = e.target.value;
     setLocal(v);
     if (timerRef.current) clearTimeout(timerRef.current);

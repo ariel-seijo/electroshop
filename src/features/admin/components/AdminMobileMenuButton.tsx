@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useSidebar } from "./SidebarContext";
 import { Menu, X } from "lucide-react";

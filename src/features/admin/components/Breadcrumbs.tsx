@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
 import { usePathname } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 
-const LABELS = {
+const LABELS: Record<string, string> = {
   admin: "Admin",
   products: "Productos",
   users: "Usuarios",
@@ -12,11 +12,11 @@ const LABELS = {
   new: "Nuevo",
 };
 
-function isIdSegment(segment) {
+function isIdSegment(segment: string): boolean {
   return /^[a-z0-9]{15,}$/.test(segment) || /^\d+$/.test(segment);
 }
 
-function getLabel(parent, segment) {
+function getLabel(parent: string, segment: string): string {
   if (parent === "products" && isIdSegment(segment)) return "Editar";
   if (parent === "orders" && isIdSegment(segment)) return "Detalle";
   if (parent === "users" && isIdSegment(segment)) return "Editar";

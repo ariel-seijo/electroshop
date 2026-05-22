@@ -1,10 +1,33 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import { Package, X, Loader2 } from 'lucide-react';
+import { useEffect, useRef, type KeyboardEvent as ReactKeyboardEvent, type ChangeEvent } from "react";
+import { Package, X, Loader2 } from "lucide-react";
 
-export default function StockEditModal({ isOpen, product, value, onChange, onConfirm, onCancel, isConfirming }) {
-  const inputRef = useRef(null);
+interface StockEditModalProduct {
+  title?: string;
+  stock?: number;
+}
+
+interface StockEditModalProps {
+  isOpen: boolean;
+  product?: StockEditModalProduct | null;
+  value: string;
+  onChange: (value: string) => void;
+  onConfirm: () => void;
+  onCancel: () => void;
+  isConfirming?: boolean;
+}
+
+export default function StockEditModal({
+  isOpen,
+  product,
+  value,
+  onChange,
+  onConfirm,
+  onCancel,
+  isConfirming,
+}: StockEditModalProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
@@ -15,13 +38,13 @@ export default function StockEditModal({ isOpen, product, value, onChange, onCon
 
   useEffect(() => {
     if (!isOpen) return;
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape' && !isConfirming) {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && !isConfirming) {
         onCancel();
       }
     };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onCancel, isConfirming]);
 
   if (!isOpen) return null;
@@ -36,7 +59,7 @@ export default function StockEditModal({ isOpen, product, value, onChange, onCon
         aria-labelledby="stock-modal-title"
       >
         <div className="modal-header modal-header-confirm">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", flex: 1 }}>
             <div className="modal-icon-warning">
               <Package size={24} aria-hidden="true" />
             </div>
@@ -47,7 +70,7 @@ export default function StockEditModal({ isOpen, product, value, onChange, onCon
           </button>
         </div>
         <div className="modal-message">
-          <p style={{ marginBottom: '12px' }}>
+          <p style={{ marginBottom: "12px" }}>
             Stock actual de <strong>{product?.title}</strong>: {product?.stock}
           </p>
           <div className="form-group">
@@ -57,10 +80,10 @@ export default function StockEditModal({ isOpen, product, value, onChange, onCon
               type="number"
               className="form-input"
               value={value}
-              onChange={(e) => onChange(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
               min="0"
               ref={inputRef}
-              onKeyDown={(e) => { if (e.key === 'Enter') onConfirm(); }}
+              onKeyDown={(e: ReactKeyboardEvent) => { if (e.key === "Enter") onConfirm(); }}
               disabled={isConfirming}
             />
           </div>
@@ -72,11 +95,11 @@ export default function StockEditModal({ isOpen, product, value, onChange, onCon
           <button className="btn btn-primary" onClick={onConfirm} disabled={isConfirming}>
             {isConfirming ? (
               <>
-                <Loader2 size={14} style={{ marginRight: 6, animation: 'spin 0.6s linear infinite' }} />
+                <Loader2 size={14} style={{ marginRight: 6, animation: "spin 0.6s linear infinite" }} />
                 Actualizando...
               </>
             ) : (
-              'Actualizar stock'
+              "Actualizar stock"
             )}
           </button>
         </div>

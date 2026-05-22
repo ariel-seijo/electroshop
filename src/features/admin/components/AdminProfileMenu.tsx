@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -11,11 +11,11 @@ export default function AdminProfileMenu() {
   const router = useRouter();
   const { user, logout } = useAuthStore();
   const [open, setOpen] = useState(false);
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    function handleClickOutside(e) {
-      if (ref.current && !ref.current.contains(e.target)) {
+    function handleClickOutside(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
         setOpen(false);
       }
     }

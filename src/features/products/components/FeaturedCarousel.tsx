@@ -6,7 +6,7 @@ import Autoplay from "embla-carousel-autoplay";
 import styles from "../styles/FeaturedCarousel.module.css";
 import ProductCard from "./ProductCard";
 
-interface Product {
+export interface Product {
   id: number;
   title: string;
   slug: string;
@@ -23,7 +23,7 @@ interface Product {
   category?: { name: string } | null;
 }
 
-interface FeaturedCarouselProps {
+export interface FeaturedCarouselProps {
   products: Product[];
 }
 

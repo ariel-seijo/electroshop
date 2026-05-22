@@ -1,22 +1,36 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, type FormEvent, type ChangeEvent } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Search, X } from "lucide-react";
 import styles from "./AdminSearchbar.module.css";
 
-const SCOPES = [
+type Scope = "orders" | "users" | "products";
+
+const SCOPES: { value: Scope; label: string }[] = [
   { value: "orders", label: "Órdenes" },
   { value: "users", label: "Usuarios" },
   { value: "products", label: "Productos" },
 ];
 
+const PLACEHOLDERS: Record<Scope, string> = {
+  orders: "Buscar órdenes...",
+  users: "Buscar usuarios...",
+  products: "Buscar productos...",
+};
+
+const SCOPE_LABELS: Record<Scope, string> = {
+  orders: "órdenes",
+  users: "usuarios",
+  products: "productos",
+};
+
 export default function AdminSearchbar() {
   const [query, setQuery] = useState("");
-  const [scope, setScope] = useState("orders");
+  const [scope, setScope] = useState<Scope>("orders");
   const [expanded, setExpanded] = useState(false);
-  const inputRef = useRef(null);
-  const containerRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -31,13 +45,13 @@ export default function AdminSearchbar() {
   useEffect(() => {
     if (!expanded) return;
 
-    function handleClickOutside(e) {
-      if (containerRef.current && !containerRef.current.contains(e.target)) {
+    function handleClickOutside(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         close();
       }
     }
 
-    function handleEscape(e) {
+    function handleEscape(e: KeyboardEvent) {
       if (e.key === "Escape") close();
     }
 
@@ -63,7 +77,7 @@ export default function AdminSearchbar() {
     setExpanded((prev) => !prev);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!query.trim()) return;
     router.push(`/admin/${scope}?search=${encodeURIComponent(query.trim())}`);
@@ -78,16 +92,10 @@ export default function AdminSearchbar() {
           <input
             type="text"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={
-              scope === "orders"
-                ? "Buscar órdenes..."
-                : scope === "users"
-                  ? "Buscar usuarios..."
-                  : "Buscar productos..."
-            }
+            onChange={(e: ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
+            placeholder={PLACEHOLDERS[scope]}
             className={styles.input}
-            aria-label={`Buscar en ${scope === "orders" ? "órdenes" : scope === "users" ? "usuarios" : "productos"}`}
+            aria-label={`Buscar en ${SCOPE_LABELS[scope]}`}
           />
         </div>
         <div className={styles.scopeToggle}>
@@ -142,16 +150,10 @@ export default function AdminSearchbar() {
                   ref={inputRef}
                   type="text"
                   value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder={
-                    scope === "orders"
-                      ? "Buscar órdenes..."
-                      : scope === "users"
-                        ? "Buscar usuarios..."
-                        : "Buscar productos..."
-                  }
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
+                  placeholder={PLACEHOLDERS[scope]}
                   className={styles.mobileInput}
-                  aria-label={`Buscar en ${scope === "orders" ? "órdenes" : scope === "users" ? "usuarios" : "productos"}`}
+                  aria-label={`Buscar en ${SCOPE_LABELS[scope]}`}
                   autoComplete="off"
                 />
               </div>

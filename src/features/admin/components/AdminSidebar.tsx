@@ -1,25 +1,35 @@
-'use client';
+"use client";
 
-import { useEffect } from "react";
+import { useEffect, type KeyboardEvent } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package, ShoppingCart, Users, Settings } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingCart, Users, Settings, type LucideIcon } from "lucide-react";
 import { useSidebar } from "./SidebarContext";
 
-const navItems = [
-  { href: '/admin', label: 'Panel', icon: LayoutDashboard },
-  { href: '/admin/products', label: 'Productos', icon: Package },
-  { href: '/admin/users', label: 'Usuarios', icon: Users },
-  { href: '/admin/orders', label: 'Pedidos', icon: ShoppingCart },
-  { href: '/admin/settings', label: 'Ajustes', icon: Settings },
+interface NavItem {
+  href: string;
+  label: string;
+  icon: LucideIcon;
+}
+
+const navItems: NavItem[] = [
+  { href: "/admin", label: "Panel", icon: LayoutDashboard },
+  { href: "/admin/products", label: "Productos", icon: Package },
+  { href: "/admin/users", label: "Usuarios", icon: Users },
+  { href: "/admin/orders", label: "Pedidos", icon: ShoppingCart },
+  { href: "/admin/settings", label: "Ajustes", icon: Settings },
 ];
 
-export default function Sidebar({ className }) {
+interface SidebarProps {
+  className?: string;
+}
+
+export default function AdminSidebar({ className }: SidebarProps) {
   const pathname = usePathname();
   const { sidebarOpen, closeSidebar } = useSidebar();
 
   useEffect(() => {
-    function handleEscape(e) {
+    function handleEscape(e: globalThis.KeyboardEvent) {
       if (e.key === "Escape") closeSidebar();
     }
     document.addEventListener("keydown", handleEscape);
@@ -59,15 +69,15 @@ export default function Sidebar({ className }) {
           <ul className="admin-nav" role="list">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = item.href === '/admin'
+              const isActive = item.href === "/admin"
                 ? pathname === item.href
-                : pathname === item.href || pathname?.startsWith(item.href + '/');
+                : pathname === item.href || pathname?.startsWith(item.href + "/");
               return (
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className={`admin-nav-link ${isActive ? 'active' : ''}`}
-                    aria-current={isActive ? 'page' : undefined}
+                    className={`admin-nav-link ${isActive ? "active" : ""}`}
+                    aria-current={isActive ? "page" : undefined}
                     onClick={closeSidebar}
                     prefetch={false}
                   >
