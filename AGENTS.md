@@ -168,10 +168,16 @@ npm run lint               # ESLint must still pass
 - [x] Phase 2 Layer 4 — Checkout + Orders features
 - [x] Phase 2 Layer 5 — Products + Category + Shop features
 - [x] Phase 2 Layer 6 — Admin services + barrels + global components
-- [~] Phase 2 Layer 7 — API routes + Pages (pending, JS tolerated via allowJs)
-  - Admin components (JSX) — 57 files remaining under allowJs
-  - API routes (JS) — 18 files remaining
-  - App pages (JS/JSX) — ~30 files remaining
+- [x] Phase 2 Layer 7 — API routes (24 files) + Pages (~50 files)
+  - Admin components (JSX) — 43 files remaining under allowJs
+  - Orders components (JSX) — 11 files remaining
+  - Feature leftovers (JSX) — 2 files
+  - Admin re-exports (JSX) — 5 files
+  - Admin actions (JS) — 3 files
+  - Admin services (JS) — 1 file
+  - Total: 55 JS/JSX files tolerated under allowJs (all presentational)
+
+**156 TypeScript files · 55 JavaScript files · 74% migration complete**
 
 ---
 
