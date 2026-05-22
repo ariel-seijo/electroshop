@@ -41,3 +41,8 @@ export const checkoutSchema = z.object({
   cardDetails: cardDetailsSchema,
   notes: z.string().max(500, "Las notas son demasiado largas").nullable().optional(),
 });
+
+export type CheckoutItem = z.infer<typeof checkoutItemSchema>;
+export type CheckoutShipping = z.infer<typeof checkoutShippingSchema>;
+export type CardDetails = z.infer<typeof cardDetailsSchema>;
+export type CheckoutInput = z.infer<typeof checkoutSchema>;

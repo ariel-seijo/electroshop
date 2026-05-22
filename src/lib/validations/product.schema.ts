@@ -41,3 +41,6 @@ export const updateProductSchema = z.object({
   active: z.coerce.boolean().optional(),
   sku: z.string().max(80, "El SKU es demasiado largo").optional(),
 });
+
+export type CreateProductInput = z.infer<typeof createProductSchema>;
+export type UpdateProductInput = z.infer<typeof updateProductSchema>;

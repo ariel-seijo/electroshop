@@ -15,3 +15,6 @@ export const saveProductImagesSchema = z.object({
     .min(1, "Debe incluir al menos una imagen")
     .max(10, "Máximo 10 imágenes por producto"),
 });
+
+export type ProductImage = z.infer<typeof productImageSchema>;
+export type SaveProductImagesInput = z.infer<typeof saveProductImagesSchema>;

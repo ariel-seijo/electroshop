@@ -47,3 +47,7 @@ export const forgotPasswordSchema = z.object({
     .max(255, "El email es demasiado largo")
     .transform((e) => e.trim().toLowerCase()),
 });
+
+export type LoginInput = z.infer<typeof loginSchema>;
+export type RegisterInput = z.infer<typeof registerSchema>;
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
