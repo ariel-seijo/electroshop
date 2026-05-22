@@ -5,8 +5,13 @@ import styles from "../styles/Stepper.module.css";
 
 const STEPS = ["Envío", "Pago", "Revisión"];
 
-export default function Stepper({ currentStep, onStepClick }) {
-  const getState = (i) => {
+interface StepperProps {
+  currentStep: number;
+  onStepClick?: (step: number) => void;
+}
+
+export default function Stepper({ currentStep, onStepClick }: StepperProps) {
+  const getState = (i: number) => {
     if (i < currentStep) return "done";
     if (i === currentStep) return "active";
     return "pending";

@@ -25,14 +25,14 @@ export default function ReviewStep() {
     goPrev,
     placeOrder,
   } = useCheckout();
-  const [internalError, setInternalError] = useState(null);
+  const [internalError, setInternalError] = useState<string | null>(null);
 
   const handleConfirm = useCallback(async () => {
     setInternalError(null);
     try {
       await placeOrder();
     } catch (err) {
-      setInternalError(err.message);
+      setInternalError((err as Error).message);
     }
   }, [placeOrder]);
 
@@ -127,7 +127,7 @@ export default function ReviewStep() {
           >
             {isProcessing ? (
               <>
-                <Loader2 size={18} style={{ animation: `spin 0.7s linear infinite` }} />
+                <Loader2 size={18} />
                 Procesando...
               </>
             ) : (

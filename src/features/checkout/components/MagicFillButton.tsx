@@ -4,7 +4,12 @@ import { useState, useCallback } from "react";
 import { Sparkles } from "lucide-react";
 import styles from "../styles/MagicFill.module.css";
 
-export default function MagicFillButton({ onFill, label = "Auto-completar" }) {
+interface MagicFillButtonProps {
+  onFill: () => void;
+  label?: string;
+}
+
+export default function MagicFillButton({ onFill, label = "Auto-completar" }: MagicFillButtonProps) {
   const [flashing, setFlashing] = useState(false);
 
   const handleClick = useCallback(() => {

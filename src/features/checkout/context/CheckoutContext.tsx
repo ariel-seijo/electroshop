@@ -8,12 +8,59 @@ import {
   useReducer,
   useRef,
 } from "react";
-import { useCart } from "@/features/cart";
+import { useCart, type CartItem } from "@/features/cart";
 import { SHIPPING_DEMO, PAYMENT_DEMO } from "@/mocks/checkoutDemoData";
 
 const STORAGE_KEY = "checkout_state";
 
-const initialState = {
+interface ShippingFields {
+  fullName: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  department: string;
+  zip: string;
+  notes: string;
+}
+
+interface CardFields {
+  cardNumber: string;
+  cardExpiry: string;
+  cardCvc: string;
+  cardHolder: string;
+}
+
+interface OrderData {
+  orderNumber: string;
+  id: string;
+}
+
+interface CheckoutState {
+  step: number;
+  shipping: ShippingFields;
+  paymentMethod: string;
+  cardDetails: CardFields;
+  isProcessing: boolean;
+  isConfirmed: boolean;
+  orderData: OrderData | null;
+  orderError: string | null;
+}
+
+type CheckoutAction =
+  | { type: "HYDRATE"; payload: Partial<CheckoutState> }
+  | { type: "SET_SHIPPING_FIELD"; name: string; value: string }
+  | { type: "AUTO_FILL_SHIPPING" }
+  | { type: "SET_PAYMENT_METHOD"; method: string }
+  | { type: "SET_CARD_FIELD"; name: string; value: string }
+  | { type: "AUTO_FILL_PAYMENT" }
+  | { type: "SET_STEP"; step: number }
+  | { type: "PLACE_ORDER_START" }
+  | { type: "PLACE_ORDER_SUCCESS"; payload: OrderData }
+  | { type: "PLACE_ORDER_ERROR"; error: string }
+  | { type: "RESET" };
+
+const initialState: CheckoutState = {
   step: 0,
   shipping: {
     fullName: "",
@@ -38,7 +85,7 @@ const initialState = {
   orderError: null,
 };
 
-function checkoutReducer(state, action) {
+function checkoutReducer(state: CheckoutState, action: CheckoutAction): CheckoutState {
   switch (action.type) {
     case "HYDRATE":
       return { ...state, ...action.payload };
@@ -99,11 +146,11 @@ function checkoutReducer(state, action) {
   }
 }
 
-function isClient() {
+function isClient(): boolean {
   return typeof window !== "undefined";
 }
 
-function loadFromStorage() {
+function loadFromStorage(): Partial<CheckoutState> | null {
   if (!isClient()) return null;
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -113,7 +160,7 @@ function loadFromStorage() {
   }
 }
 
-function saveToStorage(state) {
+function saveToStorage(state: Partial<CheckoutState>): void {
   if (!isClient()) return;
   try {
     const toSave = {
@@ -128,7 +175,7 @@ function saveToStorage(state) {
   }
 }
 
-function clearStorage() {
+function clearStorage(): void {
   if (!isClient()) return;
   try {
     localStorage.removeItem(STORAGE_KEY);
@@ -137,9 +184,22 @@ function clearStorage() {
   }
 }
 
-const CheckoutContext = createContext();
+interface CheckoutContextValue extends CheckoutState {
+  setShippingField: (name: string, value: string) => void;
+  autoFillShipping: () => void;
+  setPaymentMethod: (method: string) => void;
+  setCardField: (name: string, value: string) => void;
+  autoFillPayment: () => void;
+  goToStep: (step: number) => void;
+  goNext: () => void;
+  goPrev: () => void;
+  placeOrder: () => Promise<void>;
+  resetCheckout: () => void;
+}
 
-export function CheckoutProvider({ children }) {
+const CheckoutContext = createContext<CheckoutContextValue | undefined>(undefined);
+
+export function CheckoutProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(checkoutReducer, initialState);
   const initialized = useRef(false);
   const { clearCart, cart } = useCart();
@@ -160,7 +220,7 @@ export function CheckoutProvider({ children }) {
     saveToStorage({ shipping, paymentMethod, cardDetails, step });
   }, [shipping, paymentMethod, cardDetails, step]);
 
-  const setShippingField = useCallback((name, value) => {
+  const setShippingField = useCallback((name: string, value: string) => {
     dispatch({ type: "SET_SHIPPING_FIELD", name, value });
   }, []);
 
@@ -168,11 +228,11 @@ export function CheckoutProvider({ children }) {
     dispatch({ type: "AUTO_FILL_SHIPPING" });
   }, []);
 
-  const setPaymentMethod = useCallback((method) => {
+  const setPaymentMethod = useCallback((method: string) => {
     dispatch({ type: "SET_PAYMENT_METHOD", method });
   }, []);
 
-  const setCardField = useCallback((name, value) => {
+  const setCardField = useCallback((name: string, value: string) => {
     dispatch({ type: "SET_CARD_FIELD", name, value });
   }, []);
 
@@ -180,7 +240,7 @@ export function CheckoutProvider({ children }) {
     dispatch({ type: "AUTO_FILL_PAYMENT" });
   }, []);
 
-  const goToStep = useCallback((step) => {
+  const goToStep = useCallback((step: number) => {
     dispatch({ type: "SET_STEP", step });
   }, []);
 
@@ -218,7 +278,7 @@ export function CheckoutProvider({ children }) {
       clearCart();
       clearStorage();
     } catch (err) {
-      dispatch({ type: "PLACE_ORDER_ERROR", error: err.message });
+      dispatch({ type: "PLACE_ORDER_ERROR", error: (err as Error).message });
       throw err;
     }
   }, [cart, state.shipping, state.paymentMethod, state.cardDetails, clearCart]);
@@ -227,7 +287,7 @@ export function CheckoutProvider({ children }) {
     dispatch({ type: "RESET" });
   }, []);
 
-  const value = {
+  const value: CheckoutContextValue = {
     ...state,
     setShippingField,
     autoFillShipping,
@@ -248,7 +308,7 @@ export function CheckoutProvider({ children }) {
   );
 }
 
-export function useCheckout() {
+export function useCheckout(): CheckoutContextValue {
   const ctx = useContext(CheckoutContext);
   if (!ctx) {
     throw new Error("useCheckout must be used within a CheckoutProvider");

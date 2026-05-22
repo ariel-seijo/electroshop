@@ -1,13 +1,13 @@
 "use client";
 
 import { useCallback } from "react";
-import { ChevronRight, CreditCard, ArrowLeft, Banknote, Building2 } from "lucide-react";
+import { ChevronRight, CreditCard, ArrowLeft, Banknote, Building2, type LucideIcon } from "lucide-react";
 import { useCheckout } from "../context/CheckoutContext";
 import { formatCardNumber, formatExpiry, formatCvc } from "@/lib/utils/input-formatters";
 import MagicFillButton from "./MagicFillButton";
 import styles from "../styles/PaymentForm.module.css";
 
-const PAYMENT_METHODS = [
+const PAYMENT_METHODS: { id: string; label: string; icon: LucideIcon }[] = [
   { id: "card", label: "Tarjeta de Crédito/Débito", icon: CreditCard },
   { id: "transfer", label: "Transferencia Bancaria", icon: Building2 },
   { id: "cash", label: "Efectivo (al retirar)", icon: Banknote },
@@ -25,7 +25,7 @@ export default function PaymentForm() {
   } = useCheckout();
 
   const handleCardChange = useCallback(
-    (e) => {
+    (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
       let formatted = value;
       if (name === "cardNumber") formatted = formatCardNumber(value);

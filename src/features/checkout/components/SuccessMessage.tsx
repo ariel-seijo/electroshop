@@ -4,7 +4,17 @@ import Link from "next/link";
 import { Check, ShoppingBag } from "lucide-react";
 import styles from "../styles/Success.module.css";
 
-export default function SuccessMessage({ email, order }) {
+interface OrderInfo {
+  orderNumber: string;
+  id: string;
+}
+
+interface SuccessMessageProps {
+  email: string;
+  order?: OrderInfo;
+}
+
+export default function SuccessMessage({ email, order }: SuccessMessageProps) {
   return (
     <div className={styles.wrap}>
       <div className={styles.icon}>

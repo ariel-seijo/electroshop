@@ -42,7 +42,7 @@ const SHIPPING_RULES = {
   city: { required: true },
   department: { required: true },
   zip: { required: true },
-};
+} as const;
 
 const MAX_NOTES_LENGTH = 500;
 
@@ -50,12 +50,12 @@ export default function ShippingForm() {
   const { shipping, setShippingField, autoFillShipping, goNext } =
     useCheckout();
   const { errors, validate, clearError } = useCheckoutForm(
-    shipping,
-    SHIPPING_RULES,
+    shipping as unknown as Record<string, unknown>,
+    SHIPPING_RULES as unknown as Record<string, { [key: string]: boolean }>,
   );
 
   const handleChange = useCallback(
-    (e) => {
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
       const { name, value } = e.target;
       let formatted = value;
       if (name === "notes") formatted = limitNotes(value);
@@ -69,7 +69,7 @@ export default function ShippingForm() {
     if (validate()) goNext();
   }, [validate, goNext]);
 
-  const notesCount = shipping.notes?.length || 0;
+  const notesCount = (shipping.notes || "").length || 0;
 
   return (
     <div className={styles.form}>

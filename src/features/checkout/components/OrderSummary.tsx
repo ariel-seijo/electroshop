@@ -8,7 +8,7 @@ import { formatPrice, formatArs, usdToArs } from "@/lib/utils/currency";
 export default function OrderSummary() {
   const { cart } = useCart();
 
-  const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const subtotal = cart.reduce((acc: number, item) => acc + item.price * item.quantity, 0);
   const subtotalArs = usdToArs(subtotal);
   const shippingCost = subtotalArs >= 50000 ? 0 : 1500;
   const totalArs = subtotalArs + shippingCost;
