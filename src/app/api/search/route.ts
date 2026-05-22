@@ -1,9 +1,9 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
-export async function GET(request) {
+export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const q = searchParams.get('q');
+  const q = searchParams.get("q");
 
   if (!q || q.trim().length < 1) {
     return NextResponse.json({ results: [] });
@@ -15,7 +15,7 @@ export async function GET(request) {
         active: true,
         title: {
           contains: q.trim(),
-          mode: 'insensitive',
+          mode: "insensitive",
         },
       },
       select: {
@@ -27,13 +27,13 @@ export async function GET(request) {
       },
       take: 10,
       orderBy: {
-        sold: 'desc',
+        sold: "desc",
       },
     });
 
     return NextResponse.json({ results });
   } catch (error) {
-    console.error('Search error:', error);
-    return NextResponse.json({ error: 'Search failed' }, { status: 500 });
+    console.error("Search error:", error);
+    return NextResponse.json({ error: "Search failed" }, { status: 500 });
   }
 }

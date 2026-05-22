@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { getIronSession } from "iron-session";
-import { sessionOptions } from "@/lib/session";
+import { sessionOptions, SessionData } from "@/lib/session";
 
-const MAX_SIZE = 2 * 1024 * 1024; // 2MB
+const MAX_SIZE = 2 * 1024 * 1024;
 
 const ALLOWED_MIMES = new Set([
   "image/jpeg",
@@ -12,16 +12,16 @@ const ALLOWED_MIMES = new Set([
   "image/webp",
 ]);
 
-const MIME_TO_EXT = {
+const MIME_TO_EXT: Record<string, string> = {
   "image/jpeg": "jpg",
   "image/png": "png",
   "image/webp": "webp",
 };
 
-export async function POST(request) {
+export async function POST(request: NextRequest) {
   try {
     const response = new NextResponse();
-    const session = await getIronSession(request, response, sessionOptions);
+    const session = await getIronSession<SessionData>(request, response, sessionOptions);
 
     if (!session.userId) {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });

@@ -1,12 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getIronSession } from "iron-session";
-import { sessionOptions } from "@/lib/session";
+import { sessionOptions, SessionData } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 
-export async function GET(request) {
+export async function GET(request: NextRequest) {
   try {
     const response = new NextResponse();
-    const session = await getIronSession(request, response, sessionOptions);
+    const session = await getIronSession<SessionData>(request, response, sessionOptions);
 
     if (!session.userId || session.role !== "ADMIN") {
       return NextResponse.json({ error: "No autorizado" }, { status: 403 });
@@ -15,7 +15,7 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get("status");
 
-    const where = {};
+    const where: Record<string, unknown> = {};
     if (status && ["PENDING", "PAID", "SHIPPED", "CANCELLED"].includes(status)) {
       where.status = status;
     }
@@ -45,7 +45,7 @@ export async function GET(request) {
     });
 
     return NextResponse.json({ orders, stats });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Error al obtener pedidos" },
       { status: 500 }
@@ -53,17 +53,17 @@ export async function GET(request) {
   }
 }
 
-export async function PATCH(request) {
+export async function PATCH(request: NextRequest) {
   try {
     const response = new NextResponse();
-    const session = await getIronSession(request, response, sessionOptions);
+    const session = await getIronSession<SessionData>(request, response, sessionOptions);
 
     if (!session.userId || session.role !== "ADMIN") {
       return NextResponse.json({ error: "No autorizado" }, { status: 403 });
     }
 
     const body = await request.json();
-    const { id, status } = body;
+    const { id, status } = body as { id?: string; status?: string };
 
     if (!id || !status) {
       return NextResponse.json(
@@ -114,7 +114,7 @@ export async function PATCH(request) {
 
       const updated = await tx.order.update({
         where: { id },
-        data: { status },
+        data: { status: status as import("@prisma/client").OrderStatus },
         include: {
           items: true,
           user: { select: { id: true, name: true, email: true } },

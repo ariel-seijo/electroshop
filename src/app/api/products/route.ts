@@ -1,19 +1,19 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import * as productService from "@/features/products/services/product.service";
 
-export async function GET(request) {
+export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
 
-    const filters = {
-      page: searchParams.get("page"),
-      limit: searchParams.get("limit"),
-      search: searchParams.get("search"),
-      categoryId: searchParams.get("categoryId"),
-      status: searchParams.get("status"),
+    const filters: Record<string, string | number | boolean | undefined> = {
+      page: searchParams.get("page") || undefined,
+      limit: searchParams.get("limit") || undefined,
+      search: searchParams.get("search") || undefined,
+      categoryId: searchParams.get("categoryId") || undefined,
+      status: searchParams.get("status") || undefined,
       featured: searchParams.get("featured") === "true" ? true : undefined,
-      sort: searchParams.get("sort"),
-      order: searchParams.get("order"),
+      sort: searchParams.get("sort") || undefined,
+      order: searchParams.get("order") || undefined,
     };
 
     const result = await productService.getAllProducts(filters);
@@ -27,7 +27,7 @@ export async function GET(request) {
   }
 }
 
-export async function POST(request) {
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const product = await productService.createProduct(body);
@@ -35,7 +35,7 @@ export async function POST(request) {
   } catch (error) {
     console.error("[API POST /products]", error);
 
-    const message = error.message || "Failed to create product";
+    const message = (error as Error).message || "Failed to create product";
 
     if (message.includes("Missing required fields")) {
       return NextResponse.json({ error: message }, { status: 400 });

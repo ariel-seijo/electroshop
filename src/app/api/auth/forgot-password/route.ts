@@ -1,11 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 import { sendResetEmail } from "@/lib/email";
 import { forgotPasswordSchema } from "@/lib/validations";
 import { checkRateLimit, getClientIP } from "@/lib/rate-limit";
 
-export async function POST(request) {
+export async function POST(request: NextRequest) {
   try {
     const ip = getClientIP(request);
     const rateCheck = checkRateLimit(ip, "forgot-password");

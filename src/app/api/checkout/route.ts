@@ -1,20 +1,20 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getIronSession } from "iron-session";
-import { sessionOptions } from "@/lib/session";
 import { revalidateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { sessionOptions, SessionData } from "@/lib/session";
 import { generateOrderNumber } from "@/features/orders/lib/orderNumber";
 import { usdToArs } from "@/lib/utils/currency";
 import { checkoutSchema, formatZodError } from "@/lib/validations";
 
-function calculateShipping(subtotal) {
+function calculateShipping(subtotal: number): number {
   return usdToArs(subtotal) >= 50000 ? 0 : 1500;
 }
 
-export async function POST(request) {
+export async function POST(request: NextRequest) {
   try {
     const response = new NextResponse();
-    const session = await getIronSession(request, response, sessionOptions);
+    const session = await getIronSession<SessionData>(request, response, sessionOptions);
 
     if (!session.userId) {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
@@ -82,7 +82,7 @@ export async function POST(request) {
             select: { title: true, stock: true },
           });
           throw new Error(
-            `Stock insuficiente para "${product.title}". Stock actual: ${product.stock}`
+            `Stock insuficiente para "${product!.title}". Stock actual: ${product!.stock}`
           );
         }
       }
@@ -94,13 +94,13 @@ export async function POST(request) {
           status: "PENDING",
           shippingAddress: shipping,
           paymentMethod,
-          cardDetails: cardDetails
+          cardDetails: (cardDetails
             ? {
                 last4: cardDetails.cardNumber?.slice(-4) || null,
                 expiry: cardDetails.cardExpiry || null,
                 holder: cardDetails.cardHolder || null,
               }
-            : null,
+            : undefined) as never,
           subtotal,
           shippingCost,
           total,
@@ -113,8 +113,8 @@ export async function POST(request) {
               totalPrice: item.price * item.quantity,
               productTitle: item.title,
               productSku: item.sku || "N/A",
-              productImage: item.thumbnail,
-            })),
+              productImage: item.thumbnail || "",
+            })) as unknown as never,
           },
         },
         include: {

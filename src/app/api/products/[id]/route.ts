@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import * as productService from "@/features/products/services/product.service";
 
-export async function GET(request, { params }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id: productId } = await params;
 
   try {
@@ -14,7 +14,7 @@ export async function GET(request, { params }) {
     const product = await productService.getProductById(id);
     return NextResponse.json(product);
   } catch (error) {
-    if (error.message === "Product not found") {
+    if ((error as Error).message === "Product not found") {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
     console.error("[API GET /products/[id]]", error);
@@ -25,7 +25,7 @@ export async function GET(request, { params }) {
   }
 }
 
-export async function PUT(request, { params }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id: productId } = await params;
 
   try {
@@ -39,7 +39,7 @@ export async function PUT(request, { params }) {
     const product = await productService.updateProduct(id, body);
     return NextResponse.json(product);
   } catch (error) {
-    const message = error.message || "Failed to update product";
+    const message = (error as Error).message || "Failed to update product";
 
     if (message === "Product not found") {
       return NextResponse.json({ error: message }, { status: 404 });
@@ -59,7 +59,7 @@ export async function PUT(request, { params }) {
   }
 }
 
-export async function DELETE(request, { params }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id: productId } = await params;
 
   try {
@@ -72,7 +72,7 @@ export async function DELETE(request, { params }) {
     await productService.deleteProduct(id);
     return NextResponse.json({ message: "Product deleted successfully" });
   } catch (error) {
-    if (error.message === "Product not found") {
+    if ((error as Error).message === "Product not found") {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
     console.error("[API DELETE /products/[id]]", error);

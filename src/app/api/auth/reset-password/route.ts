@@ -1,13 +1,13 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { hash } from "@node-rs/bcrypt";
 import { prisma } from "@/lib/prisma";
 
-export async function POST(request) {
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const token = body?.token;
-    const password = body?.password;
-    const confirmPassword = body?.confirmPassword;
+    const token: string | undefined = body?.token;
+    const password: string | undefined = body?.password;
+    const confirmPassword: string | undefined = body?.confirmPassword;
 
     if (!token) {
       return NextResponse.json(

@@ -1,20 +1,20 @@
-import { NextResponse } from "next/server";
-import { getIronSession } from "iron-session";
-import { sessionOptions } from "@/lib/session";
+import { NextRequest, NextResponse } from "next/server";
+import { getIronSession, IronSession } from "iron-session";
+import { sessionOptions, SessionData } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { invalidateExchangeRate } from "@/lib/utils/currency";
 
-function guard(session) {
+function guard(session: IronSession<SessionData>): NextResponse | null {
   if (!session.userId || session.role !== "ADMIN") {
     return NextResponse.json({ error: "No autorizado" }, { status: 403 });
   }
   return null;
 }
 
-export async function GET(request) {
+export async function GET(request: NextRequest) {
   try {
     const response = new NextResponse();
-    const session = await getIronSession(request, response, sessionOptions);
+    const session = await getIronSession<SessionData>(request, response, sessionOptions);
 
     const err = guard(session);
     if (err) return err;
@@ -35,16 +35,16 @@ export async function GET(request) {
   }
 }
 
-export async function PUT(request) {
+export async function PUT(request: NextRequest) {
   try {
     const response = new NextResponse();
-    const session = await getIronSession(request, response, sessionOptions);
+    const session = await getIronSession<SessionData>(request, response, sessionOptions);
 
     const err = guard(session);
     if (err) return err;
 
     const body = await request.json();
-    const { usdToArs } = body;
+    const { usdToArs } = body as { usdToArs?: number | string | null };
 
     if (usdToArs === undefined || usdToArs === null || usdToArs === "") {
       return NextResponse.json(

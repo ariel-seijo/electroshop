@@ -1,20 +1,15 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getIronSession } from "iron-session";
-import { sessionOptions } from "@/lib/session";
+import { sessionOptions, SessionData } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 
-/**
- * @deprecated Use Server Actions from `@/features/admin/actions/userActions` instead.
- * These API routes are kept for backward compatibility with legacy integrations.
- */
-
-async function isAdmin(request) {
+async function isAdmin(request: NextRequest): Promise<boolean> {
   const response = new NextResponse();
-  const session = await getIronSession(request, response, sessionOptions);
+  const session = await getIronSession<SessionData>(request, response, sessionOptions);
   return session.role === "ADMIN";
 }
 
-export async function GET(request) {
+export async function GET(request: NextRequest) {
   try {
     if (!(await isAdmin(request))) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
@@ -31,18 +26,18 @@ export async function GET(request) {
       orderBy: { createdAt: "desc" },
     });
     return NextResponse.json(users);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Failed to fetch users" }, { status: 500 });
   }
 }
 
-export async function POST(request) {
+export async function POST(request: NextRequest) {
   try {
     if (!(await isAdmin(request))) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
-    const body = await request.json();
+    const body = await request.json() as { name?: string; email?: string; role?: string };
     const { name, email, role } = body;
 
     if (!email || !role) {
@@ -59,7 +54,7 @@ export async function POST(request) {
         name: name?.trim() || null,
         email: email.toLowerCase().trim(),
         password: "changeme123",
-        role,
+        role: role as "CUSTOMER" | "ADMIN",
       },
       select: {
         id: true,

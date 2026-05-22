@@ -1,18 +1,18 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getIronSession } from "iron-session";
 import { prisma } from "@/lib/prisma";
-import { sessionOptions } from "@/lib/session";
+import { sessionOptions, SessionData } from "@/lib/session";
 
-export async function PUT(request) {
+export async function PUT(request: NextRequest) {
   try {
     const response = new NextResponse();
-    const session = await getIronSession(request, response, sessionOptions);
+    const session = await getIronSession<SessionData>(request, response, sessionOptions);
 
     if (!session.userId) {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
-    const { name } = await request.json();
+    const { name } = await request.json() as { name?: string };
 
     if (!name || typeof name !== "string" || !name.trim()) {
       return NextResponse.json({ error: "El nombre es obligatorio" }, { status: 400 });

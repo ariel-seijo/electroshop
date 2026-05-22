@@ -1,19 +1,20 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getIronSession } from "iron-session";
 import { prisma } from "@/lib/prisma";
-import { sessionOptions } from "@/lib/session";
+import { sessionOptions, SessionData } from "@/lib/session";
 import { hash, verify } from "@node-rs/bcrypt";
 
-export async function PUT(request) {
+export async function PUT(request: NextRequest) {
   try {
     const response = new NextResponse();
-    const session = await getIronSession(request, response, sessionOptions);
+    const session = await getIronSession<SessionData>(request, response, sessionOptions);
 
     if (!session.userId) {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
-    const { currentPassword, newPassword, confirmPassword } = await request.json();
+    const body = await request.json() as { currentPassword?: string; newPassword?: string; confirmPassword?: string };
+    const { currentPassword, newPassword, confirmPassword } = body;
 
     if (!currentPassword || !newPassword || !confirmPassword) {
       return NextResponse.json({ error: "Todos los campos son obligatorios" }, { status: 400 });

@@ -1,27 +1,22 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getIronSession } from "iron-session";
-import { sessionOptions } from "@/lib/session";
+import { sessionOptions, SessionData } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { hash } from "@node-rs/bcrypt";
 
-/**
- * @deprecated Use Server Actions from `@/features/admin/actions/userActions` instead.
- * These API routes are kept for backward compatibility with legacy integrations.
- */
-
-async function isAdmin(request) {
+async function isAdmin(request: NextRequest): Promise<boolean> {
   const response = new NextResponse();
-  const session = await getIronSession(request, response, sessionOptions);
+  const session = await getIronSession<SessionData>(request, response, sessionOptions);
   return session.role === "ADMIN";
 }
 
-export async function GET(request, { params }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     if (!(await isAdmin(request))) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
-    const { id } = params;
+    const { id } = await params;
     const user = await prisma.user.findUnique({
       where: { id },
       select: {
@@ -38,19 +33,19 @@ export async function GET(request, { params }) {
     }
 
     return NextResponse.json(user);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Failed to fetch user" }, { status: 500 });
   }
 }
 
-export async function PUT(request, { params }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     if (!(await isAdmin(request))) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
-    const { id } = params;
-    const body = await request.json();
+    const { id } = await params;
+    const body = await request.json() as { name?: string; email?: string; role?: string; password?: string };
     const { name, email, role, password } = body;
 
     const existingUser = await prisma.user.findUnique({ where: { id } });
@@ -58,10 +53,10 @@ export async function PUT(request, { params }) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    const updateData = {};
+    const updateData: Record<string, unknown> = {};
     if (name !== undefined) updateData.name = name?.trim() || null;
     if (email) updateData.email = email.toLowerCase().trim();
-    if (role) updateData.role = role;
+    if (role) updateData.role = role as string;
     if (password) updateData.password = await hash(password, 12);
 
     const user = await prisma.user.update({
@@ -83,13 +78,13 @@ export async function PUT(request, { params }) {
   }
 }
 
-export async function DELETE(request, { params }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     if (!(await isAdmin(request))) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
-    const { id } = params;
+    const { id } = await params;
 
     const existingUser = await prisma.user.findFirst({ where: { id } });
     if (!existingUser) {

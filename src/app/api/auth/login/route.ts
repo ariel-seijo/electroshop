@@ -1,12 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { verify } from "@node-rs/bcrypt";
 import { getIronSession } from "iron-session";
 import { prisma } from "@/lib/prisma";
-import { sessionOptions } from "@/lib/session";
+import { sessionOptions, SessionData } from "@/lib/session";
 import { loginSchema, formatZodError } from "@/lib/validations";
 import { checkRateLimit, getClientIP } from "@/lib/rate-limit";
 
-export async function POST(request) {
+export async function POST(request: NextRequest) {
   try {
     const ip = getClientIP(request);
     const rateCheck = checkRateLimit(ip, "login");
@@ -51,7 +51,7 @@ export async function POST(request) {
       { status: 200, headers: { "Content-Type": "application/json" } }
     );
 
-    const session = await getIronSession(request, res, sessionOptions);
+    const session = await getIronSession<SessionData>(request, res, sessionOptions);
     session.userId = user.id;
     session.email = user.email;
     session.role = user.role;

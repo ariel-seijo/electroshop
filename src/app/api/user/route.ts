@@ -1,12 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getIronSession } from "iron-session";
 import { revalidateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { sessionOptions } from "@/lib/session";
+import { sessionOptions, SessionData } from "@/lib/session";
 
-export async function DELETE(request) {
+export async function DELETE(request: NextRequest) {
   try {
-    const session = await getIronSession(request, new NextResponse(), sessionOptions);
+    const session = await getIronSession<SessionData>(request, new NextResponse(), sessionOptions);
 
     if (!session.userId) {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
