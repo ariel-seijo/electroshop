@@ -5,5 +5,9 @@ interface SectionTitleProps {
 }
 
 export default function SectionTitle({ children }: SectionTitleProps) {
-  return <h2 className={styles.title}>{children}</h2>;
+  return (
+    <div className={styles.titleContainer}>
+      <h2 className={styles.sectionTitle}>{children}</h2>
+    </div>
+  );
 }

@@ -33,12 +33,12 @@ export default async function Home() {
     return (
         <>
             <Slider />
-            <section className="featured">
+            <section>
                 <SectionTitle>PRODUCTOS DESTACADOS</SectionTitle>
                 <FeaturedCarouselDynamic products={serializeProductsForClient(products)} />
             </section>
             <PromoBanner />
-            <section className="brands">
+            <section>
                 <SectionTitle>MARCAS QUE TRABAJAMOS</SectionTitle>
                 <Brands />
             </section>

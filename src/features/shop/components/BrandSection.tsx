@@ -1,16 +1,32 @@
 import styles from "../styles/BrandSection.module.css";
 
-export default function Brands() {
+const brands = [
+  "Intel",
+  "AMD",
+  "NVIDIA",
+  "ASUS",
+  "MSI",
+  "Gigabyte",
+  "Corsair",
+  "Samsung",
+  "Kingston",
+  "Logitech",
+  "HyperX",
+  "Razer",
+  "Cooler Master",
+  "Western Digital",
+  "Seagate",
+  "Acer",
+];
+
+export default function BrandSection() {
   return (
-    <section className={styles.section}>
-      <h2 className={styles.title}>Marcas</h2>
-      <div className={styles.grid}>
-        {["NVIDIA", "AMD", "INTEL", "CORSAIR", "KINGSTON", "SEAGATE"].map((brand) => (
-          <div key={brand} className={styles.brand}>
-            {brand}
-          </div>
-        ))}
-      </div>
-    </section>
+    <div className={styles.brandsContainer}>
+      {brands.map((brand) => (
+        <div className={styles.brandBox} key={brand}>
+          <h2>{brand.toUpperCase()}</h2>
+        </div>
+      ))}
+    </div>
   );
 }
