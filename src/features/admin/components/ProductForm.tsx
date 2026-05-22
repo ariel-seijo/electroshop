@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Star, Check, X as XIcon, Wand2, Loader2 } from "lucide-react";
 import {
   createProductAction,
@@ -16,7 +16,73 @@ import ThumbnailUploader from "./ThumbnailUploader";
 import ProductCardPreview from "./ProductCardPreview";
 import styles from "./ProductForm.module.css";
 
-const initialFormState = {
+interface FormData {
+  title: string;
+  slug: string;
+  description: string;
+  price: string;
+  oldPrice: string;
+  stock: string;
+  brand: string;
+  sku: string;
+  categoryId: string;
+  thumbnail: string;
+  images: string[];
+  rating: string;
+  sold: string;
+  featured: boolean;
+  active: boolean;
+}
+
+interface ProductRecord {
+  id: number;
+  title: string;
+  slug: string;
+  description: string | null;
+  price: number;
+  oldPrice: number | null;
+  stock: number;
+  brand: string;
+  sku: string | null;
+  categoryId: number | null;
+  thumbnail: string | null;
+  images: string[] | null;
+  imagesRel?: { id: string; url: string; format: string; width: number; height: number }[];
+  rating: number;
+  sold: number;
+  featured: boolean;
+  active: boolean;
+  category?: { name: string } | null;
+}
+
+interface Category {
+  id: number;
+  name: string;
+}
+
+interface ProductFormProps {
+  mode: "create" | "edit";
+  productId?: number | null;
+  product?: ProductRecord | null;
+  categories: Category[];
+  brands?: string[];
+  onRefreshProduct?: () => void;
+  onSuccess?: () => void;
+  onCancel?: () => void;
+}
+
+type FormErrors = Partial<Record<keyof FormData, string>>;
+
+interface GalleryImage {
+  id: string;
+  url: string;
+  format: string;
+  width: number;
+  height: number;
+  _legacy?: boolean;
+}
+
+const initialFormState: FormData = {
   title: "",
   slug: "",
   description: "",
@@ -43,11 +109,11 @@ export default function ProductForm({
   onRefreshProduct,
   onSuccess,
   onCancel,
-}) {
+}: ProductFormProps) {
   const isEdit = mode === "edit";
   const toast = useToastStore((s) => s.toast);
 
-  const [formData, setFormData] = useState(() => {
+  const [formData, setFormData] = useState<FormData>(() => {
     if (product) {
       return {
         title: product.title || "",
@@ -70,16 +136,16 @@ export default function ProductForm({
     return initialFormState;
   });
 
-  const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isGeneratingSku, setIsGeneratingSku] = useState(false);
-  const [formVersion, setFormVersion] = useState(0);
-  const [createdProductId, setCreatedProductId] = useState(null);
-  const [localProduct, setLocalProduct] = useState(null);
-  const [galleryOrder, setGalleryOrder] = useState(null);
-  const [isCustomBrand, setIsCustomBrand] = useState(() => {
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isGeneratingSku, setIsGeneratingSku] = useState<boolean>(false);
+  const [formVersion, setFormVersion] = useState<number>(0);
+  const [createdProductId, setCreatedProductId] = useState<number | null>(null);
+  const [localProduct, setLocalProduct] = useState<ProductRecord | null>(null);
+  const [galleryOrder, setGalleryOrder] = useState<string[] | null>(null);
+  const [isCustomBrand, setIsCustomBrand] = useState<boolean>(() => {
     if (product && brands.length > 0) {
-      return product.brand && !brands.includes(product.brand);
+      return !!product.brand && !brands.includes(product.brand);
     }
     return false;
   });
@@ -89,7 +155,7 @@ export default function ProductForm({
 
   const productImagesRel = effectiveProduct?.imagesRel || [];
   const productImagesLegacy = effectiveProduct?.images || [];
-  const productImages =
+  const productImages: GalleryImage[] =
     productImagesRel.length > 0
       ? productImagesRel
       : productImagesLegacy.map((url, i) => ({
@@ -103,34 +169,46 @@ export default function ProductForm({
 
   /* ── Field change ── */
 
-  function handleChange(e) {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-    if (errors[name]) {
+  function handleChange(
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) {
+    const target = e.target;
+    const name = target.name;
+    const value: string | boolean =
+      target instanceof HTMLInputElement && target.type === "checkbox"
+        ? target.checked
+        : target.value;
+    setFormData(
+      (prev) =>
+        ({
+          ...prev,
+          [name]: value,
+        } as FormData)
+    );
+    const key = name as keyof FormData;
+    if (errors[key]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   }
 
-  function handleToggle(key) {
-    setFormData((prev) => ({ ...prev, [key]: !prev[key] }));
+  function handleToggle(key: "featured" | "active") {
+    setFormData((prev) => ({ ...prev, [key]: !prev[key] } as FormData));
   }
 
-  function handleRefresh() {
+  async function handleRefresh() {
     setGalleryOrder(null);
     setFormVersion((v) => v + 1);
     if (onRefreshProduct) {
       onRefreshProduct();
     } else if (createdProductId) {
-      getProductAction(createdProductId).then((res) => {
-        if (res.success) setLocalProduct(res.product);
-      });
+      const res = await getProductAction(createdProductId);
+      if ("success" in res && res.success) {
+        setLocalProduct(res.product as unknown as ProductRecord);
+      }
     }
   }
 
-  function handleBrandSelect(e) {
+  function handleBrandSelect(e: ChangeEvent<HTMLSelectElement>) {
     const value = e.target.value;
     if (value === "__custom_brand__") {
       setIsCustomBrand(true);
@@ -148,7 +226,7 @@ export default function ProductForm({
 
   /* ── Slug auto-generate ── */
 
-  function generateSlug(title) {
+  function generateSlug(title: string) {
     return title
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
@@ -185,18 +263,18 @@ export default function ProductForm({
     );
     setIsGeneratingSku(false);
 
-    if (result.error) {
+    if ("error" in result) {
       toast(result.error, "error");
     } else {
-      setFormData((prev) => ({ ...prev, sku: result.sku }));
+      setFormData((prev) => ({ ...prev, sku: result.sku } as FormData));
       toast("SKU generado", "success");
     }
   }
 
   /* ── Validation ── */
 
-  function validate() {
-    const newErrors = {};
+  function validate(): boolean {
+    const newErrors: FormErrors = {};
     if (!formData.title.trim()) newErrors.title = "El título es obligatorio";
     if (!formData.slug.trim()) newErrors.slug = "El slug es obligatorio";
     if (!formData.price || parseFloat(formData.price) <= 0)
@@ -213,7 +291,7 @@ export default function ProductForm({
 
   /* ── Submit ── */
 
-  async function handleSubmit(e) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!validate()) return;
 
@@ -229,28 +307,28 @@ export default function ProductForm({
     };
 
     const isFirstCreate = !isEdit && !createdProductId;
-    const action = isFirstCreate
-      ? createProductAction(data)
-      : updateProductAction(effectiveProductId, data);
 
-    const result = await action;
+    const result = isFirstCreate
+      ? await createProductAction(data)
+      : await updateProductAction(effectiveProductId!, data);
 
-    if (result.error) {
+    if ("error" in result) {
       toast(result.error, "error");
       setIsSubmitting(false);
       return;
     }
 
-    let productId = effectiveProductId;
+    let currentProductId = effectiveProductId;
 
     if (isFirstCreate) {
-      setCreatedProductId(result.product.id);
-      setLocalProduct(result.product);
-      productId = result.product.id;
+      const product = result.product as unknown as ProductRecord;
+      setCreatedProductId(product.id);
+      setLocalProduct(product);
+      currentProductId = product.id;
     }
 
-    if (galleryOrder && productId) {
-      await reorderProductImagesAction(productId, galleryOrder);
+    if (galleryOrder && currentProductId) {
+      await reorderProductImagesAction(currentProductId, galleryOrder);
       setGalleryOrder(null);
     }
 
@@ -269,7 +347,8 @@ export default function ProductForm({
 
   /* ── Helpers ── */
 
-  const fieldErrorId = (name) => (errors[name] ? `${name}-error` : undefined);
+  const fieldErrorId = (name: keyof FormData): string | undefined =>
+    errors[name] ? `${name}-error` : undefined;
 
   return (
     <div className={styles.layout}>
@@ -564,7 +643,7 @@ export default function ProductForm({
             <ThumbnailUploader
               key={`thumb-${formVersion}`}
               value={formData.thumbnail}
-              onChange={(url) => {
+              onChange={(url: string) => {
                 setFormData((prev) => ({ ...prev, thumbnail: url }));
                 if (errors.thumbnail) {
                   setErrors((prev) => ({ ...prev, thumbnail: "" }));
@@ -589,7 +668,7 @@ export default function ProductForm({
                 onReorder={setGalleryOrder}
                 onDelete={
                   productImagesRel.length === 0
-                    ? async (imageId) => {
+                    ? async (imageId: string) => {
                         const idx = parseInt(imageId.replace("legacy-", ""));
                         const updated = [...formData.images];
                         updated.splice(idx, 1);

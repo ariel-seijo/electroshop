@@ -11,17 +11,31 @@ import styles from "./ImageUploadWidget.module.css";
 
 const SCRIPT_TIMEOUT_MS = 12000;
 
+interface ImageUploadWidgetProps {
+  productId: number | null;
+  onImagesUploaded?: () => void;
+  existingCount?: number;
+}
+
+interface CollectedImage {
+  url: string;
+  publicId: string;
+  width: number;
+  height: number;
+  format: string;
+}
+
 export default function ImageUploadWidget({
   productId,
   onImagesUploaded,
   existingCount = 0,
-}) {
+}: ImageUploadWidgetProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const [scriptError, setScriptError] = useState(false);
-  const widgetRef = useRef(null);
-  const collectedRef = useRef([]);
-  const timeoutRef = useRef(null);
+  const widgetRef = useRef<CloudinaryUploadWidget | null>(null);
+  const collectedRef = useRef<CollectedImage[]>([]);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const toast = useToastStore((s) => s.toast);
 
   const remainingSlots = Math.max(0, 10 - existingCount);
@@ -97,7 +111,7 @@ export default function ImageUploadWidget({
   }, [scriptLoaded]);
 
   const handleUploadResult = useCallback(
-    async (error, result) => {
+    async (error: Error | null, result: CloudinaryUploadWidgetResult) => {
       if (error) {
         toast("Error en la subida", "error");
         return;
@@ -105,11 +119,11 @@ export default function ImageUploadWidget({
 
       if (result.event === "success") {
         collectedRef.current.push({
-          url: result.info.secure_url,
-          publicId: result.info.public_id,
-          width: result.info.width,
-          height: result.info.height,
-          format: result.info.format,
+          url: result.info!.secure_url,
+          publicId: result.info!.public_id,
+          width: result.info!.width,
+          height: result.info!.height,
+          format: result.info!.format,
         });
       }
 
@@ -120,11 +134,11 @@ export default function ImageUploadWidget({
 
         try {
           const saveResult = await saveProductImagesAction(
-            productId,
+            productId!,
             collectedRef.current
           );
 
-          if (saveResult.error) {
+          if ("error" in saveResult) {
             toast(saveResult.error, "error");
           } else {
             toast(
@@ -164,27 +178,26 @@ export default function ImageUploadWidget({
     try {
       const sigResult = await getCloudinarySignatureAction();
 
-      if (sigResult.error) {
+      if ("error" in sigResult) {
         toast(sigResult.error, "error");
         return;
       }
 
-      const widget = window.cloudinary.createUploadWidget(
+      const widget = window.cloudinary!.createUploadWidget(
         {
           cloudName: sigResult.cloudName,
           apiKey: sigResult.apiKey,
-          uploadSignature: (callback, paramsToSign) => {
-            getCloudinarySignatureAction(paramsToSign)
-              .then((res) => {
-                if (res.error) {
-                  toast(res.error, "error");
-                  return;
-                }
-                callback(res.signature);
-              })
-              .catch(() => {
-                toast("Error al firmar la subida", "error");
-              });
+          uploadSignature: async (callback: (signature: string) => void, paramsToSign: Record<string, string | number>) => {
+            try {
+              const res = await getCloudinarySignatureAction(paramsToSign);
+              if ("error" in res) {
+                toast(res.error, "error");
+                return;
+              }
+              callback(res.signature);
+            } catch {
+              toast("Error al firmar la subida", "error");
+            }
           },
           maxFileSize: 2000000,
           resourceType: "image",

@@ -6,14 +6,19 @@ import { getCloudinarySignatureAction } from "@/features/admin/actions/imageActi
 import { useToastStore } from "@/features/toast";
 import styles from "./ThumbnailUploader.module.css";
 
-export default function ThumbnailUploader({ value, onChange }) {
+interface ThumbnailUploaderProps {
+  value?: string;
+  onChange?: (url: string) => void;
+}
+
+export default function ThumbnailUploader({ value, onChange }: ThumbnailUploaderProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const [scriptError, setScriptError] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(value || "");
   const [showUrlInput, setShowUrlInput] = useState(false);
   const [urlValue, setUrlValue] = useState("");
-  const widgetRef = useRef(null);
+  const widgetRef = useRef<CloudinaryUploadWidget | null>(null);
   const toast = useToastStore((s) => s.toast);
 
   /* ── Cloudinary script injection ── */
@@ -59,14 +64,14 @@ export default function ThumbnailUploader({ value, onChange }) {
   /* eslint-enable react-hooks/set-state-in-effect */
 
   const handleResult = useCallback(
-    (error, result) => {
+    (error: Error | null, result: CloudinaryUploadWidgetResult) => {
       if (error) {
         toast("Error en la subida", "error");
         return;
       }
 
       if (result.event === "success") {
-        const url = result.info.secure_url;
+        const url = result.info!.secure_url;
         setPreviewUrl(url);
       }
 
@@ -90,27 +95,26 @@ export default function ThumbnailUploader({ value, onChange }) {
     try {
       const sigResult = await getCloudinarySignatureAction();
 
-      if (sigResult.error) {
+      if ("error" in sigResult) {
         toast(sigResult.error, "error");
         return;
       }
 
-      const widget = window.cloudinary.createUploadWidget(
+      const widget = window.cloudinary!.createUploadWidget(
         {
           cloudName: sigResult.cloudName,
           apiKey: sigResult.apiKey,
-          uploadSignature: (callback, paramsToSign) => {
-            getCloudinarySignatureAction(paramsToSign)
-              .then((res) => {
-                if (res.error) {
-                  toast(res.error, "error");
-                  return;
-                }
-                callback(res.signature);
-              })
-              .catch(() => {
-                toast("Error al firmar la subida", "error");
-              });
+          uploadSignature: async (callback: (signature: string) => void, paramsToSign: Record<string, string | number>) => {
+            try {
+              const res = await getCloudinarySignatureAction(paramsToSign);
+              if ("error" in res) {
+                toast(res.error, "error");
+                return;
+              }
+              callback(res.signature);
+            } catch {
+              toast("Error al firmar la subida", "error");
+            }
           },
           maxFileSize: 2000000,
           resourceType: "image",
@@ -149,7 +153,7 @@ export default function ThumbnailUploader({ value, onChange }) {
     toast("URL de miniatura aplicada", "success");
   }
 
-  function handleUrlKeyDown(e) {
+  function handleUrlKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
       e.preventDefault();
       handleUrlSubmit();

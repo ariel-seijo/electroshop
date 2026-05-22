@@ -26,14 +26,57 @@ import ConfirmModal from "./ConfirmModal";
 import StockEditModal from "./StockEditModal";
 import styles from "./ProductTable.module.css";
 
-const SORTABLE_COLUMNS = [
+export interface TableProduct {
+  id: number;
+  title: string;
+  slug: string;
+  thumbnail: string | null;
+  sku: string | null;
+  price: number;
+  oldPrice: number | null;
+  stock: number;
+  sold: number;
+  active: boolean;
+  featured: boolean;
+  createdAt: string | Date;
+  category?: { name: string } | null;
+}
+
+interface ModalState {
+  isOpen: boolean;
+  product: TableProduct | null;
+}
+
+interface SortColumn {
+  key: string;
+  label: string;
+}
+
+interface SortIconProps {
+  column: string;
+  sort: string;
+  order: "asc" | "desc";
+}
+
+interface ProductTableProps {
+  products: TableProduct[];
+  total: number;
+  page: number;
+  totalPages: number;
+  sort: string;
+  order: "asc" | "desc";
+  onSort: (field: string) => void;
+  onPage: (page: number) => void;
+}
+
+const SORTABLE_COLUMNS: SortColumn[] = [
   { key: "createdAt", label: "Fecha" },
   { key: "price", label: "Precio" },
   { key: "stock", label: "Inventario" },
   { key: "sold", label: "Vendidos" },
 ];
 
-function SortIcon({ column, sort, order }) {
+function SortIcon({ column, sort, order }: SortIconProps) {
   if (sort !== column) {
     return <ArrowUp size={12} className={styles.sortIconInactive} aria-hidden="true" />;
   }
@@ -44,13 +87,13 @@ function SortIcon({ column, sort, order }) {
   );
 }
 
-function getStockClass(stock) {
+function getStockClass(stock: number): string {
   if (stock === 0) return styles.badgeDanger;
   if (stock < 10) return styles.badgeWarning;
   return styles.badgeSuccess;
 }
 
-function getStockLabel(stock) {
+function getStockLabel(stock: number): string {
   if (stock === 0) return "Agotado";
   if (stock < 10) return `Bajo (${stock})`;
   return `Stock (${stock})`;
@@ -65,14 +108,14 @@ export default function ProductTable({
   order,
   onSort,
   onPage,
-}) {
+}: ProductTableProps) {
   const toast = useToastStore((s) => s.toast);
 
   /* ── Active modal ── */
-  const [activeModal, setActiveModal] = useState({ isOpen: false, product: null });
+  const [activeModal, setActiveModal] = useState<ModalState>({ isOpen: false, product: null });
   const [confirmingActive, setConfirmingActive] = useState(false);
 
-  function handleActiveClick(product) {
+  function handleActiveClick(product: TableProduct) {
     setActiveModal({ isOpen: true, product });
   }
 
@@ -84,7 +127,7 @@ export default function ProductTable({
     setConfirmingActive(false);
     setActiveModal({ isOpen: false, product: null });
 
-    if (result.error) {
+    if ("error" in result) {
       toast(result.error, "error");
     } else {
       toast(newActive ? "Producto activado" : "Producto desactivado", "success");
@@ -96,10 +139,10 @@ export default function ProductTable({
   }
 
   /* ── Featured modal ── */
-  const [featuredModal, setFeaturedModal] = useState({ isOpen: false, product: null });
+  const [featuredModal, setFeaturedModal] = useState<ModalState>({ isOpen: false, product: null });
   const [confirmingFeatured, setConfirmingFeatured] = useState(false);
 
-  function handleFeaturedClick(product) {
+  function handleFeaturedClick(product: TableProduct) {
     setFeaturedModal({ isOpen: true, product });
   }
 
@@ -111,7 +154,7 @@ export default function ProductTable({
     setConfirmingFeatured(false);
     setFeaturedModal({ isOpen: false, product: null });
 
-    if (result.error) {
+    if ("error" in result) {
       toast(result.error, "error");
     } else {
       toast(newFeatured ? "Producto destacado" : "Producto no destacado", "success");
@@ -123,11 +166,11 @@ export default function ProductTable({
   }
 
   /* ── Stock modal ── */
-  const [stockModal, setStockModal] = useState({ isOpen: false, product: null });
+  const [stockModal, setStockModal] = useState<ModalState>({ isOpen: false, product: null });
   const [stockValue, setStockValue] = useState("");
   const [confirmingStock, setConfirmingStock] = useState(false);
 
-  function handleStockClick(product) {
+  function handleStockClick(product: TableProduct) {
     setStockValue(product.stock.toString());
     setStockModal({ isOpen: true, product });
   }
@@ -144,7 +187,7 @@ export default function ProductTable({
     setConfirmingStock(false);
     setStockModal({ isOpen: false, product: null });
 
-    if (result.error) {
+    if ("error" in result) {
       toast(result.error, "error");
     } else {
       toast("Stock actualizado", "success");
@@ -156,10 +199,10 @@ export default function ProductTable({
   }
 
   /* ── Delete ── */
-  const [deleteModal, setDeleteModal] = useState({ isOpen: false, product: null });
+  const [deleteModal, setDeleteModal] = useState<ModalState>({ isOpen: false, product: null });
   const [isDeleting, setIsDeleting] = useState(false);
 
-  function handleDeleteClick(product) {
+  function handleDeleteClick(product: TableProduct) {
     setDeleteModal({ isOpen: true, product });
   }
 
@@ -170,7 +213,7 @@ export default function ProductTable({
     setIsDeleting(false);
     setDeleteModal({ isOpen: false, product: null });
 
-    if (result.error) {
+    if ("error" in result) {
       toast(result.error, "error");
     } else {
       toast("Producto eliminado", "success");
@@ -578,7 +621,7 @@ export default function ProductTable({
 
       <StockEditModal
         isOpen={stockModal.isOpen}
-        product={stockModal.product}
+        product={stockModal.product ? { title: stockModal.product.title, stock: stockModal.product.stock } : null}
         value={stockValue}
         onChange={setStockValue}
         onConfirm={handleStockConfirm}

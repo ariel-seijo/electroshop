@@ -7,11 +7,37 @@ import Link from "next/link";
 import ProductForm from "@/features/admin/components/ProductForm";
 import { useToastStore } from "@/features/toast";
 
+interface ProductRecord {
+  id: number;
+  title: string;
+  slug: string;
+  description: string | null;
+  price: number;
+  oldPrice: number | null;
+  stock: number;
+  brand: string;
+  sku: string | null;
+  categoryId: number | null;
+  thumbnail: string | null;
+  images: string[] | null;
+  imagesRel?: { id: string; url: string; format: string; width: number; height: number }[];
+  rating: number;
+  sold: number;
+  featured: boolean;
+  active: boolean;
+  category?: { name: string } | null;
+}
+
+interface Category {
+  id: number;
+  name: string;
+}
+
 export default function EditProductPage() {
   const params = useParams<{ id: string }>();
-  const [product, setProduct] = useState<Record<string, unknown> | null>(null);
-  const [categories, setCategories] = useState<Array<Record<string, unknown>>>([]);
-  const [brands, setBrands] = useState<unknown[]>([]);
+  const [product, setProduct] = useState<ProductRecord | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [brands, setBrands] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const router = useRouter();
@@ -28,16 +54,16 @@ export default function EditProductPage() {
       ]);
 
       if (!productRes.ok) throw new Error("Error al obtener el producto");
-      const productData = await productRes.json();
+      const productData = await productRes.json() as ProductRecord;
       setProduct(productData);
 
       if (categoriesRes.ok) {
-        const categoriesData = await categoriesRes.json();
+        const categoriesData = await categoriesRes.json() as Category[];
         setCategories(categoriesData);
       }
 
       if (brandsRes.ok) {
-        const brandsData = await brandsRes.json();
+        const brandsData = await brandsRes.json() as string[];
         setBrands(brandsData);
       }
     } catch (err) {
@@ -80,7 +106,7 @@ export default function EditProductPage() {
       <div className="admin-card">
         <div className="admin-card-header">
           <h3 className="admin-card-title">
-            Editar producto: {(product as Record<string, unknown>)?.title as string}
+            Editar producto: {product?.title}
           </h3>
         </div>
         <ProductForm
@@ -88,7 +114,7 @@ export default function EditProductPage() {
           productId={product ? parseInt(productId) : undefined}
           product={product}
           categories={categories}
-          brands={brands as never}
+          brands={brands}
           onRefreshProduct={fetchProduct}
           onSuccess={handleSuccess}
           onCancel={handleSuccess}

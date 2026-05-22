@@ -10,6 +10,7 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
+import type { DragEndEvent } from "@dnd-kit/core";
 import {
   SortableContext,
   useSortable,
@@ -23,7 +24,29 @@ import {
 import { useToastStore } from "@/features/toast";
 import styles from "./AdminGallery.module.css";
 
-function SortableImage({ img, isDeleting, onDelete }) {
+interface GalleryImage {
+  id: string;
+  url: string;
+  format: string;
+  width: number;
+  height: number;
+  _legacy?: boolean;
+}
+
+interface AdminGalleryProps {
+  images: GalleryImage[];
+  onImageDeleted?: () => void;
+  onDelete?: (imageId: string) => Promise<void>;
+  onReorder?: (ids: string[]) => void;
+}
+
+interface SortableImageProps {
+  img: GalleryImage;
+  isDeleting: boolean;
+  onDelete: (imageId: string, isLegacy: boolean) => void;
+}
+
+function SortableImage({ img, isDeleting, onDelete }: SortableImageProps) {
   const {
     attributes,
     listeners,
@@ -35,7 +58,7 @@ function SortableImage({ img, isDeleting, onDelete }) {
 
   const isLegacy = img._legacy === true;
 
-  const style = {
+  const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.4 : 1,
@@ -99,9 +122,9 @@ function SortableImage({ img, isDeleting, onDelete }) {
   );
 }
 
-export default function AdminGallery({ images, onImageDeleted, onDelete, onReorder }) {
-  const [items, setItems] = useState(images);
-  const [deletingId, setDeletingId] = useState(null);
+export default function AdminGallery({ images, onImageDeleted, onDelete, onReorder }: AdminGalleryProps) {
+  const [items, setItems] = useState<GalleryImage[]>(images);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const toast = useToastStore((s) => s.toast);
 
   const sensors = useSensors(
@@ -122,15 +145,18 @@ export default function AdminGallery({ images, onImageDeleted, onDelete, onReord
     }
   }, [images]);
 
-  async function handleDelete(imageId, isLegacy) {
+  async function handleDelete(imageId: string, isLegacy: boolean) {
     if (isLegacy && onDelete) {
       setDeletingId(imageId);
       try {
         await onDelete(imageId);
         toast("Imagen removida", "success");
         onImageDeleted?.();
-      } catch (err) {
-        toast(err.message || "Error al remover la imagen", "error");
+      } catch (err: unknown) {
+        toast(
+          err instanceof Error ? err.message : "Error al remover la imagen",
+          "error"
+        );
       } finally {
         setDeletingId(null);
       }
@@ -142,7 +168,7 @@ export default function AdminGallery({ images, onImageDeleted, onDelete, onReord
     try {
       const result = await deleteProductImageAction(imageId);
 
-      if (result.error) {
+      if ("error" in result) {
         toast(result.error, "error");
       } else {
         toast("Imagen eliminada", "success");
@@ -158,7 +184,7 @@ export default function AdminGallery({ images, onImageDeleted, onDelete, onReord
     }
   }
 
-  function handleDragEnd(event) {
+  function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
 
     if (!over || active.id === over.id) return;
