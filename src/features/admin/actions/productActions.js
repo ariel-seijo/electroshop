@@ -240,7 +240,7 @@ export async function updateProductStockAction(id, stock) {
 export async function generateSkuAction(categoryId, brand, title) {
   try {
     await requireAdmin();
-    const sku = await productService.generateSku(categoryId, brand, title);
+    const sku = await productService.generateSku(parseInt(categoryId), brand, title);
     return { success: true, sku };
   } catch (error) {
     if (error.message === "Unauthorized") {
