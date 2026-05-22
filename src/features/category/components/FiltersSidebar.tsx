@@ -32,16 +32,16 @@ export default function FiltersSidebar({
 
   return (
     <aside className={styles.sidebar}>
-      <h3 className={styles.title}>Filtros</h3>
+      <h3 className={styles.filterTitle}>Filtros</h3>
 
       {brands.length > 0 && (
-        <div className={styles.section}>
-          <h4 className={styles.sectionTitle}>Marcas</h4>
+        <div className={styles.filterGroup}>
+          <h4 className={styles.filterTitle}>Marcas</h4>
           <ul className={styles.brandList}>
             <li>
               <Link
                 href={`/category/${name}`}
-                className={cn(styles.brandLink, !brand && styles.active)}
+                className={cn(styles.brandLink, !brand && styles.brandLinkActive)}
               >
                 Todas
               </Link>
@@ -50,7 +50,7 @@ export default function FiltersSidebar({
               <li key={b.brand}>
                 <Link
                   href={buildCategoryUrl(name, baseParams, { brand: b.brand, page: "1" })}
-                  className={cn(styles.brandLink, brand === b.brand && styles.active)}
+                  className={cn(styles.brandLink, brand === b.brand && styles.brandLinkActive)}
                 >
                   {b.brand}
                 </Link>
@@ -61,9 +61,9 @@ export default function FiltersSidebar({
       )}
 
       {minPrice < maxPrice && (
-        <div className={styles.section}>
-          <h4 className={styles.sectionTitle}>Precio</h4>
-          <div className={styles.priceInputs}>
+        <div className={styles.filterGroup}>
+          <h4 className={styles.filterTitle}>Precio</h4>
+          <div className={styles.priceInputGroup}>
             <input
               type="number"
               placeholder={`${minPrice}`}
@@ -84,7 +84,7 @@ export default function FiltersSidebar({
                 }
               }}
             />
-            <span className={styles.priceDash}>-</span>
+            <span className={styles.priceInputSep}>-</span>
             <input
               type="number"
               placeholder={`${maxPrice}`}

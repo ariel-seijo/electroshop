@@ -109,7 +109,38 @@
 }
 
 @media (max-width: 700px) {
-  .sortDropdown {
+.select {
+  min-width: 160px;
+  background: rgb(18, 18, 18);
+  border: 1px solid rgb(44, 44, 44);
+  color: rgb(200, 200, 200);
+  padding: 0.6rem 2rem 0.6rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238c8c8c'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  transition: border-color 0.2s ease;
+}
+
+.select:hover {
+  border-color: #24abf3;
+}
+
+.select:focus {
+  outline: none;
+  border-color: #24abf3;
+}
+
+.select:focus-visible {
+  outline: 2px solid #24abf3;
+  outline-offset: 2px;
+}
+
+.sortDropdown {
     width: 100%;
     justify-content: space-between;
   }

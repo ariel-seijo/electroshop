@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import styles from "../components/ViewSwitcher.module.css";
+import styles from "./ViewSwitcher.module.css";
 
 interface ViewSwitcherProps {
   resolvedView?: string;
