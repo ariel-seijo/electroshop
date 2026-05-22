@@ -1,11 +1,4 @@
-/**
- * Strips non-essential fields from a Prisma Product before passing it
- * across the RSC → Client boundary. Reduces the serialized HTML payload.
- *
- * Fields kept: everything the storefront client components render.
- * Fields dropped: heavy arrays (images[]), timestamps, relations (cartItems, orderItems).
- */
-export function serializeProductForClient(product) {
+export function serializeProductForClient<T extends Record<string, unknown>>(product: T): Record<string, unknown> | T {
   if (!product) return product;
 
   return {
@@ -23,10 +16,10 @@ export function serializeProductForClient(product) {
     sold: product.sold,
     featured: product.featured,
     category: product.category
-      ? { id: product.category.id, name: product.category.name }
+      ? { id: (product.category as Record<string, unknown>).id, name: (product.category as Record<string, unknown>).name }
       : null,
     imagesRel: Array.isArray(product.imagesRel)
-      ? product.imagesRel.map((img) => ({
+      ? (product.imagesRel as Array<Record<string, unknown>>).map((img) => ({
           url: img.url,
           width: img.width,
           height: img.height,
@@ -37,7 +30,7 @@ export function serializeProductForClient(product) {
   };
 }
 
-export function serializeProductsForClient(products) {
+export function serializeProductsForClient<T extends Record<string, unknown>>(products: T[]): Record<string, unknown>[] | T[] {
   if (!Array.isArray(products)) return products;
   return products.map(serializeProductForClient);
 }
