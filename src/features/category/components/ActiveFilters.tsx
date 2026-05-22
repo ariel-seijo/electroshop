@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { X } from "lucide-react";
 
 interface ActiveFiltersProps {
   name: string;
@@ -9,48 +8,48 @@ interface ActiveFiltersProps {
   max: string;
 }
 
+const sortLabels: Record<string, string> = {
+  asc: "Menor precio",
+  desc: "Mayor precio",
+  popular: "Más vendidos",
+  rating: "Mejor valorados",
+};
+
 export default function ActiveFilters({ name, sort, brand, min, max }: ActiveFiltersProps) {
-  const hasFilters = sort || brand || min || max;
+  const filters: { label: string; href: string }[] = [];
 
-  if (!hasFilters) return null;
+  if (sort && sort !== "recent") {
+    filters.push({
+      label: sortLabels[sort],
+      href: `/category/${name}?brand=${brand}&min=${min}&max=${max}`,
+    });
+  }
 
-  const buildClearUrl = (remove: Record<string, string>) => {
-    const params = new URLSearchParams();
-    const keeps: Record<string, string> = { sort, brand, min, max, ...remove };
-    if (keeps.sort && keeps.sort !== "recent") params.set("sort", keeps.sort);
-    if (keeps.brand) params.set("brand", keeps.brand);
-    if (keeps.min) params.set("min", keeps.min);
-    if (keeps.max) params.set("max", keeps.max);
-    const qs = params.toString();
-    return `/category/${name}${qs ? `?${qs}` : ""}`;
-  };
+  if (brand) {
+    filters.push({
+      label: brand,
+      href: `/category/${name}?sort=${sort}&min=${min}&max=${max}`,
+    });
+  }
+
+  if (min || max) {
+    filters.push({
+      label: `$${min || 0} - $${max || "∞"}`,
+      href: `/category/${name}?sort=${sort}&brand=${brand}`,
+    });
+  }
+
+  if (filters.length === 0) {
+    return null;
+  }
 
   return (
-    <div className="flex flex-wrap gap-2 mb-4">
-      {sort && sort !== "recent" && (
-        <Link href={buildClearUrl({ sort: "" })} className="inline-flex items-center gap-1 bg-gray-800 px-2 py-1 rounded text-xs text-gray-300 hover:bg-gray-700">
-          {sort === "asc" ? "Precio: menor a mayor" : sort === "desc" ? "Precio: mayor a menor" : sort === "popular" ? "Más vendidos" : "Mejor rating"}
-          <X size={12} />
+    <div className="activeFilters">
+      {filters.map((item) => (
+        <Link key={item.label} href={item.href} className="filterChip">
+          {item.label} ✕
         </Link>
-      )}
-      {brand && (
-        <Link href={buildClearUrl({ brand: "" })} className="inline-flex items-center gap-1 bg-gray-800 px-2 py-1 rounded text-xs text-gray-300 hover:bg-gray-700">
-          {brand}
-          <X size={12} />
-        </Link>
-      )}
-      {min && (
-        <Link href={buildClearUrl({ min: "" })} className="inline-flex items-center gap-1 bg-gray-800 px-2 py-1 rounded text-xs text-gray-300 hover:bg-gray-700">
-          Min: ${min}
-          <X size={12} />
-        </Link>
-      )}
-      {max && (
-        <Link href={buildClearUrl({ max: "" })} className="inline-flex items-center gap-1 bg-gray-800 px-2 py-1 rounded text-xs text-gray-300 hover:bg-gray-700">
-          Max: ${max}
-          <X size={12} />
-        </Link>
-      )}
+      ))}
     </div>
   );
 }
