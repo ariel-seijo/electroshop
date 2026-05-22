@@ -31,7 +31,7 @@ import { Cart } from "@/features/cart";
 
 export default function Navbar() {
   const [search, setSearch] = useState("");
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState<Array<{ id: number; slug: string; title: string; thumbnail: string; price: number }>>([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -49,20 +49,20 @@ export default function Navbar() {
   const initialized = useAuthStore((s) => s.initialized);
   const toast = useToastStore((s) => s.toast);
 
-  const menuRef = useRef(null);
-  const searchRef = useRef(null);
-  const mobileSearchInputRef = useRef(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const mobileSearchInputRef = useRef<HTMLInputElement>(null);
 
   const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   const isAdmin = user?.role === "ADMIN";
   const displayName = user?.name || user?.email?.split("@")[0];
 
-  const isActive = (href) => pathname === href;
+  const isActive = (href: string) => pathname === href;
 
   const debouncedSearch = useDebounce(search, 300);
 
-  const fetchResults = useCallback(async (term) => {
+  const fetchResults = useCallback(async (term: string) => {
     if (!term.trim()) {
       setResults([]);
       setHasSearched(false);
@@ -91,11 +91,11 @@ export default function Navbar() {
   }, [debouncedSearch, fetchResults]);
 
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setShowUserMenu(false);
       }
-      if (searchRef.current && !searchRef.current.contains(event.target)) {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         setShowDropdown(false);
       }
     }
@@ -104,7 +104,7 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    function handleEscape(e) {
+    function handleEscape(e: KeyboardEvent) {
       if (e.key === "Escape") {
         setMobileMenuOpen(false);
         setMobileSearchOpen(false);
