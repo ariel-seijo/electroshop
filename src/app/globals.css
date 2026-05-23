@@ -342,6 +342,10 @@
       --admin-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
       --admin-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
     }
+
+    [data-admin-root] {
+      --admin-header-height: 56px;
+    }
   }
 
   [data-admin-root] *,
@@ -356,6 +360,14 @@
   [data-admin-root] svg {
     max-width: 100%;
     height: auto;
+  }
+
+  body:has([data-admin-root="true"]) {
+    background: rgb(8, 8, 8);
+  }
+
+  body:has([data-admin-root="true"])::before {
+    display: none;
   }
 }
 

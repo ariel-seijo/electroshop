@@ -4,18 +4,17 @@ import Breadcrumbs from "./Breadcrumbs";
 import AdminSearchbar from "./AdminSearchbar";
 import NotificationBell from "./NotificationBell";
 import AdminProfileMenu from "./AdminProfileMenu";
-import headerStyles from "./AdminHeader.module.css";
 
 export default async function AdminHeader() {
   const notifications = await getAdminNotifications();
 
   return (
-    <div className={headerStyles.inner}>
-      <div className={headerStyles.left}>
+    <div className="flex items-center flex-1 min-w-0 h-full gap-4">
+      <div className="flex-1 min-w-0 flex items-center">
         <Breadcrumbs />
       </div>
 
-      <div className={headerStyles.right}>
+      <div className="flex items-center gap-2 shrink-0">
         <AdminSearchbar />
 
         <Suspense fallback={null}>
