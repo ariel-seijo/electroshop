@@ -85,6 +85,55 @@
   display: none;
 }
 
+.title {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--admin-primary-glow);
+  margin: 0;
+}
+
+.list {
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.section {
+  /* logical group container */
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px 8px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--admin-muted);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.sectionHeader:not(:first-child) {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sectionIconLow {
+  color: #f59e0b;
+  flex-shrink: 0;
+}
+
+.sectionIconOrder {
+  color: var(--admin-primary-glow);
+  flex-shrink: 0;
+}
+
+.sectionLabel {
+  /* inherits styles from sectionHeader */
+}
+
 .item {
   padding: 12px 14px;
   font-size: 0.78rem;
@@ -203,6 +252,11 @@
   font-size: 0.78rem;
   color: rgb(120, 120, 120);
   text-align: center;
+}
+
+.emptyIcon {
+  margin-bottom: 8px;
+  opacity: 0.3;
 }
 
 /* ---- Mobile backdrop + panel ---- */

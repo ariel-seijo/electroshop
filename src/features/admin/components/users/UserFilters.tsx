@@ -73,62 +73,60 @@ export default function UserFilters({ total }: UserFiltersProps) {
   }
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.row}>
-        <div className={styles.searchGroup}>
-          <Search size={16} className={styles.searchIcon} aria-hidden="true" />
-          <input
-            type="text"
-            value={searchInput}
-            onChange={handleSearchChange}
-            placeholder="Buscar por nombre o email..."
-            className={styles.searchInput}
-            aria-label="Buscar usuarios"
-          />
-          {searchInput && (
-            <button
-              type="button"
-              onClick={handleClearSearch}
-              className={styles.clearBtn}
-              aria-label="Limpiar búsqueda"
-            >
-              <X size={14} />
-            </button>
-          )}
-        </div>
-
-        <select
-          value={paramStatus}
-          onChange={handleStatusChange}
-          className={styles.select}
-          aria-label="Filtrar por estado"
-        >
-          {STATUS_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
-
-        <select
-          value={paramRole}
-          onChange={handleRoleChange}
-          className={styles.select}
-          aria-label="Filtrar por rol"
-        >
-          {ROLE_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
-
-        {total !== undefined && (
-          <span className={styles.total}>
-            {total} {total === 1 ? "usuario" : "usuarios"}
-          </span>
+    <div className={styles.filtersRow}>
+      <div className={styles.searchWrapper}>
+        <Search size={16} className={styles.searchIcon} aria-hidden="true" />
+        <input
+          type="text"
+          value={searchInput}
+          onChange={handleSearchChange}
+          placeholder="Buscar por nombre o email..."
+          className={styles.searchInput}
+          aria-label="Buscar usuarios"
+        />
+        {searchInput && (
+          <button
+            type="button"
+            onClick={handleClearSearch}
+            className={styles.clearBtn}
+            aria-label="Limpiar búsqueda"
+          >
+            <X size={14} />
+          </button>
         )}
       </div>
+
+      <select
+        value={paramStatus}
+        onChange={handleStatusChange}
+        className={styles.filterSelect}
+        aria-label="Filtrar por estado"
+      >
+        {STATUS_OPTIONS.map((opt) => (
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
+          </option>
+        ))}
+      </select>
+
+      <select
+        value={paramRole}
+        onChange={handleRoleChange}
+        className={styles.filterSelect}
+        aria-label="Filtrar por rol"
+      >
+        {ROLE_OPTIONS.map((opt) => (
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
+          </option>
+        ))}
+      </select>
+
+      {total !== undefined && (
+        <span className={styles.resultCount}>
+          {total} {total === 1 ? "usuario" : "usuarios"}
+        </span>
+      )}
     </div>
   );
 }

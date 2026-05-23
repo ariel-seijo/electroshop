@@ -2,6 +2,19 @@
 
 > Generated during incremental TS migration. Keep this file updated as each layer is completed.
 
+## Strict Rule: Always Ask Before Modifying Repository State
+
+**NEVER execute any of the following without explicit user authorization:**
+- `git commit`
+- `git merge`
+- `git push`
+- `git reset`
+- Any operation that modifies the repository history or remote state
+
+This is non-negotiable. No exceptions. Ask first.
+
+---
+
 ## Overview
 
 Migrating a production Next.js 16 (App Router) e-commerce project from plain JavaScript to TypeScript using a **bottom-up, dependency-free approach**. Runtime compatibility must be preserved at every step.
@@ -168,16 +181,13 @@ npm run lint               # ESLint must still pass
 - [x] Phase 2 Layer 4 — Checkout + Orders features
 - [x] Phase 2 Layer 5 — Products + Category + Shop features
 - [x] Phase 2 Layer 6 — Admin services + barrels + global components
-- [x] Phase 2 Layer 7 — API routes (24 files) + Pages (~50 files)
-  - Admin components (JSX) — 43 files remaining under allowJs
-  - Orders components (JSX) — 11 files remaining
-  - Feature leftovers (JSX) — 2 files
-  - Admin re-exports (JSX) — 5 files
-  - Admin actions (JS) — 3 files
-  - Admin services (JS) — 1 file
-  - Total: 55 JS/JSX files tolerated under allowJs (all presentational)
+- [x] Phase 2 Layer 7 — API routes + Pages
+- [x] Batch 1 — 14 foundational primitives (modals, sidebar, skeletons...)
+- [x] Batch 2 — 17 core admin CRUD components (ProductForm, ProductTable, UserTable...)
+- [x] Batch 3 — 21 dashboard, orders, and re-export files
+- [x] Sub-batch — 3 admin action files (productActions, userActions, imageActions)
 
-**156 TypeScript files · 55 JavaScript files · 74% migration complete**
+**100% migration complete — 0 JavaScript files · 213 TypeScript files**
 
 ---
 

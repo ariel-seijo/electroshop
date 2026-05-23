@@ -40,68 +40,66 @@ export default function ProductFilters({
   onChange,
 }: ProductFiltersProps) {
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.row}>
+    <div className={styles.bar}>
+      <select
+        value={categoryId}
+        onChange={(e) => onChange("categoryId", e.target.value)}
+        className={styles.select}
+        aria-label="Filtrar por categoría"
+      >
+        <option value="">Todas las categorías</option>
+        {categories.map((cat) => (
+          <option key={cat.id} value={String(cat.id)}>
+            {cat.name}
+          </option>
+        ))}
+      </select>
+
+      <div className={styles.pills}>
+        {STATUS_OPTIONS.map((opt) => (
+          <button
+            key={opt.value}
+            type="button"
+            className={`${styles.pill} ${status === opt.value ? styles.pillActive : ""}`}
+            onClick={() => onChange("status", opt.value)}
+            aria-pressed={status === opt.value}
+          >
+            {opt.label}
+          </button>
+        ))}
+      </div>
+
+      <button
+        type="button"
+        className={`${styles.pill} ${featured === "true" ? styles.pillActive : ""}`}
+        onClick={() => onChange("featured", featured === "true" ? "" : "true")}
+        aria-pressed={featured === "true"}
+      >
+        Destacados
+      </button>
+
+      <div className={styles.sortRow}>
         <select
-          value={categoryId}
-          onChange={(e) => onChange("categoryId", e.target.value)}
+          value={sort}
+          onChange={(e) => onChange("sort", e.target.value)}
           className={styles.select}
-          aria-label="Filtrar por categoría"
+          aria-label="Ordenar por"
         >
-          <option value="">Todas las categorías</option>
-          {categories.map((cat) => (
-            <option key={cat.id} value={String(cat.id)}>
-              {cat.name}
+          {SORT_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
             </option>
           ))}
         </select>
-
-        <div className={styles.pills}>
-          {STATUS_OPTIONS.map((opt) => (
-            <button
-              key={opt.value}
-              type="button"
-              className={`${styles.pill} ${status === opt.value ? styles.pillActive : ""}`}
-              onClick={() => onChange("status", opt.value)}
-              aria-pressed={status === opt.value}
-            >
-              {opt.label}
-            </button>
-          ))}
-        </div>
-
         <button
           type="button"
-          className={`${styles.pill} ${featured === "true" ? styles.pillActive : ""}`}
-          onClick={() => onChange("featured", featured === "true" ? "" : "true")}
-          aria-pressed={featured === "true"}
+          className={styles.orderBtn}
+          onClick={() => onChange("order", order === "asc" ? "desc" : "asc")}
+          aria-label={`Orden ${order === "asc" ? "descendente" : "ascendente"}`}
+          title={`Orden ${order === "asc" ? "descendente" : "ascendente"}`}
         >
-          Destacados
+          {order === "asc" ? "↑" : "↓"}
         </button>
-
-        <div className={styles.sortGroup}>
-          <select
-            value={sort}
-            onChange={(e) => onChange("sort", e.target.value)}
-            className={styles.select}
-            aria-label="Ordenar por"
-          >
-            {SORT_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-          <button
-            type="button"
-            className={styles.orderBtn}
-            onClick={() => onChange("order", order === "asc" ? "desc" : "asc")}
-            aria-label={`Orden ${order === "asc" ? "descendente" : "ascendente"}`}
-            title={`Orden ${order === "asc" ? "descendente" : "ascendente"}`}
-          >
-            {order === "asc" ? "↑" : "↓"}
-          </button>
-        </div>
       </div>
     </div>
   );

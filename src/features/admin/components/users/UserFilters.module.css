@@ -87,6 +87,29 @@
   display: none;
 }
 
+.clearBtn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  min-height: 28px;
+  background: var(--admin-input-bg);
+  border: 1px solid var(--admin-input-border);
+  border-radius: 4px;
+  color: var(--admin-muted);
+  cursor: pointer;
+  transition: color var(--admin-transition), border-color var(--admin-transition);
+}
+
+.clearBtn:hover {
+  color: var(--admin-primary-glow);
+  border-color: var(--admin-primary-glow);
+}
+
 .resultCount {
   font-size: 0.72rem;
   font-weight: 600;

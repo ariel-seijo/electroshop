@@ -26,14 +26,7 @@ interface NotificationBellProps {
 
 export default function NotificationBell({ lowStock, recentOrders, pendingCount }: NotificationBellProps) {
   const [open, setOpen] = useState(false);
-  const [dismissed, setDismissed] = useState<Set<string>>(() => {
-    try {
-      const stored = localStorage.getItem("admin-dismissed");
-      return new Set(stored ? JSON.parse(stored) : []);
-    } catch {
-      return new Set();
-    }
-  });
+  const [dismissed, setDismissed] = useState<Set<string>>(new Set());
   const [mounted, setMounted] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -43,6 +36,15 @@ export default function NotificationBell({ lowStock, recentOrders, pendingCount 
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("admin-dismissed");
+      if (stored) setDismissed(new Set(JSON.parse(stored)));
+    } catch {
+      // ignore
+    }
   }, []);
 
   useEffect(() => {
@@ -88,7 +90,7 @@ export default function NotificationBell({ lowStock, recentOrders, pendingCount 
     <div className={styles.bell} ref={ref}>
       <button
         type="button"
-        className={styles.trigger}
+        className={styles.button}
         onClick={() => setOpen(!open)}
         aria-label={`Notificaciones${totalAlerts > 0 ? ` (${totalAlerts})` : ""}`}
         aria-expanded={open}
@@ -96,15 +98,15 @@ export default function NotificationBell({ lowStock, recentOrders, pendingCount 
       >
         <Bell size={18} />
         {totalAlerts > 0 && (
-          <span className={styles.count} aria-label={`${totalAlerts} notificaciones`}>
+          <span className={styles.badge} aria-label={`${totalAlerts} notificaciones`}>
             {totalAlerts > 99 ? "99+" : totalAlerts}
           </span>
         )}
       </button>
 
       {open && (
-        <div className={styles.panel} role="dialog" aria-label="Notificaciones">
-          <div className={styles.header}>
+        <div className={styles.popover} role="dialog" aria-label="Notificaciones">
+          <div className={styles.popoverHeader}>
             <h3 className={styles.title}>Notificaciones</h3>
           </div>
 
@@ -119,8 +121,8 @@ export default function NotificationBell({ lowStock, recentOrders, pendingCount 
                   <div key={`stock-${product.id}`} className={styles.item}>
                     <Package size={14} className={styles.itemIcon} />
                     <div className={styles.itemContent}>
-                      <span className={styles.itemTitle}>{product.title}</span>
-                      <span className={styles.itemMeta}>
+                      <span className={styles.itemText}>{product.title}</span>
+                      <span className={styles.itemTime}>
                         Stock: {product.stock === 0 ? "Agotado" : product.stock}
                       </span>
                     </div>
@@ -147,8 +149,8 @@ export default function NotificationBell({ lowStock, recentOrders, pendingCount 
                   <div key={`order-${order.id}`} className={styles.item}>
                     <ShoppingCart size={14} className={styles.itemIcon} />
                     <div className={styles.itemContent}>
-                      <span className={styles.itemTitle}>{order.orderNumber}</span>
-                      <span className={styles.itemMeta}>
+                      <span className={styles.itemText}>{order.orderNumber}</span>
+                      <span className={styles.itemTime}>
                         {order.user?.email || "Sin email"} • {order.status}
                       </span>
                     </div>

@@ -161,7 +161,7 @@ export default function UserActions({ user, onViewOrders }: UserActionsProps) {
 
   return (
     <>
-      <div className={styles.wrapper} ref={menuRef}>
+      <div className={styles.container} ref={menuRef}>
         <button
           ref={triggerRef}
           type="button"
@@ -176,7 +176,7 @@ export default function UserActions({ user, onViewOrders }: UserActionsProps) {
 
         {isOpen && (
           <div
-            className={`${styles.dropdown} ${flipUp ? styles.dropdownUp : ""}`}
+            className={`${styles.menu} ${flipUp ? styles.menuUp : ""}`}
             role="menu"
           >
             {actions
@@ -187,7 +187,7 @@ export default function UserActions({ user, onViewOrders }: UserActionsProps) {
                   <button
                     key={action.type}
                     type="button"
-                    className={`${styles.dropdownItem} ${action.type === "delete" ? styles.dropdownItemDanger : ""}`}
+                    className={`${styles.menuItem} ${action.type === "delete" ? styles.menuItemDanger : ""}`}
                     onClick={() => handleActionClick(action.type)}
                     role="menuitem"
                     disabled={loading}
