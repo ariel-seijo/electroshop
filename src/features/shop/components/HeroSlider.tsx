@@ -84,7 +84,7 @@ export default function HeroSlider() {
               </p>
               <Link
                 href={slide.href}
-                className="inline-flex items-center gap-2 px-8 py-[0.85rem] bg-gradient-to-br from-brand to-brand-end text-[#111] text-[0.9rem] font-semibold uppercase tracking-[1.5px] no-underline transition-all duration-300 ease-linear animate-[slideFadeUp_0.8s_ease-out_0.3s_both] hover:shadow-[0_0_30px_rgba(0,127,255,0.5),0_0_60px_rgba(0,207,255,0.3)] hover:-translate-y-0.5 max-md:text-[0.8rem] max-md:px-6 max-md:py-[0.7rem]"
+                className="inline-flex items-center gap-2 px-8 py-[0.85rem] bg-[linear-gradient(135deg,#007fff,#00cfff)] text-[#111] text-[0.9rem] font-semibold uppercase tracking-[1.5px] no-underline transition-all duration-300 ease-linear animate-[slideFadeUp_0.8s_ease-out_0.3s_both] hover:shadow-[0_0_30px_rgba(0,127,255,0.5),0_0_60px_rgba(0,207,255,0.3)] hover:-translate-y-0.5 max-md:text-[0.8rem] max-md:px-6 max-md:py-[0.7rem]"
               >
                 {slide.cta}
                 <ChevronRight size={18} />

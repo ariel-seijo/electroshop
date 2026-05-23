@@ -207,7 +207,7 @@ function ResetPasswordForm() {
           <button
             type="submit"
             disabled={loading || passwordsMismatch}
-            className="w-full h-[52px] mt-2 border-none bg-gradient-to-br from-brand to-brand-end text-[#111] text-[0.92rem] font-semibold uppercase tracking-[1.5px] cursor-pointer transition-all duration-300 relative overflow-hidden flex items-center justify-center gap-2 hover:not-disabled:-translate-y-0.5 hover:not-disabled:shadow-[0_10px_30px_rgba(0,127,255,0.35)] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none max-ms:h-[48px]"
+            className="w-full h-[52px] mt-2 border-none bg-[linear-gradient(135deg,#007fff,#00cfff)] text-[#111] text-[0.92rem] font-semibold uppercase tracking-[1.5px] cursor-pointer transition-all duration-300 relative overflow-hidden flex items-center justify-center gap-2 hover:not-disabled:-translate-y-0.5 hover:not-disabled:shadow-[0_10px_30px_rgba(0,127,255,0.35)] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none max-ms:h-[48px]"
           >
             {loading ? (
               <>

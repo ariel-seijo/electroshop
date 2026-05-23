@@ -192,7 +192,7 @@ export default function ProductPage({ product, relatedProducts }: ProductPagePro
                   ? "bg-none bg-success/10 border border-success/25 text-success hover:bg-success/15 hover:shadow-[0_0_18px_rgba(34,197,94,0.18)]"
                   : added
                     ? "bg-none bg-success text-[#111] animate-added-pulse"
-                    : "bg-gradient-to-br from-brand to-brand-end text-[#111] hover:not-disabled:shadow-[0_0_28px_rgba(0,127,255,0.4)] hover:not-disabled:-translate-y-0.5"
+                    : "bg-[linear-gradient(135deg,#007fff,#00cfff)] text-[#111] hover:not-disabled:shadow-[0_0_28px_rgba(0,127,255,0.4)] hover:not-disabled:-translate-y-0.5"
               } ${isOutOfStock || isMaxReached ? "opacity-40 cursor-not-allowed bg-border-52 text-text-dim shadow-none" : ""}`}
               onClick={handleAdd}
               disabled={isOutOfStock || isMaxReached}

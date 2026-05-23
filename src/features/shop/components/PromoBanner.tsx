@@ -64,7 +64,7 @@ export default function PromoBanner() {
 
           <Link
             href="/category/gpu"
-            className="inline-flex items-center gap-2 px-[2.2rem] py-[0.9rem] bg-gradient-to-br from-brand to-brand-end text-[#111] text-[0.88rem] font-semibold uppercase tracking-[1px] no-underline whitespace-nowrap shrink-0 rounded-md transition-[box-shadow,transform] duration-300 ease-linear relative z-[1] hover:shadow-[0_0_35px_rgba(0,127,255,0.5),0_0_65px_rgba(0,207,255,0.3)] hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-[3px] max-3md:px-6 max-3md:py-3 max-3md:text-[0.82rem]"
+            className="inline-flex items-center gap-2 px-[2.2rem] py-[0.9rem] bg-[linear-gradient(135deg,#007fff,#00cfff)] text-[#111] text-[0.88rem] font-semibold uppercase tracking-[1px] no-underline whitespace-nowrap shrink-0 rounded-md transition-[box-shadow,transform] duration-300 ease-linear relative z-[1] hover:shadow-[0_0_35px_rgba(0,127,255,0.5),0_0_65px_rgba(0,207,255,0.3)] hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-[3px] max-3md:px-6 max-3md:py-3 max-3md:text-[0.82rem]"
             aria-label="Ver todos los componentes gaming"
           >
             Ver componentes

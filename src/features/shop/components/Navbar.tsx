@@ -360,7 +360,7 @@ export default function Navbar() {
                 >
                   <ShoppingCartIcon size={30} />
                   {totalItems > 0 && (
-                    <span className="absolute -top-[5px] -right-2 bg-gradient-to-br from-brand to-brand-end text-white text-[0.7rem] rounded-full px-1.5 py-0.5 pointer-events-none">
+                    <span className="absolute -top-[5px] -right-2 bg-[linear-gradient(135deg,#007fff,#00cfff)] text-white text-[0.7rem] rounded-full px-1.5 py-0.5 pointer-events-none">
                       {totalItems}
                     </span>
                   )}

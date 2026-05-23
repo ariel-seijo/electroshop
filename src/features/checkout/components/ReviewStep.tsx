@@ -16,7 +16,7 @@ const PAYMENT_METHODS = [
 const formBase = "bg-surface-22 border border-[#1f1f1f] p-8 max-3md:px-[1.2rem] max-3md:py-[1.2rem]";
 const btnPrimary = "flex items-center gap-2 px-[1.8rem] py-[0.85rem] text-[0.92rem] font-semibold uppercase tracking-[1px] border-none cursor-pointer transition-all duration-[250ms] bg-accent text-[#111] hover:bg-accent-hover hover:shadow-[0_0_24px_rgba(36,171,243,0.35)] hover:-translate-y-px max-3md:px-[1.2rem] max-3md:py-[0.7rem] max-3md:text-[0.82rem]";
 const btnSecondary = "flex items-center gap-2 px-[1.8rem] py-[0.85rem] text-[0.92rem] font-semibold uppercase tracking-[1px] border cursor-pointer transition-all duration-[250ms] bg-border-34 text-text-tertiary border-border-52 hover:bg-border-44 hover:text-white max-3md:px-[1.2rem] max-3md:py-[0.7rem] max-3md:text-[0.82rem]";
-const btnConfirm = "flex items-center gap-2 px-[1.8rem] py-[0.85rem] text-[0.92rem] font-semibold uppercase tracking-[1px] border-none cursor-pointer transition-all duration-[250ms] bg-gradient-to-br from-brand to-brand-end text-[#111] hover:shadow-[0_0_28px_rgba(0,127,255,0.4)] hover:-translate-y-px max-3md:px-[1.2rem] max-3md:py-[0.7rem] max-3md:text-[0.82rem]";
+const btnConfirm = "flex items-center gap-2 px-[1.8rem] py-[0.85rem] text-[0.92rem] font-semibold uppercase tracking-[1px] border-none cursor-pointer transition-all duration-[250ms] bg-[linear-gradient(135deg,#007fff,#00cfff)] text-[#111] hover:shadow-[0_0_28px_rgba(0,127,255,0.4)] hover:-translate-y-px max-3md:px-[1.2rem] max-3md:py-[0.7rem] max-3md:text-[0.82rem]";
 
 export default function ReviewStep() {
   const { cart } = useCart();

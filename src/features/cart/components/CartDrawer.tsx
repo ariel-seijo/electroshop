@@ -131,7 +131,7 @@ export function Cart() {
               </div>
 
               <button
-                className="w-full text-[0.85rem] py-2.5 border-none bg-gradient-to-br from-brand to-brand-end text-[#111] font-semibold uppercase tracking-[1.5px] cursor-pointer transition-all duration-[250ms] hover:shadow-[0_0_24px_rgba(0,127,255,0.4)] hover:-translate-y-px"
+                className="w-full text-[0.85rem] py-2.5 border-none bg-[linear-gradient(135deg,#007fff,#00cfff)] text-[#111] font-semibold uppercase tracking-[1.5px] cursor-pointer transition-all duration-[250ms] hover:shadow-[0_0_24px_rgba(0,127,255,0.4)] hover:-translate-y-px"
                 onClick={() => {
                   closeCart();
                   router.push("/checkout");

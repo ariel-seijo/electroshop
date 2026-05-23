@@ -64,7 +64,7 @@ export default function ProductCard({ product, view = "grid", priority = false }
 
   const btnState = isInCart
     ? "bg-none bg-success/10 border-success/25 text-success hover:bg-success/15 hover:shadow-[0_0_15px_rgba(34,197,94,0.12)] hover:text-success"
-    : "bg-gradient-to-br from-brand to-brand-end border-transparent text-[rgb(17,17,17)] shadow-[0_0_16px_rgba(0,127,255,0.2)] not-disabled:hover:bg-[linear-gradient(135deg,#0090ff,#30d8ff)] not-disabled:hover:text-[rgb(17,17,17)] not-disabled:hover:shadow-[0_0_28px_rgba(0,127,255,0.4)] not-disabled:hover:-translate-y-px";
+    : "bg-[linear-gradient(135deg,#007fff,#00cfff)] border-transparent text-[rgb(17,17,17)] shadow-[0_0_16px_rgba(0,127,255,0.2)] not-disabled:hover:bg-[linear-gradient(135deg,#0090ff,#30d8ff)] not-disabled:hover:text-[rgb(17,17,17)] not-disabled:hover:shadow-[0_0_28px_rgba(0,127,255,0.4)] not-disabled:hover:-translate-y-px";
 
   return (
     <li
