@@ -22,7 +22,7 @@ Migrating a production Next.js 16 (App Router) e-commerce project from plain Jav
 - **Styling**: CSS Modules (`*.module.css`)
 - **Validation**: Zod 4 (`z.infer` used to derive TS types)
 - **Database**: Prisma 5 + PostgreSQL, soft-delete extension on `User`
-- **Auth**: Iron-session with `src/middleware.ts` (already in TS)
+- **Auth**: Iron-session with `src/proxy.ts` (already in TS)
 - **State**: Zustand (auth, toast), React Context (cart, checkout)
 
 ---

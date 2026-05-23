@@ -37,7 +37,7 @@ La experiencia de usuario prioriza **velocidad y cero friccion**: carrito sincro
 | **Validacion** | Zod 4 | Schemas compartidos entre cliente y servidor. Validacion en API routes y Server Actions. |
 | **Imagenes** | Cloudinary | Upload widget en admin, transformaciones on-the-fly, `blurDataURL` para LCP. |
 | **Email** | Nodemailer + Gmail SMTP | Templates HTML inline para recuperacion de contrasena. |
-| **Hosting** | Vercel | Serverless functions, edge middleware, deploy continuo desde `main`. |
+| **Hosting** | Vercel | Serverless functions, edge proxy, deploy continuo desde `main`. |
 
 ### Por que Server Components por defecto
 
@@ -140,12 +140,12 @@ export const sessionOptions = {
 - **Sanitizacion de tarjeta**: solo se persisten `last4`, `expiry` y `holder`. Nunca el numero completo.
 
 **Flujo de autorizacion en 3 capas:**
-1. **Middleware** (`middleware.ts`): redirect granular — auth pages, admin routes, checkout y perfil.
+1. **Proxy** (`proxy.ts`): redirect granular — auth pages, admin routes, checkout y perfil.
 2. **Server Actions**: `requireAuth()` y `requireAdmin()` como primera linea de cada accion.
 3. **API Routes**: verificacion inline de sesion por endpoint.
 
 ```typescript
-// src/middleware.ts — Matcher de rutas protegidas
+// src/proxy.ts — Matcher de rutas protegidas
 export const config = {
   matcher: [
     "/login", "/register", "/forgot-password", "/reset-password",
@@ -237,7 +237,7 @@ src/
 │   ├── validations/              #   Schemas Zod (auth, order)
 │   └── utils/                    #   currency, input-formatters, etc.
 │
-├── middleware.ts                  # Proteccion de rutas (iron-session + role check)
+├── proxy.ts                  # Proteccion de rutas (iron-session + role check)
 └── mocks/                        # Datos demo (checkoutDemoData.js)
 ```
 
