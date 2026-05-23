@@ -8,28 +8,6 @@
 @import "../styles/a11y.css";
 
 /* =========================
-   SORT BUTTONS
-   ========================= */
-
-.sort-buttons {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.sort-buttons a {
-  padding: 0.6rem 1rem;
-  background: #111;
-  color: white;
-  border-radius: 8px;
-}
-
-/* =========================
-   SKELETONS — now in CSS Modules per page
-   (HomeSkeleton, ProductSkeleton, CategorySkeleton)
-   ========================= */
-
-/* =========================
    STICKY FOOTER LAYOUT
    Ensures main content fills remaining space
    so footer never floats up during loading
