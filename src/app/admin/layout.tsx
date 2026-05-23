@@ -6,11 +6,6 @@ import AdminMobileMenuButton from "@/features/admin/components/AdminMobileMenuBu
 import { SidebarProvider } from "@/features/admin/components/SidebarContext";
 import Skeleton from "@/components/ui/Skeleton";
 import layoutStyles from "@/features/admin/styles/AdminLayout.module.css";
-import "@/features/admin/styles/admin-tokens.css";
-import "@/features/admin/styles/admin-components.css";
-import "@/features/admin/styles/forms.css";
-import "@/features/admin/styles/table.css";
-import "@/features/admin/styles/print-order.css";
 
 export const metadata: Metadata = {
   title: "Panel de Administración | ElectroShop",
