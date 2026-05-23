@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import "./category.css";
 import { cookies } from "next/headers";
 import { Products, Pagination } from "@/features/products";
 import {
@@ -14,7 +13,7 @@ import { serializeProductsForClient } from "@/lib/utils/serialize-product";
 
 function truncate(text: string, max: number): string {
   if (text.length <= max) return text;
-  return text.slice(0, max - 1) + "…";
+  return text.slice(0, max - 1) + "\u2026";
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ name: string }> }): Promise<Metadata> {
@@ -56,9 +55,9 @@ export default async function CategoryPage({
   const view = query.view || cookieView || "grid";
 
   return (
-    <main className="categoryPage">
-      <div className="categoryContainer">
-        <div className="categoryContent">
+    <main className="w-full px-4 py-8 pb-16 max-3lg:px-3 max-3lg:pb-12">
+      <div className="max-w-[1200px] mx-auto">
+        <div className="grid grid-cols-1 gap-[1.2rem] items-start md:grid-cols-[260px_1fr]">
           <FiltersSidebar
             name={name}
             brands={brands}
@@ -71,11 +70,11 @@ export default async function CategoryPage({
             view={view}
           />
 
-          <section className="productsArea">
-            <div className="resultsTopbar">
+          <section className="bg-surface-22 border border-border-34 p-6 min-w-0 max-3lg:p-4">
+            <div className="flex justify-between items-center gap-4 mb-[1.2rem] pb-4 border-b border-border-38 max-3lg:flex-col max-3lg:items-start max-3lg:gap-3">
               <CategoryHeader categoryName={categoryName} />
 
-              <div className="toolbarRight">
+              <div className="flex items-center gap-3 max-3lg:w-full max-3lg:justify-between max-2xs:flex-wrap max-2xs:gap-2">
                 <ViewSwitcher resolvedView={view} />
                 <SortDropdown
                   name={name}

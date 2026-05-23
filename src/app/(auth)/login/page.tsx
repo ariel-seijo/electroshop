@@ -7,6 +7,9 @@ import { useAuthStore } from "@/features/auth";
 import { Eye, EyeOff, LogIn } from "lucide-react";
 import { useToastStore } from "@/features/toast";
 
+const inputBase =
+  "w-full h-[50px] px-4 bg-surface-18 border border-border-44 text-text-body text-[0.95rem] outline-none transition-[border-color,box-shadow] duration-[250ms] placeholder:text-text-placeholder-dark placeholder:font-semibold focus:border-accent focus:shadow-[0_0_0_3px_rgba(36,171,243,0.08)] max-ms:h-[46px] max-ms:text-[0.9rem]";
+
 export default function LoginPage() {
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect");
@@ -29,19 +32,23 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-card">
-        <div className="auth-logo">
-          <span>ELECTROSHOP</span>
+    <div className="flex items-center justify-center min-h-[calc(100vh-130px)] px-4 py-8 max-ms:px-3 max-ms:py-4">
+      <div className="w-full max-w-[440px] bg-surface-22 border border-border-38 px-[2.2rem] py-10 relative overflow-hidden before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-0.5 before:bg-[linear-gradient(90deg,transparent,#24abf3,#00cfff,#24abf3,transparent)] before:bg-[length:200%_100%] before:animate-auth-glow max-ms:px-[1.2rem] max-ms:py-8">
+        <div className="text-center mb-8">
+          <span className="font-cosmic text-[1.4rem] tracking-[4px] text-accent">
+            ELECTROSHOP
+          </span>
         </div>
 
-        <h1 className="auth-title">INICIAR SESIÓN</h1>
+        <h1 className="font-cosmic text-[1.8rem] font-thin tracking-[4px] text-text-secondary text-center m-0 mb-[1.8rem] [text-shadow:0_0_30px_rgba(36,171,243,0.15)] max-ms:text-[1.5rem]">
+          INICIAR SESIÓN
+        </h1>
 
         {error && (
-          <div className="auth-error">
+          <div className="mb-5 py-3 px-4 bg-danger/10 border border-danger/25 text-danger-light text-[0.82rem] font-semibold leading-relaxed">
             {error.includes("incorrectos") ? (
               <>
-                <strong>Email o contraseña incorrectos.</strong> Verificá tus
+                <strong className="text-red-300">Email o contraseña incorrectos.</strong> Verificá tus
                 datos e intentá de nuevo.
               </>
             ) : (
@@ -50,9 +57,9 @@ export default function LoginPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="auth-form">
-          <div className="auth-field">
-            <label htmlFor="email" className="auth-label">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="email" className="text-xs font-semibold text-text-dim uppercase tracking-[1px]">
               Email
             </label>
             <input
@@ -63,18 +70,18 @@ export default function LoginPage() {
                 setEmail(e.target.value);
                 clearError();
               }}
-              className="auth-input"
+              className={inputBase}
               placeholder="tu@email.com"
               required
               autoComplete="email"
             />
           </div>
 
-          <div className="auth-field">
-            <label htmlFor="password" className="auth-label">
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="password" className="text-xs font-semibold text-text-dim uppercase tracking-[1px]">
               Contraseña
             </label>
-            <div className="auth-input-wrapper">
+            <div className="relative flex items-center">
               <input
                 id="password"
                 type={showPassword ? "text" : "password"}
@@ -83,14 +90,14 @@ export default function LoginPage() {
                   setPassword(e.target.value);
                   clearError();
                 }}
-                className="auth-input"
+                className={inputBase}
                 placeholder="••••••••"
                 required
                 autoComplete="current-password"
               />
               <button
                 type="button"
-                className="auth-reveal-btn"
+                className="absolute right-3 bg-transparent border-none text-text-placeholder cursor-pointer p-1 flex items-center justify-center transition-colors duration-200 hover:text-accent"
                 onClick={() => setShowPassword(!showPassword)}
                 tabIndex={-1}
               >
@@ -99,10 +106,14 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <button type="submit" disabled={loading} className="auth-btn">
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full h-[52px] mt-2 border-none bg-gradient-to-br from-brand to-brand-end text-[#111] text-[0.92rem] font-semibold uppercase tracking-[1.5px] cursor-pointer transition-all duration-300 relative overflow-hidden flex items-center justify-center gap-2 hover:not-disabled:-translate-y-0.5 hover:not-disabled:shadow-[0_10px_30px_rgba(0,127,255,0.35)] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none max-ms:h-[48px]"
+          >
             {loading ? (
-              <span className="loading-text">
-                <span className="spinner" />
+              <span className="inline-flex items-center justify-center gap-2">
+                <span className="inline-block size-[18px] border-2 border-[rgba(17,17,17,0.3)] border-t-[#111] rounded-full animate-[spin_0.6s_linear_infinite] mr-2 align-middle" />
                 INGRESANDO...
               </span>
             ) : (
@@ -114,18 +125,18 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <p className="auth-footer">
+        <p className="mt-6 text-center text-sm text-text-dim">
           ¿Olvidaste tu contraseña?{" "}
-          <Link href="/forgot-password" className="auth-link">
+          <Link href="/forgot-password" className="text-accent no-underline font-semibold transition-all duration-200 hover:text-accent-hover hover:underline">
             Recuperala
           </Link>
         </p>
 
-        <p className="auth-footer" style={{ marginTop: "0.5rem" }}>
+        <p className="mt-2 text-center text-sm text-text-dim">
           ¿No tenés cuenta?{" "}
           <Link
             href={`/register${redirect ? `?redirect=${encodeURIComponent(redirect)}` : ""}`}
-            className="auth-link"
+            className="text-accent no-underline font-semibold transition-all duration-200 hover:text-accent-hover hover:underline"
           >
             Registrate
           </Link>
