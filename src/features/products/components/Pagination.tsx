@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { buildCategoryUrl } from "@/features/category/utils/buildCategoryUrl";
-import styles from "./Pagination.module.css";
 
 interface PaginationProps {
   name: string;
@@ -43,15 +42,15 @@ export default function Pagination({
   const nextHref = buildCategoryUrl(name, current, { page: String(page + 1) });
 
   return (
-    <nav className={styles.pagination} aria-label="Paginación de productos">
+    <nav className="flex items-center justify-center gap-1 pt-[1.2rem] mt-4 border-t border-border-38" aria-label="Paginación de productos">
       {page <= 1 ? (
-        <span className={`${styles.pageBtn} ${styles.pageBtnDisabled}`} aria-label="Página anterior">
+        <span className="inline-flex items-center justify-center min-w-9 h-9 px-2 border border-border-44 bg-surface-30 text-text-tertiary rounded text-[0.82rem] font-semibold shrink-0 opacity-30 cursor-not-allowed pointer-events-none" aria-label="Página anterior">
           <ChevronLeft size={16} />
         </span>
       ) : (
         <Link
           href={prevHref}
-          className={styles.pageBtn}
+          className="inline-flex items-center justify-center min-w-9 h-9 px-2 border border-border-44 bg-surface-30 text-text-tertiary rounded text-[0.82rem] font-semibold cursor-pointer shrink-0 transition-all duration-[150ms] hover:bg-border-44 hover:border-[rgb(70,70,70)] hover:text-[rgb(220,220,220)]"
           aria-label="Página anterior"
           prefetch={false}
           scroll={false}
@@ -60,18 +59,18 @@ export default function Pagination({
         </Link>
       )}
 
-      <div className={styles.pageNumbers}>
+      <div className="flex gap-1">
         {visiblePages.map((n, idx, arr) => {
           const showEllipsis = idx > 0 && n - arr[idx - 1] > 1;
           const pageHref = buildCategoryUrl(name, current, { page: String(n) });
           return (
-            <span key={n} className={styles.pageGroup}>
+            <span key={n} className="flex items-center">
               {showEllipsis && (
-                <span className={styles.ellipsis} aria-hidden="true">…</span>
+                <span className="text-[rgb(100,100,100)] text-[0.85rem] px-0.5 select-none" aria-hidden="true">…</span>
               )}
               {n === page ? (
                 <span
-                  className={`${styles.pageBtn} ${styles.pageBtnActive}`}
+                  className="inline-flex items-center justify-center min-w-9 h-9 px-2 bg-accent/10 border border-accent/35 text-accent rounded text-[0.82rem] font-semibold shrink-0"
                   aria-current="page"
                   aria-label={`Página ${n}`}
                 >
@@ -80,7 +79,7 @@ export default function Pagination({
               ) : (
                 <Link
                   href={pageHref}
-                  className={styles.pageBtn}
+                  className="inline-flex items-center justify-center min-w-9 h-9 px-2 border border-border-44 bg-surface-30 text-text-tertiary rounded text-[0.82rem] font-semibold cursor-pointer shrink-0 transition-all duration-[150ms] hover:bg-border-44 hover:border-[rgb(70,70,70)] hover:text-[rgb(220,220,220)]"
                   aria-label={`Página ${n}`}
                   prefetch={false}
                   scroll={false}
@@ -94,13 +93,13 @@ export default function Pagination({
       </div>
 
       {page >= totalPages ? (
-        <span className={`${styles.pageBtn} ${styles.pageBtnDisabled}`} aria-label="Página siguiente">
+        <span className="inline-flex items-center justify-center min-w-9 h-9 px-2 border border-border-44 bg-surface-30 text-text-tertiary rounded text-[0.82rem] font-semibold shrink-0 opacity-30 cursor-not-allowed pointer-events-none" aria-label="Página siguiente">
           <ChevronRight size={16} />
         </span>
       ) : (
         <Link
           href={nextHref}
-          className={styles.pageBtn}
+          className="inline-flex items-center justify-center min-w-9 h-9 px-2 border border-border-44 bg-surface-30 text-text-tertiary rounded text-[0.82rem] font-semibold cursor-pointer shrink-0 transition-all duration-[150ms] hover:bg-border-44 hover:border-[rgb(70,70,70)] hover:text-[rgb(220,220,220)]"
           aria-label="Página siguiente"
           prefetch={false}
           scroll={false}

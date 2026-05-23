@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
-import styles from "../styles/FeaturedCarousel.module.css";
 import ProductCard from "./ProductCard";
 
 export interface Product {
@@ -86,8 +85,8 @@ export default function FeaturedCarousel({ products }: FeaturedCarouselProps) {
 
   if (!products || products.length === 0) {
     return (
-      <div className={styles.fc} role="status">
-        <p className={styles["fc-empty"]}>
+      <div className="relative w-full max-w-[1200px] mx-auto mb-6 px-4" role="status">
+        <p className="text-center text-text-dim py-12 px-4">
           No hay productos destacados en este momento.
         </p>
       </div>
@@ -96,17 +95,17 @@ export default function FeaturedCarousel({ products }: FeaturedCarouselProps) {
 
   return (
     <section
-      className={styles.fc}
+      className="relative w-full max-w-[1200px] mx-auto mb-6 px-4"
       aria-roledescription="carrusel"
       aria-label="Productos destacados"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div className={styles["fc-viewport"]} ref={emblaRef}>
-        <div className={styles["fc-container"]}>
+      <div className="overflow-hidden py-2 md:py-2.5 md:pb-[14px] lg:py-3 lg:pb-4 motion-reduce:overflow-x-auto motion-reduce:[scroll-snap-type:x_mandatory]" ref={emblaRef}>
+        <div className="flex ml-[-0.5rem]">
           {products.map((product) => (
             <div
-              className={styles["fc-slide"]}
+              className="flex-[0_0_100%] min-w-0 pl-2 min-[660px]:flex-[0_0_50%] min-[999px]:flex-[0_0_33.333%] min-[1300px]:flex-[0_0_25%] motion-reduce:[scroll-snap-align:start]"
               key={product.id}
               onClickCapture={(e) => {
                 if (isDragging.current) {
@@ -122,14 +121,18 @@ export default function FeaturedCarousel({ products }: FeaturedCarouselProps) {
       </div>
 
       <div
-        className={styles["fc-dots"]}
+        className="flex justify-center items-center gap-2.5 mt-4"
         role="tablist"
         aria-label="Navegación del carrusel"
       >
         {scrollSnaps.map((_, index) => (
           <button
             key={index}
-            className={`${styles["fc-dot"]} ${index === selectedIndex ? styles["fc-dot--active"] : ""}`}
+            className={`size-2.5 rounded-full border-none p-0 cursor-pointer transition-[background,transform] duration-200 hover:bg-accent/40 focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 ${
+              index === selectedIndex
+                ? "bg-accent scale-[1.3]"
+                : "bg-white/15"
+            }`}
             type="button"
             role="tab"
             aria-selected={index === selectedIndex}
