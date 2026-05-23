@@ -1,30 +1,300 @@
+@import "tailwindcss";
+
 /* ============================================================
-   GLOBAL STYLES
-   Compose foundational layers from src/styles/
+   DESIGN TOKENS (replaces src/styles/tokens.css)
    ============================================================ */
 
-@import "../styles/tokens.css";
-@import "../styles/reset.css";
-@import "../styles/a11y.css";
+@theme {
+  /* ---- Fonts ---- */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-cosmic: var(--font-cosmic), sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
 
-/* =========================
-   STICKY FOOTER LAYOUT
-   Ensures main content fills remaining space
-   so footer never floats up during loading
-   ========================= */
+  /* ---- Brand Colors ---- */
+  --color-accent: #24abf3;
+  --color-accent-hover: #33b8fd;
+  --color-brand: #007fff;
+  --color-brand-hover: #3399ff;
+  --color-brand-end: #00cfff;
+  --color-success: #22c55e;
+  --color-success-light: #4ade80;
+  --color-danger: #ef4444;
+  --color-danger-hover: #dc2626;
+  --color-danger-light: #f87171;
+  --color-warning: #f59e0b;
+  --color-warning-light: #fbbf24;
+  --color-teal: #10b981;
+  --color-cancelled: #ff3366;
 
-body {
-  display: flex;
-  flex-direction: column;
+  /* ---- Surface Grayscale (dark theme backgrounds) ---- */
+  --color-surface-0: #080808;
+  --color-surface-8: #0a0a0a;
+  --color-surface-10: rgb(10, 10, 10);
+  --color-surface-12: rgb(12, 12, 12);
+  --color-surface-14: rgb(14, 14, 14);
+  --color-surface-16: rgb(16, 16, 16);
+  --color-surface-18: rgb(18, 18, 18);
+  --color-surface-20: rgb(20, 20, 20);
+  --color-surface-22: rgb(22, 22, 22);
+  --color-surface-24: rgb(24, 24, 24);
+  --color-surface-26: rgb(26, 26, 26);
+  --color-surface-28: rgb(28, 28, 28);
+  --color-surface-30: rgb(30, 30, 30);
+  --color-surface-2b: #2b2b2b;
+
+  /* ---- Border Colors ---- */
+  --color-border-34: rgb(34, 34, 34);
+  --color-border-35: rgb(35, 35, 35);
+  --color-border-38: rgb(38, 38, 38);
+  --color-border-40: rgb(40, 40, 40);
+  --color-border-42: rgb(42, 42, 42);
+  --color-border-44: rgb(44, 44, 44);
+  --color-border-45: rgb(45, 45, 45);
+  --color-border-50: rgb(50, 50, 50);
+  --color-border-52: rgb(52, 52, 52);
+  --color-border-glow: rgba(255, 255, 255, 0.05);
+  --color-border-glow-8: rgba(255, 255, 255, 0.08);
+  --color-border-glow-12: rgba(255, 255, 255, 0.12);
+
+  /* ---- Text Colors ---- */
+  --color-text-0: #e4e4e4;
+  --color-text-body: rgb(214, 214, 214);
+  --color-text-secondary: rgb(200, 200, 200);
+  --color-text-tertiary: rgb(180, 180, 180);
+  --color-text-muted: rgb(160, 160, 160);
+  --color-text-dim: rgb(140, 140, 140);
+  --color-text-subtle: rgb(130, 130, 130);
+  --color-text-placeholder: rgb(120, 120, 120);
+  --color-text-placeholder-dark: rgb(72, 72, 72);
+  --color-text-placeholder-admin: rgb(65, 65, 65);
+
+  /* ---- Custom Radii ---- */
+  --radius-form: 7px;
+  --radius-card: 10px;
+
+  /* ---- Custom Breakpoints ---- */
+  --breakpoint-2xs: 380px;
+  --breakpoint-xs: 400px;
+  --breakpoint-ms: 480px;
+  --breakpoint-3md: 520px;
+  --breakpoint-2lg: 660px;
+  --breakpoint-3lg: 700px;
+  --breakpoint-4lg: 800px;
+  --breakpoint-5lg: 860px;
+  --breakpoint-6lg: 900px;
+  --breakpoint-7lg: 950px;
+  --breakpoint-2xl: 999px;
+  --breakpoint-3xl: 1050px;
+  --breakpoint-4xl: 1200px;
+  --breakpoint-5xl: 1300px;
+
+  /* ---- Shadows ---- */
+  --shadow-admin: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-admin-lg: 0 16px 48px rgba(0, 0, 0, 0.55);
+  --shadow-admin-mobile: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-product-hover: 0 18px 45px rgba(0, 0, 0, 0.55);
+  --shadow-cart: 0 20px 50px rgba(0, 0, 0, 0.6);
+
+  /* ---- Animations ---- */
+  --animate-shimmer: shimmer 1.8s ease-in-out infinite;
+  --animate-step-pulse: stepPulse 2s infinite;
+  --animate-slide-in: slideIn 0.3s ease;
+  --animate-fade-in: fadeIn 0.15s ease-out;
+  --animate-menu-in: menuIn 0.2s ease;
+  --animate-pop-in: popIn 0.2s ease;
+  --animate-slide-fade-up: slideFadeUp 0.7s cubic-bezier(0.25, 0.1, 0.25, 1);
+  --animate-progress-bar: progressBar 3s linear forwards;
+  --animate-electric: electric 2s linear infinite;
+  --animate-auth-glow: authGlow 3s linear infinite;
+  --animate-shake-in: shakeIn 0.4s ease;
+  --animate-modal-in: modalIn 0.2s ease-out;
+  --animate-drop-in: dropIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-added-pulse: addedPulse 0.4s ease;
+  --animate-fill-flash: fillFlash 0.6s ease;
+  --animate-success-pulse: successPulse 2s infinite;
 }
 
-#main-content {
-  flex: 1;
+/* ============================================================
+   KEYFRAME ANIMATIONS
+   ============================================================ */
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
-/* Spinner for global loading state */
-@keyframes spin-loading {
-  to {
-    transform: rotate(360deg);
+@keyframes stepPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(36, 171, 243, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(36, 171, 243, 0); }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes menuIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes popIn {
+  0% { opacity: 0; transform: scale(0.95) translateY(-4px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes slideFadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes progressBar {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+@keyframes electric {
+  0% { background-position: 0% 0; }
+  50% { background-position: 100% 0; }
+  100% { background-position: 0% 0; }
+}
+
+@keyframes authGlow {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes shakeIn {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+@keyframes modalIn {
+  from { transform: scale(0.95) translateY(10px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@keyframes dropIn {
+  0% { opacity: 0; transform: translateY(-8px) scale(0.97); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes addedPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+
+@keyframes fillFlash {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+@keyframes successPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+  50% { box-shadow: 0 0 0 12px rgba(34, 197, 94, 0); }
+}
+
+/* ============================================================
+   BASE LAYER — Override Tailwind Preflight where needed
+   ============================================================ */
+
+@layer base {
+  body {
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+
+    background:
+      radial-gradient(circle at 20% 10%, #1a1a1a 0%, transparent 40%),
+      radial-gradient(circle at 80% 30%, #141414 0%, transparent 45%),
+      radial-gradient(circle at 50% 100%, #0f0f0f 0%, transparent 50%),
+      #0a0a0a;
+
+    color: #e6e6e6;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: linear-gradient(#ffffff05 1px, transparent 1px);
+    background-size: 100% 3px;
+    opacity: 0.03;
+  }
+
+  #main-content {
+    flex: 1;
+  }
+
+  /* Focus styles */
+  :focus-visible {
+    outline: 2px solid #24abf3;
+    outline-offset: 2px;
+  }
+
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  :target {
+    scroll-margin-top: 90px;
+  }
+
+  :focus {
+    scroll-margin-top: 90px;
+    scroll-margin-bottom: 70px;
+  }
+
+  /* ============ STICKY FOOTER LAYOUT (from globals.css) ============ */
+  /* Already handled by body display:flex above */
+
+  /* ============ GLOBAL LOADING SPINNER KEYFRAME (from globals.css) ============ */
+  @keyframes spin-loading {
+    to { transform: rotate(360deg); }
+  }
+}
+
+/* ============================================================
+   UTILITY LAYER — Accessibility helpers
+   ============================================================ */
+
+/* Visually hidden (mirrors Tailwind's sr-only — kept for compatibility
+   until all .visually-hidden usages are migrated to sr-only) */
+@utility visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ============================================================
+   REDUCED MOTION (from a11y.css)
+   ============================================================ */
+
+@layer base {
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
