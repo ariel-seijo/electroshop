@@ -70,6 +70,8 @@ export async function getAllUsers(params: UserFilters = {}) {
       where.deletedAt = null;
       where.status = params.status;
     }
+  } else {
+    where.__softDeleteBypass = true;
   }
 
   const orderBy: Record<string, unknown> = {};

@@ -25,9 +25,10 @@ function createPrismaClient(): PrismaClient {
 
           const rawArgs = (args ?? {}) as Record<string, unknown>;
           const where = (rawArgs.where || {}) as Record<string, unknown>;
-          if (where.deletedAt === undefined) {
+          if (where.deletedAt === undefined && !(where as Record<string, unknown>).__softDeleteBypass) {
             where.deletedAt = null;
           }
+          delete (where as Record<string, unknown>).__softDeleteBypass;
           rawArgs.where = where;
           return query(rawArgs);
         },

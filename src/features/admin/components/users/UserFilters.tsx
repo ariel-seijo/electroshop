@@ -9,6 +9,7 @@ const STATUS_OPTIONS = [
   { value: "", label: "Todos los estados" },
   { value: "ACTIVE", label: "Activos" },
   { value: "BANNED", label: "Baneados" },
+  { value: "DELETED", label: "Eliminados" },
 ];
 
 const ROLE_OPTIONS = [
