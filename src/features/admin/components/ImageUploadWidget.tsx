@@ -7,7 +7,6 @@ import {
   saveProductImagesAction,
 } from "@/features/admin/actions/imageActions";
 import { useToastStore } from "@/features/toast";
-import styles from "./ImageUploadWidget.module.css";
 
 const SCRIPT_TIMEOUT_MS = 12000;
 
@@ -223,9 +222,9 @@ export default function ImageUploadWidget({
   if (!productId) return null;
 
   return (
-    <div className={styles.uploadSection}>
+    <div className="relative">
         {scriptError && (
-          <div className={styles.scriptError} role="alert">
+          <div className="flex items-center gap-2 px-3.5 py-2.5 mb-2.5 bg-[rgba(255,60,60,0.08)] border border-[rgba(255,60,60,0.2)] rounded-md text-[0.75rem] text-[#ff5c5c] leading-relaxed" role="alert">
             <AlertTriangle size={14} aria-hidden="true" />
             <span>
               No se pudo cargar el widget de Cloudinary. Verificá tu conexión o
@@ -235,22 +234,22 @@ export default function ImageUploadWidget({
         )}
 
         {!scriptLoaded && !scriptError && (
-          <div className={styles.scriptLoading}>
-            <Loader size={14} className={styles.spinner} aria-hidden="true" />
+          <div className="flex items-center gap-2 px-3.5 py-2.5 mb-2.5 bg-[rgba(0,127,255,0.06)] border border-[rgba(0,127,255,0.15)] rounded-md text-[0.75rem] text-[#6a9fd8]">
+            <Loader size={14} className="animate-spin" aria-hidden="true" />
             <span>Cargando widget de subida...</span>
           </div>
         )}
 
         <button
           type="button"
-          className={styles.btnUpload}
+          className="inline-flex items-center gap-2 px-[28px] py-[11px] bg-gradient-to-br from-[#007fff] to-[#00aaff] border-0 rounded-md text-[#0a0a0a] font-[inherit] text-[0.82rem] font-semibold tracking-[0.8px] uppercase cursor-pointer transition-transform duration-[0.15s] transition-shadow duration-200 transition-opacity duration-200 hover:-translate-y-px hover:shadow-[0_4px_20px_rgba(0,127,255,0.4)] active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-[#00cfff] focus-visible:outline-offset-[3px]"
           onClick={openWidget}
           disabled={!scriptLoaded || isUploading || remainingSlots <= 0}
           aria-busy={isUploading}
         >
           {isUploading ? (
             <>
-              <Loader size={16} className={styles.spinner} aria-hidden="true" />
+              <Loader size={16} className="animate-spin" aria-hidden="true" />
               Guardando...
             </>
           ) : (
@@ -262,15 +261,15 @@ export default function ImageUploadWidget({
         </button>
 
         {remainingSlots > 0 && !isUploading && scriptLoaded && (
-          <span className={styles.counter}>
+          <span className="font-mono text-[0.7rem] font-semibold text-[#5a5a5a] tracking-[0.5px] mt-0.5">
             {remainingSlots} {remainingSlots === 1 ? "slot" : "slots"}{" "}
             disponible{remainingSlots === 1 ? "" : "s"}
           </span>
         )}
 
         {isUploading && (
-          <div className={styles.uploadingOverlay} role="status" aria-live="polite">
-            <Loader size={16} className={styles.spinner} aria-hidden="true" />
+          <div className="flex items-center justify-center gap-2.5 px-5 py-3.5 mt-3 bg-[rgba(0,127,255,0.06)] border border-[rgba(0,127,255,0.2)] rounded-md text-[0.8rem] font-semibold text-[#007fff] tracking-[0.4px]" role="status" aria-live="polite">
+            <Loader size={16} className="animate-spin" aria-hidden="true" />
             Procesando imagenes...
           </div>
         )}

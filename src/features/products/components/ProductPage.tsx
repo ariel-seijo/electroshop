@@ -187,9 +187,13 @@ export default function ProductPage({ product, relatedProducts }: ProductPagePro
             </div>
 
             <button
-              className={`flex-1 flex items-center justify-center gap-2 px-6 py-[0.95rem] border-none bg-gradient-to-br from-brand to-brand-end text-[#111] text-[0.9rem] font-semibold uppercase tracking-[1px] cursor-pointer transition-all duration-300 hover:not-disabled:shadow-[0_0_28px_rgba(0,127,255,0.4)] hover:not-disabled:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-border-52 disabled:text-text-dim disabled:shadow-none ${
-                added ? "bg-success text-[#111] animate-added-pulse" : ""
-              } ${isInCart ? "bg-success/10 border-success/25 text-success hover:bg-success/15 hover:shadow-[0_0_18px_rgba(34,197,94,0.18)]" : ""}`}
+              className={`flex-1 flex items-center justify-center gap-2 px-6 py-[0.95rem] border-none text-[0.9rem] font-semibold uppercase tracking-[1px] cursor-pointer transition-all duration-300 ${
+                isInCart
+                  ? "bg-none bg-success/10 border border-success/25 text-success hover:bg-success/15 hover:shadow-[0_0_18px_rgba(34,197,94,0.18)]"
+                  : added
+                    ? "bg-none bg-success text-[#111] animate-added-pulse"
+                    : "bg-gradient-to-br from-brand to-brand-end text-[#111] hover:not-disabled:shadow-[0_0_28px_rgba(0,127,255,0.4)] hover:not-disabled:-translate-y-0.5"
+              } ${isOutOfStock || isMaxReached ? "opacity-40 cursor-not-allowed bg-border-52 text-text-dim shadow-none" : ""}`}
               onClick={handleAdd}
               disabled={isOutOfStock || isMaxReached}
             >

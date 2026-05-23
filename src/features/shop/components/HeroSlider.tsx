@@ -76,7 +76,7 @@ export default function HeroSlider() {
             />
             <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(10,10,10,0.95)_0%,rgba(10,10,10,0.6)_45%,rgba(10,10,10,0.25)_70%,transparent_100%)] pointer-events-none max-md:bg-[linear-gradient(0deg,rgba(10,10,10,0.9)_0%,rgba(10,10,10,0.4)_60%,transparent_100%)]" />
             <div className="absolute left-[7%] top-1/2 -translate-y-1/2 max-w-[520px] z-[2] max-xl2:left-[5%] max-xl2:max-w-[400px] max-md:left-0 max-md:right-0 max-md:top-auto max-md:bottom-12 max-md:px-6 max-md:max-w-full max-md:text-center max-md:-translate-y-0 max-ms:bottom-10">
-              <h2 className="font-cosmic text-[3rem] font-thin tracking-[4px] text-white [text-shadow:0_0_40px_rgba(36,171,243,0.5)] leading-[1.1] m-0 mb-[0.8rem] animate-slide-fade-up max-xl2:text-[2.2rem] max-xl2:tracking-[2px] max-md:text-[1.6rem] max-md:tracking-[2px] max-ms:text-[1.3rem]">
+              <h2 className="font-cosmic text-[3rem] font-thin tracking-[4px] text-white [text-shadow:0_0_40px_rgba(36,171,243,0.5)] leading-[1.1] m-0 mb-[0.8rem] animate-[slideFadeUp_0.8s_ease-out] max-xl2:text-[2.2rem] max-xl2:tracking-[2px] max-md:text-[1.6rem] max-md:tracking-[2px] max-ms:text-[1.3rem]">
                 {slide.title}
               </h2>
               <p className="m-0 mb-[1.8rem] text-[1.15rem] font-semibold text-text-tertiary animate-[slideFadeUp_0.8s_ease-out_0.15s_both] max-xl2:text-base max-md:text-[0.9rem] max-md:mb-[1.2rem] max-ms:text-[0.8rem]">
@@ -84,7 +84,7 @@ export default function HeroSlider() {
               </p>
               <Link
                 href={slide.href}
-                className="inline-flex items-center gap-2 px-8 py-[0.85rem] bg-gradient-to-br from-brand to-brand-end text-[#111] text-[0.9rem] font-semibold uppercase tracking-[1.5px] no-underline transition-all duration-300 animate-[slideFadeUp_0.8s_ease-out_0.3s_both] hover:shadow-[0_0_30px_rgba(0,127,255,0.5),0_0_60px_rgba(0,207,255,0.3)] hover:-translate-y-0.5 max-md:text-[0.8rem] max-md:px-6 max-md:py-[0.7rem]"
+                className="inline-flex items-center gap-2 px-8 py-[0.85rem] bg-gradient-to-br from-brand to-brand-end text-[#111] text-[0.9rem] font-semibold uppercase tracking-[1.5px] no-underline transition-all duration-300 ease-linear animate-[slideFadeUp_0.8s_ease-out_0.3s_both] hover:shadow-[0_0_30px_rgba(0,127,255,0.5),0_0_60px_rgba(0,207,255,0.3)] hover:-translate-y-0.5 max-md:text-[0.8rem] max-md:px-6 max-md:py-[0.7rem]"
               >
                 {slide.cta}
                 <ChevronRight size={18} />
@@ -95,13 +95,13 @@ export default function HeroSlider() {
       </div>
 
       <button
-        className="absolute top-1/2 left-6 -translate-y-1/2 z-[5] size-[46px] rounded-full border border-white/15 bg-white/[0.07] backdrop-blur-[8px] text-white cursor-pointer flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 hover:bg-accent/20 hover:border-accent hover:shadow-[0_0_20px_rgba(36,171,243,0.3)] max-xl2:size-[38px] max-xl2:opacity-100 max-md:size-[34px] max-md:left-3 max-md:opacity-100"
+        className="absolute top-1/2 left-6 -translate-y-1/2 z-[5] size-[46px] rounded-full border border-white/15 bg-[rgba(20,20,20,0.7)] backdrop-blur-[8px] text-white cursor-pointer flex items-center justify-center transition-all duration-300 ease-linear opacity-0 group-hover:opacity-100 hover:bg-accent/20 hover:border-accent hover:shadow-[0_0_20px_rgba(36,171,243,0.3)] max-xl2:size-[38px] max-xl2:opacity-100 max-md:size-[34px] max-md:left-3 max-md:opacity-100"
         onClick={prev}
       >
         <ChevronLeft size={24} />
       </button>
       <button
-        className="absolute top-1/2 right-6 -translate-y-1/2 z-[5] size-[46px] rounded-full border border-white/15 bg-white/[0.07] backdrop-blur-[8px] text-white cursor-pointer flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 hover:bg-accent/20 hover:border-accent hover:shadow-[0_0_20px_rgba(36,171,243,0.3)] max-xl2:size-[38px] max-xl2:opacity-100 max-md:size-[34px] max-md:right-3 max-md:opacity-100"
+        className="absolute top-1/2 right-6 -translate-y-1/2 z-[5] size-[46px] rounded-full border border-white/15 bg-[rgba(20,20,20,0.7)] backdrop-blur-[8px] text-white cursor-pointer flex items-center justify-center transition-all duration-300 ease-linear opacity-0 group-hover:opacity-100 hover:bg-accent/20 hover:border-accent hover:shadow-[0_0_20px_rgba(36,171,243,0.3)] max-xl2:size-[38px] max-xl2:opacity-100 max-md:size-[34px] max-md:right-3 max-md:opacity-100"
         onClick={next}
       >
         <ChevronRight size={24} />
@@ -111,17 +111,17 @@ export default function HeroSlider() {
         {slides.map((_, index) => (
           <button
             key={index}
-            className={`size-2.5 rounded-full border-2 border-white/30 bg-transparent cursor-pointer transition-all duration-300 p-0 hover:border-white/70 ${
+            className={`size-2.5 rounded-full cursor-pointer transition-all duration-300 ease-linear p-0 hover:border-white/70 ${
               index === current
-                ? "bg-accent border-accent shadow-[0_0_12px_rgba(36,171,243,0.5)]"
-                : ""
+                ? "bg-accent border-2 border-accent shadow-[0_0_12px_rgba(36,171,243,0.5)]"
+                : "bg-transparent border-2 border-white/30"
             }`}
             onClick={() => setCurrent(index)}
           />
         ))}
       </div>
 
-      <div className="absolute bottom-0 left-0 w-full h-[3px] bg-white/5 z-[5]">
+      <div className="absolute bottom-0 left-0 w-full h-[3px] bg-white/[0.06] z-[5]">
         <div
           className="h-full bg-[linear-gradient(90deg,#007fff,#00cfff,#24abf3)] animate-progress-bar group-hover:[animation-play-state:paused]"
           style={{ animationDuration: "6s" }}

@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="es" data-scroll-behavior="smooth">
-      <body className={`${fuenteGamer.variable} ${inter.variable}`}>
+      <body className={`${inter.className} ${fuenteGamer.variable} ${inter.variable}`}>
         <AuthProvider>
           <CartProvider>
             {children}

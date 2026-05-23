@@ -9,43 +9,43 @@ export default function PromoBanner() {
       </h2>
       <div className="max-w-[1200px] mx-auto mt-10">
         <ul className="grid grid-cols-3 gap-[1px] bg-border-34 border border-border-34 rounded-lg overflow-hidden list-none p-0 m-0 max-6lg:grid-cols-1">
-          <li className="group flex items-center gap-4 px-[1.8rem] py-[1.6rem] bg-surface-20 transition-[background,transform] duration-[350ms] hover:bg-[rgb(25,25,25)] max-3md:px-4 max-3md:py-[1.2rem]">
+          <li className="group flex items-center gap-4 px-[1.8rem] py-[1.6rem] bg-surface-20 transition-[background,transform] duration-[350ms] ease-linear hover:bg-[rgb(25,25,25)] max-3md:px-4 max-3md:py-[1.2rem]">
             <div
-              className="size-[50px] rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center shrink-0 text-accent transition-[background,border-color,box-shadow,transform] duration-[350ms] group-hover:bg-accent/15 group-hover:border-accent/45 group-hover:shadow-[0_0_20px_rgba(36,171,243,0.25)] group-hover:scale-[1.06] max-3md:size-11"
+              className="size-[50px] rounded-full bg-accent/[0.08] border border-accent/20 flex items-center justify-center shrink-0 text-accent transition-[background,border-color,box-shadow,transform] duration-[350ms] ease-linear group-hover:bg-accent/15 group-hover:border-accent/45 group-hover:shadow-[0_0_20px_rgba(36,171,243,0.25)] group-hover:scale-[1.06] max-3md:size-11"
               aria-hidden="true"
             >
               <Truck size={22} />
             </div>
             <div className="flex flex-col gap-[0.15rem]">
-              <span className="text-[0.88rem] font-semibold text-text-body uppercase tracking-[0.5px]">Envío gratis</span>
+              <span className="text-[0.88rem] font-semibold text-[rgb(210,210,210)] uppercase tracking-[0.5px]">Envío gratis</span>
               <span className="text-[0.78rem] text-text-subtle font-semibold">En compras +$50.000</span>
             </div>
           </li>
 
-          <li className="group flex items-center gap-4 px-[1.8rem] py-[1.6rem] bg-surface-20 transition-[background,transform] duration-[350ms] hover:bg-[rgb(25,25,25)] max-3md:px-4 max-3md:py-[1.2rem]">
+          <li className="group flex items-center gap-4 px-[1.8rem] py-[1.6rem] bg-surface-20 transition-[background,transform] duration-[350ms] ease-linear hover:bg-[rgb(25,25,25)] max-3md:px-4 max-3md:py-[1.2rem]">
             <div
-              className="size-[50px] rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center shrink-0 text-accent transition-[background,border-color,box-shadow,transform] duration-[350ms] group-hover:bg-accent/15 group-hover:border-accent/45 group-hover:shadow-[0_0_20px_rgba(36,171,243,0.25)] group-hover:scale-[1.06] max-3md:size-11"
+              className="size-[50px] rounded-full bg-accent/[0.08] border border-accent/20 flex items-center justify-center shrink-0 text-accent transition-[background,border-color,box-shadow,transform] duration-[350ms] ease-linear group-hover:bg-accent/15 group-hover:border-accent/45 group-hover:shadow-[0_0_20px_rgba(36,171,243,0.25)] group-hover:scale-[1.06] max-3md:size-11"
               aria-hidden="true"
             >
               <ShieldCheck size={22} />
             </div>
             <div className="flex flex-col gap-[0.15rem]">
-              <span className="text-[0.88rem] font-semibold text-text-body uppercase tracking-[0.5px]">Garantía oficial</span>
+              <span className="text-[0.88rem] font-semibold text-[rgb(210,210,210)] uppercase tracking-[0.5px]">Garantía oficial</span>
               <span className="text-[0.78rem] text-text-subtle font-semibold">
                 12 meses en todos los productos
               </span>
             </div>
           </li>
 
-          <li className="group flex items-center gap-4 px-[1.8rem] py-[1.6rem] bg-surface-20 transition-[background,transform] duration-[350ms] hover:bg-[rgb(25,25,25)] max-3md:px-4 max-3md:py-[1.2rem]">
+          <li className="group flex items-center gap-4 px-[1.8rem] py-[1.6rem] bg-surface-20 transition-[background,transform] duration-[350ms] ease-linear hover:bg-[rgb(25,25,25)] max-3md:px-4 max-3md:py-[1.2rem]">
             <div
-              className="size-[50px] rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center shrink-0 text-accent transition-[background,border-color,box-shadow,transform] duration-[350ms] group-hover:bg-accent/15 group-hover:border-accent/45 group-hover:shadow-[0_0_20px_rgba(36,171,243,0.25)] group-hover:scale-[1.06] max-3md:size-11"
+              className="size-[50px] rounded-full bg-accent/[0.08] border border-accent/20 flex items-center justify-center shrink-0 text-accent transition-[background,border-color,box-shadow,transform] duration-[350ms] ease-linear group-hover:bg-accent/15 group-hover:border-accent/45 group-hover:shadow-[0_0_20px_rgba(36,171,243,0.25)] group-hover:scale-[1.06] max-3md:size-11"
               aria-hidden="true"
             >
               <Zap size={22} />
             </div>
             <div className="flex flex-col gap-[0.15rem]">
-              <span className="text-[0.88rem] font-semibold text-text-body uppercase tracking-[0.5px]">Envío rápido</span>
+              <span className="text-[0.88rem] font-semibold text-[rgb(210,210,210)] uppercase tracking-[0.5px]">Envío rápido</span>
               <span className="text-[0.78rem] text-text-subtle font-semibold">
                 Despacho en 24hs hábiles
               </span>
@@ -64,7 +64,7 @@ export default function PromoBanner() {
 
           <Link
             href="/category/gpu"
-            className="inline-flex items-center gap-2 px-[2.2rem] py-[0.9rem] bg-gradient-to-br from-brand to-brand-end text-[#111] text-[0.88rem] font-semibold uppercase tracking-[1px] no-underline whitespace-nowrap shrink-0 rounded-md transition-[box-shadow,transform] duration-300 relative z-[1] hover:shadow-[0_0_35px_rgba(0,127,255,0.5),0_0_65px_rgba(0,207,255,0.3)] hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-[3px] max-3md:px-6 max-3md:py-3 max-3md:text-[0.82rem]"
+            className="inline-flex items-center gap-2 px-[2.2rem] py-[0.9rem] bg-gradient-to-br from-brand to-brand-end text-[#111] text-[0.88rem] font-semibold uppercase tracking-[1px] no-underline whitespace-nowrap shrink-0 rounded-md transition-[box-shadow,transform] duration-300 ease-linear relative z-[1] hover:shadow-[0_0_35px_rgba(0,127,255,0.5),0_0_65px_rgba(0,207,255,0.3)] hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-[3px] max-3md:px-6 max-3md:py-3 max-3md:text-[0.82rem]"
             aria-label="Ver todos los componentes gaming"
           >
             Ver componentes

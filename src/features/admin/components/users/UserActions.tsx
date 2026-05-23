@@ -5,7 +5,6 @@ import { MoreHorizontal, Eye, Ban, Shield, UserCog, Trash2 } from "lucide-react"
 import { toggleUserStatusAction, updateUserRoleAction, deleteUserAction } from "@/features/admin/actions/userActions";
 import { useToastStore } from "@/features/toast";
 import ConfirmModal from "@/features/admin/components/ConfirmModal";
-import styles from "./UserActions.module.css";
 
 interface UserActionsUser {
   id: string;
@@ -161,11 +160,11 @@ export default function UserActions({ user, onViewOrders }: UserActionsProps) {
 
   return (
     <>
-      <div className={styles.container} ref={menuRef}>
+      <div className="relative inline-block" ref={menuRef}>
         <button
           ref={triggerRef}
           type="button"
-          className={styles.trigger}
+          className="inline-flex items-center justify-center w-9 h-9 border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.02)] text-[rgb(160,160,160)] rounded-md cursor-pointer transition-all duration-[0.15s] font-[inherit] hover:bg-[rgba(36,171,243,0.08)] hover:border-[rgba(36,171,243,0.25)] hover:text-[#24abf3] focus-visible:outline-2 focus-visible:outline-[#24abf3] focus-visible:outline-offset-2 max-[640px]:min-w-11 max-[640px]:min-h-11"
           onClick={toggleMenu}
           aria-label="Acciones"
           aria-expanded={isOpen}
@@ -176,7 +175,8 @@ export default function UserActions({ user, onViewOrders }: UserActionsProps) {
 
         {isOpen && (
           <div
-            className={`${styles.menu} ${flipUp ? styles.menuUp : ""}`}
+            className={`absolute top-[calc(100%+4px)] right-0 min-w-[200px] bg-[rgb(22,22,22)] border border-[rgb(40,40,40)] rounded-lg shadow-[0_12px_32px_rgba(0,0,0,0.6),0_0_0_1px_rgba(255,255,255,0.04)] p-1 z-[100] origin-top-right max-[640px]:min-w-[160px] max-[640px]:max-w-[calc(100vw-24px)] ${flipUp ? "top-auto bottom-[calc(100%+4px)] origin-bottom-right" : ""}`}
+            style={{ animation: "slideDown 0.12s ease-out" }}
             role="menu"
           >
             {actions
@@ -187,7 +187,7 @@ export default function UserActions({ user, onViewOrders }: UserActionsProps) {
                   <button
                     key={action.type}
                     type="button"
-                    className={`${styles.menuItem} ${action.type === "delete" ? styles.menuItemDanger : ""}`}
+                    className={`flex items-center gap-2.5 w-full px-3 py-2 border-0 bg-transparent text-[rgb(200,200,200)] text-[0.8rem] font-semibold font-[inherit] cursor-pointer rounded-md transition-all duration-[0.12s] text-left leading-none min-h-11 [&_svg]:w-4 [&_svg]:h-4 [&_svg]:shrink-0 hover:bg-[rgba(255,255,255,0.04)] hover:text-[rgb(220,220,220)] focus-visible:outline-2 focus-visible:outline-[#24abf3] focus-visible:outline-offset-[-2px] disabled:opacity-40 disabled:cursor-not-allowed ${action.type === "delete" ? "text-[rgb(252,165,165)] hover:bg-[rgba(239,68,68,0.08)] hover:text-[rgb(248,113,113)]" : ""}`}
                     onClick={() => handleActionClick(action.type)}
                     role="menuitem"
                     disabled={loading}

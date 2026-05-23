@@ -55,15 +55,22 @@ export default function ProductCard({ product, view = "grid", priority = false }
         : `Añadir ${product.title} al carrito`;
 
   const cardBase =
-    "flex flex-col h-full justify-between bg-[linear-gradient(160deg,rgb(24,24,24)_0%,rgb(18,18,18)_100%)] border border-white/5 rounded-md relative overflow-visible transition-[transform,box-shadow,border-color] duration-[350ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] focus-within:border-white/20 focus-within:shadow-[0_8px_25px_rgba(0,0,0,0.4)] ms:hover:-translate-y-[6px] md:rounded-lg md:hover:-translate-y-[7px] md:hover:shadow-[0_18px_45px_rgba(0,0,0,0.55)] lg:hover:-translate-y-2 lg:hover:shadow-[0_20px_50px_rgba(0,0,0,0.6)]";
+    "group flex flex-col h-full justify-between bg-[linear-gradient(160deg,rgb(24,24,24)_0%,rgb(18,18,18)_100%)] border border-white/[0.06] rounded-md relative overflow-visible transition duration-[350ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] focus-within:border-white/20 focus-within:shadow-[0_8px_25px_rgba(0,0,0,0.4)] ms:hover:-translate-y-[6px] md:rounded-lg md:hover:-translate-y-[7px] md:hover:shadow-[0_18px_45px_rgba(0,0,0,0.55)] lg:hover:-translate-y-2 lg:hover:shadow-[0_20px_50px_rgba(0,0,0,0.6)]";
 
   const isList = view === "list";
+
+  const btnBase =
+    "group/btn mx-[0.4rem] my-[0.4rem] w-[calc(100%-0.8rem)] py-[0.42rem] px-[0.4rem] border rounded-[5px] font-semibold text-[0.66rem] uppercase tracking-[0.4px] cursor-pointer flex justify-center items-center overflow-hidden relative min-h-[34px] transition-all duration-300 ease-linear focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 focus-visible:rounded-[5px] not-disabled:active:scale-[0.97] not-disabled:active:transition-transform not-disabled:active:duration-[100ms] not-disabled:active:ease-linear disabled:cursor-not-allowed ms:py-[0.55rem] ms:text-[0.72rem] ms:rounded-md ms:min-h-10 ms:mx-3 ms:my-[0.45rem] ms:mb-3 ms:w-[calc(100%-1.5rem)] md:py-[0.65rem] md:text-[0.76rem] md:min-h-[42px] md:mx-4 md:my-2 md:mb-4 md:w-[calc(100%-2rem)] lg:py-[0.72rem] lg:text-[0.8rem] lg:min-h-11 lg:mx-[1.2rem] lg:my-[0.6rem] lg:mb-[1.2rem] lg:w-[calc(100%-2.4rem)]";
+
+  const btnState = isInCart
+    ? "bg-none bg-success/10 border-success/25 text-success hover:bg-success/15 hover:shadow-[0_0_15px_rgba(34,197,94,0.12)] hover:text-success"
+    : "bg-gradient-to-br from-brand to-brand-end border-transparent text-[rgb(17,17,17)] shadow-[0_0_16px_rgba(0,127,255,0.2)] not-disabled:hover:bg-[linear-gradient(135deg,#0090ff,#30d8ff)] not-disabled:hover:text-[rgb(17,17,17)] not-disabled:hover:shadow-[0_0_28px_rgba(0,127,255,0.4)] not-disabled:hover:-translate-y-px";
 
   return (
     <li
       className={`${cardBase} ${
         isList
-          ? "flex-row items-center gap-4 hover:translate-x-1 max-3lg:flex-col max-3lg:items-stretch max-3lg:gap-0 max-3lg:hover:-translate-y-[3px] max-3lg:hover:translate-x-0 md:gap-[1.2rem] lg:gap-6"
+          ? "flex-row items-center gap-4 hover:translate-x-1 hover:-translate-y-0 ms:hover:!-translate-y-0 md:hover:!-translate-y-0 lg:hover:!-translate-y-0 max-3lg:flex-col max-3lg:items-stretch max-3lg:gap-0 max-3lg:hover:-translate-y-[3px] max-3lg:hover:translate-x-0 md:gap-[1.2rem] lg:gap-6"
           : ""
       }`}
     >
@@ -76,7 +83,7 @@ export default function ProductCard({ product, view = "grid", priority = false }
         }`}
         aria-label={`Ver detalles de ${product.title}`}
       >
-        <div className={`relative w-full aspect-square overflow-hidden flex justify-center items-center bg-[radial-gradient(circle_at_center,rgb(22,22,22)_0%,rgb(14,14,14)_100%)] rounded ms:rounded-[5px] md:rounded-md after:content-[''] after:absolute after:inset-0 after:bg-[radial-gradient(circle_at_center,rgba(36,171,243,0.04)_0%,transparent_70%)] after:opacity-0 after:transition-opacity after:duration-[400ms] after:pointer-events-none after:z-[3] group-hover:after:opacity-100 ${
+        <div className={`relative w-full aspect-square overflow-hidden flex justify-center items-center bg-[radial-gradient(circle_at_center,rgb(22,22,22)_0%,rgb(14,14,14)_100%)] rounded ms:rounded-[5px] md:rounded-md       after:content-[''] after:absolute after:inset-0 after:bg-[radial-gradient(circle_at_center,rgba(36,171,243,0.04)_0%,transparent_70%)] after:opacity-0 after:transition-opacity after:duration-[400ms] after:ease-linear after:pointer-events-none after:z-[3] group-hover:after:opacity-100 ${
           isList
             ? "w-[100px] min-w-[100px] aspect-square max-3lg:w-full max-3lg:min-w-0 md:w-[140px] md:min-w-[140px] lg:w-[160px] lg:min-w-[160px]"
             : ""
@@ -87,7 +94,7 @@ export default function ProductCard({ product, view = "grid", priority = false }
             fill
             sizes="(max-width: 480px) 90vw, (max-width: 1024px) 50vw, 33vw"
             priority={priority}
-            className="w-full h-full object-contain block transition-[transform,filter] duration-[450ms] ease-[cubic-bezier(0.25,0.1,0.25,1)] group-hover:scale-[1.06] group-hover:brightness-110 group-hover:contrast-[1.03]"
+            className="w-full h-full object-contain block transition duration-[450ms] ease-[cubic-bezier(0.25,0.1,0.25,1)] group-hover:scale-[1.06] group-hover:brightness-110 group-hover:contrast-[1.03]"
           />
 
           {discountPercent > 0 && (
@@ -97,13 +104,13 @@ export default function ProductCard({ product, view = "grid", priority = false }
           )}
 
           {isOutOfStock && (
-            <span className="absolute top-1 right-1 px-[0.3rem] py-[0.08rem] text-[0.52rem] font-semibold uppercase tracking-[0.8px] rounded-full z-[4] bg-danger/10 text-danger border border-danger/25 ms:top-[0.35rem] ms:right-[0.35rem] ms:text-[0.54rem] md:top-[0.45rem] md:right-[0.45rem] md:text-[0.56rem] md:px-[0.45rem] md:py-[0.15rem] lg:top-[0.55rem] lg:right-[0.55rem] lg:text-[0.6rem] lg:px-2 lg:py-[0.2rem]" role="status">AGOTADO</span>
+            <span className="absolute top-1 right-1 px-[0.3rem] py-[0.08rem] text-[0.52rem] font-semibold uppercase tracking-[0.8px] rounded-full z-[4] bg-danger/[0.12] text-danger border border-danger/25 ms:top-[0.35rem] ms:right-[0.35rem] ms:text-[0.54rem] md:top-[0.45rem] md:right-[0.45rem] md:text-[0.56rem] md:px-[0.45rem] md:py-[0.15rem] lg:top-[0.55rem] lg:right-[0.55rem] lg:text-[0.6rem] lg:px-2 lg:py-[0.2rem]" role="status">AGOTADO</span>
           )}
           {isLowStock && (
-            <span className="absolute top-1 right-1 px-[0.3rem] py-[0.08rem] text-[0.52rem] font-semibold uppercase tracking-[0.8px] rounded-full z-[4] bg-warning/10 text-warning border border-warning/25 ms:top-[0.35rem] ms:right-[0.35rem] ms:text-[0.54rem] md:top-[0.45rem] md:right-[0.45rem] md:text-[0.56rem] md:px-[0.45rem] md:py-[0.15rem] lg:top-[0.55rem] lg:right-[0.55rem] lg:text-[0.6rem] lg:px-2 lg:py-[0.2rem]" role="status">{product.stock} disponibles</span>
+            <span className="absolute top-1 right-1 px-[0.3rem] py-[0.08rem] text-[0.52rem] font-semibold uppercase tracking-[0.8px] rounded-full z-[4] bg-warning/[0.12] text-warning border border-warning/25 ms:top-[0.35rem] ms:right-[0.35rem] ms:text-[0.54rem] md:top-[0.45rem] md:right-[0.45rem] md:text-[0.56rem] md:px-[0.45rem] md:py-[0.15rem] lg:top-[0.55rem] lg:right-[0.55rem] lg:text-[0.6rem] lg:px-2 lg:py-[0.2rem]" role="status">{product.stock} disponibles</span>
           )}
           {product.featured && !isOutOfStock && (
-            <span className="absolute bottom-1 left-1 px-[0.28rem] py-[0.08rem] bg-accent/10 border border-accent/20 text-accent text-[0.5rem] font-semibold tracking-[0.8px] uppercase flex items-center gap-[0.12rem] rounded-full z-[4] shadow-[0_0_10px_rgba(36,171,243,0.12)] ms:bottom-[0.35rem] ms:left-[0.35rem] ms:text-[0.54rem] md:bottom-[0.45rem] md:left-[0.45rem] md:text-[0.56rem] md:px-[0.4rem] md:py-[0.15rem] md:gap-[0.25rem] lg:bottom-[0.55rem] lg:left-[0.55rem] lg:text-[0.58rem] lg:px-[0.45rem] lg:py-[0.2rem] [&>svg]:w-[9px] [&>svg]:h-[9px] [&>svg]:animate-[flamePulse_1.5s_ease-in-out_infinite] md:[&>svg]:size-[11px] lg:[&>svg]:size-3">
+            <span className="absolute bottom-1 left-1 px-[0.28rem] py-[0.08rem] bg-accent/[0.12] border border-accent/20 text-accent text-[0.5rem] font-semibold tracking-[0.8px] uppercase flex items-center gap-[0.12rem] rounded-full z-[4] shadow-[0_0_10px_rgba(36,171,243,0.12)] ms:bottom-[0.35rem] ms:left-[0.35rem] ms:text-[0.54rem] md:bottom-[0.45rem] md:left-[0.45rem] md:text-[0.56rem] md:px-[0.4rem] md:py-[0.15rem] md:gap-[0.25rem] lg:bottom-[0.55rem] lg:left-[0.55rem] lg:text-[0.58rem] lg:px-[0.45rem] lg:py-[0.2rem] [&>svg]:w-[9px] [&>svg]:h-[9px] [&>svg]:animate-[flamePulse_1.5s_ease-in-out_infinite] md:[&>svg]:size-[11px] lg:[&>svg]:size-3">
               <Flame size={12} aria-hidden="true" />
               DESTACADO
             </span>
@@ -148,13 +155,9 @@ export default function ProductCard({ product, view = "grid", priority = false }
       </Link>
 
       <button
-        className={`group/btn mx-[0.4rem] my-[0.4rem] w-[calc(100%-0.8rem)] py-[0.42rem] px-[0.4rem] border border-transparent rounded-[5px] bg-gradient-to-br from-brand to-brand-end text-[rgb(17,17,17)] font-semibold text-[0.66rem] uppercase tracking-[0.4px] cursor-pointer flex justify-center items-center overflow-hidden relative min-h-[34px] shadow-[0_0_16px_rgba(0,127,255,0.2)] transition-[background,border-color,color,box-shadow,transform] duration-300 focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 focus-visible:rounded-[5px] not-disabled:hover:bg-[linear-gradient(135deg,#0090ff,#30d8ff)] not-disabled:hover:text-[rgb(17,17,17)] not-disabled:hover:shadow-[0_0_28px_rgba(0,127,255,0.4)] not-disabled:hover:-translate-y-px not-disabled:active:scale-[0.97] not-disabled:active:transition-transform not-disabled:active:duration-[100ms] disabled:cursor-not-allowed ms:py-[0.55rem] ms:text-[0.72rem] ms:rounded-md ms:min-h-10 ms:mx-3 ms:my-[0.45rem] ms:mb-3 ms:w-[calc(100%-1.5rem)] md:py-[0.65rem] md:text-[0.76rem] md:min-h-[42px] md:mx-4 md:my-2 md:mb-4 md:w-[calc(100%-2rem)] lg:py-[0.72rem] lg:text-[0.8rem] lg:min-h-11 lg:mx-[1.2rem] lg:my-[0.6rem] lg:mb-[1.2rem] lg:w-[calc(100%-2.4rem)] ${
-          isInCart
-            ? "bg-success/10 border-success/25 text-success hover:bg-success/15 hover:shadow-[0_0_15px_rgba(34,197,94,0.12)] hover:text-success"
-            : ""
-        } ${isOutOfStock ? "opacity-35 cursor-not-allowed" : ""} ${
+        className={`${btnBase} ${btnState} ${isOutOfStock ? "opacity-35 cursor-not-allowed" : ""} ${
           isList
-            ? "w-auto min-w-[130px] mx-3 my-3 mr-0 shrink-0 max-3lg:w-[calc(100%-1rem)] max-3lg:min-w-0 max-3lg:mx-2 max-3lg:my-[0.35rem] max-3lg:mb-2 md:min-w-[150px] md:mx-4 md:my-4 md:mr-0 lg:min-w-[170px] lg:mx-[1.2rem] lg:my-[1.2rem] lg:mr-0"
+            ? "w-auto min-w-[130px] mt-3 mb-3 ml-0 mr-4 shrink-0 max-3lg:w-[calc(100%-1rem)] max-3lg:min-w-0 max-3lg:mx-2 max-3lg:my-[0.35rem] max-3lg:mb-2 md:min-w-[150px] md:my-4 md:ml-0 md:mr-4 lg:min-w-[170px] lg:my-[1.2rem] lg:ml-0 lg:mr-[1.2rem]"
             : ""
         }`}
         onClick={(e) => {
@@ -165,7 +168,7 @@ export default function ProductCard({ product, view = "grid", priority = false }
         aria-label={buyLabel}
         aria-disabled={isOutOfStock || isMaxReached}
       >
-        <span className="flex items-center gap-[0.25rem] transition-all duration-[250ms] relative z-[1] md:gap-[0.35rem] lg:gap-[0.4rem] [&>svg]:w-[13px] [&>svg]:h-[13px] [&>svg]:shrink-0 ms:[&>svg]:size-[15px] md:[&>svg]:size-4">
+        <span className="flex items-center gap-[0.25rem] transition-all duration-[250ms] ease-linear relative z-[1] md:gap-[0.35rem] lg:gap-[0.4rem] [&>svg]:w-[13px] [&>svg]:h-[13px] [&>svg]:shrink-0 ms:[&>svg]:size-[15px] md:[&>svg]:size-4">
           {isMaxReached ? (
             <>
               <Check size={16} aria-hidden="true" />

@@ -14,7 +14,6 @@ import { updateUserRoleAction } from "@/features/admin/actions/userActions";
 import { useToastStore } from "@/features/toast";
 import ConfirmModal from "@/features/admin/components/ConfirmModal";
 import UserActions from "./UserActions";
-import styles from "./UserTable.module.css";
 
 export interface TableUser {
   id: string;
@@ -40,8 +39,8 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 function getStatusClass(status: string): string {
-  if (status === "ACTIVE") return styles.statusActive;
-  if (status === "BANNED") return styles.statusBanned;
+  if (status === "ACTIVE") return "bg-[rgba(34,197,94,0.08)] border-[1.5px] border-[rgba(34,197,94,0.3)] text-[#4ade80]";
+  if (status === "BANNED") return "bg-[rgba(239,68,68,0.08)] border-[1.5px] border-[rgba(239,68,68,0.3)] text-[#f87171]";
   return "";
 }
 
@@ -62,6 +61,17 @@ interface UserTableProps {
   onPage?: (page: number) => void;
   onViewOrders?: (user: { id: string; email: string; name?: string | null; createdAt?: string }) => void;
 }
+
+const TABLE = "w-full border-collapse text-[0.82rem] [&_caption]:text-[0.85rem] [&_caption]:font-semibold [&_caption]:text-[rgb(180,180,180)] [&_caption]:text-left [&_caption]:px-4 [&_caption]:py-3 [&_caption]:caption-top [&_tbody_tr]:transition-[background,box-shadow] [&_tbody_tr]:duration-[0.15s] [&_tbody_tr]:relative [&_tbody_tr:nth-child(even)]:bg-[rgba(255,255,255,0.01)] [&_tbody_tr:hover]:bg-[rgba(36,171,243,0.03)] [&_tbody_tr:hover]:shadow-[inset_3px_0_0_rgba(36,171,243,0.5)] [&_tbody_tr:focus-within]:bg-[rgba(36,171,243,0.04)] [&_tbody_tr:focus-within]:outline [&_tbody_tr:focus-within]:outline-1 [&_tbody_tr:focus-within]:outline-[rgba(36,171,243,0.2)] [&_tbody_tr:focus-within]:outline-offset-[-1px] [&_td]:px-3.5 [&_td]:py-3 [&_td]:border-b [&_td]:border-[rgba(255,255,255,0.04)] [&_td]:align-middle [&_td]:text-[rgb(200,200,200)]";
+
+const ROLE_SELECT = "py-1 pl-2.5 pr-6 border border-[rgb(42,42,42)] rounded-md bg-[rgb(16,16,16)] text-[#e4e4e4] text-[0.78rem] font-semibold font-[inherit] cursor-pointer transition-colors duration-[0.12s] appearance-none bg-no-repeat [background-position:right_6px_center] min-w-[90px] hover:border-[rgba(36,171,243,0.25)] focus:border-[#24abf3] focus:outline-none focus:shadow-[0_0_10px_rgba(36,171,243,0.08)] disabled:opacity-40 disabled:cursor-not-allowed bg-[url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%239a9a9a' d='M5 7L1 3h8z'/%3E%3C/svg%3E\")]";
+
+const STATUS_BADGE = "inline-flex items-center gap-1.5 py-1 px-2.5 rounded-[5px] text-[0.72rem] font-semibold";
+
+const PAGE_BTN = "inline-flex items-center justify-center min-w-9 h-9 px-2 border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.02)] text-[rgb(180,180,180)] rounded-md text-[0.78rem] font-semibold cursor-pointer transition-all duration-[0.15s] font-[inherit] shrink-0 hover:bg-[rgba(36,171,243,0.06)] hover:border-[rgba(36,171,243,0.2)] hover:text-[rgb(220,220,220)] disabled:opacity-30 disabled:cursor-not-allowed max-[640px]:min-w-11 max-[640px]:h-11";
+const PAGE_BTN_ACTIVE = "bg-[rgba(36,171,243,0.1)] border-[rgba(36,171,243,0.3)] text-[#24abf3]";
+
+const USER_AVATAR = "w-8 h-8 rounded-md bg-[rgba(36,171,243,0.1)] border border-[rgba(36,171,243,0.2)] flex items-center justify-center text-[0.78rem] font-bold text-[#24abf3] shrink-0";
 
 export default function UserTable({
   users,
@@ -111,9 +121,9 @@ export default function UserTable({
 
   if (!users || users.length === 0) {
     return (
-      <div className={styles.empty} role="status">
-        <Users size={48} className={styles.emptyIcon} aria-hidden="true" />
-        <p className={styles.emptyText}>No se encontraron usuarios</p>
+      <div className="text-center px-6 py-14 text-[rgb(130,130,130)]" role="status">
+        <Users size={48} className="mb-3.5 opacity-30" aria-hidden="true" />
+        <p className="text-[0.88rem] font-semibold m-0">No se encontraron usuarios</p>
       </div>
     );
   }
@@ -121,19 +131,19 @@ export default function UserTable({
   return (
     <>
       {/* DESKTOP TABLE */}
-      <div className={styles.tableWrapper}>
-        <table className={styles.table} aria-label="Lista de usuarios" role="grid">
+      <div className="border border-[rgba(255,255,255,0.05)] rounded-[10px] overflow-x-auto bg-[rgba(12,12,12,0.95)] shadow-[0_0_20px_rgba(36,171,243,0.03),0_4px_24px_rgba(0,0,0,0.5)] max-[640px]:hidden">
+        <table className={TABLE} aria-label="Lista de usuarios" role="grid">
           <caption className="visually-hidden">
             Usuarios — {total} registros, página {page} de {totalPages}
           </caption>
-          <thead className={styles.thead}>
+          <thead className="sticky top-0 z-10 [&_th]:px-3.5 [&_th]:py-3 [&_th]:text-left [&_th]:font-semibold [&_th]:text-[0.68rem] [&_th]:text-[rgb(160,160,160)] [&_th]:uppercase [&_th]:tracking-[0.8px] [&_th]:bg-[rgba(16,16,16,0.98)] [&_th]:backdrop-blur-md [&_th]:border-b [&_th]:border-[rgba(36,171,243,0.12)] [&_th]:whitespace-nowrap">
             <tr>
-              <th scope="col" className={styles.thUser}>Usuario</th>
+              <th scope="col" className="w-[220px]">Usuario</th>
               {SORTABLE_COLUMNS.map((col) => (
                 <th
                   key={col.key}
                   scope="col"
-                  className={styles.thSortable}
+                  className="w-[90px]"
                   aria-sort={
                     sort === col.key
                       ? order === "asc"
@@ -144,50 +154,50 @@ export default function UserTable({
                 >
                   <button
                     type="button"
-                    className={styles.sortBtn}
+                    className="inline-flex items-center gap-1.5 bg-transparent border-0 text-inherit font-[inherit] text-[0.68rem] font-semibold uppercase tracking-[0.8px] cursor-pointer py-1 px-1.5 rounded transition-colors duration-[0.15s] hover:text-[#24abf3] focus-visible:outline-2 focus-visible:outline-[#24abf3] focus-visible:outline-offset-2 group"
                     onClick={() => onSort?.(col.key)}
                     aria-label={`Ordenar por ${col.label}`}
                   >
                     {col.label}
-                    <span className={sort === col.key ? styles.sortIconActive : styles.sortIconInactive}>
+                    <span className={sort === col.key ? "opacity-100 text-[#24abf3]" : "opacity-0 transition-opacity duration-[0.15s] group-hover:opacity-40"}>
                       {sort === col.key ? (order === "asc" ? " ↑" : " ↓") : " ↑"}
                     </span>
                   </button>
                 </th>
               ))}
-              <th scope="col" className={styles.thMetric}>Órdenes</th>
-              <th scope="col" className={styles.thMetric}>LTV</th>
-              <th scope="col" className={styles.thToggle}>Estado</th>
-              <th scope="col" className={styles.thActions}>Acciones</th>
+              <th scope="col" className="w-20">Órdenes</th>
+              <th scope="col" className="w-20">LTV</th>
+              <th scope="col" className="w-[60px] text-center">Estado</th>
+              <th scope="col" className="w-11 text-center">Acciones</th>
             </tr>
           </thead>
           <tbody>
             {users.map((user) => (
-              <tr key={user.id} className={styles.row}>
+              <tr key={user.id}>
                 <td>
-                  <div className={styles.userCell}>
-                    <div className={styles.userAvatar}>
+                  <div className="flex items-center gap-2.5">
+                    <div className={USER_AVATAR}>
                       {user.name?.charAt(0) || "?"}
                     </div>
-                    <div className={styles.userInfo}>
-                      <span className={styles.userName}>{user.name}</span>
-                      <span className={styles.userEmail}>{user.email}</span>
+                    <div className="flex flex-col gap-0.5 min-w-0">
+                      <span className="font-semibold text-[rgb(220,220,220)] text-[0.84rem]">{user.name}</span>
+                      <span className="text-[0.72rem] text-[rgb(130,130,130)]">{user.email}</span>
                     </div>
                   </div>
                 </td>
-                <td className={styles.dateCell}>
+                <td className="text-[0.78rem] text-[rgb(140,140,140)] whitespace-nowrap">
                   {new Date(user.createdAt).toLocaleDateString("es-AR", {
                     year: "2-digit",
                     month: "2-digit",
                     day: "2-digit",
                   })}
                 </td>
-                <td className={styles.emailCell}>{user.email}</td>
+                <td className="text-[0.78rem] text-[rgb(140,140,140)] whitespace-nowrap">{user.email}</td>
                 <td>
                   <select
                     value={user.role}
                     onChange={(e) => handleRoleChange(user.id, e.target.value, user.name, user.role)}
-                    className={styles.roleSelect}
+                    className={ROLE_SELECT}
                     disabled={roleLoading === user.id || user.deletedAt !== null}
                     aria-label={`Rol de ${user.name}`}
                   >
@@ -195,14 +205,14 @@ export default function UserTable({
                     <option value="ADMIN">{ROLE_LABELS.ADMIN}</option>
                   </select>
                 </td>
-                <td className={styles.metricCell}>{user._count?.orders ?? 0}</td>
-                <td className={styles.metricCell}>
+                <td className="font-mono font-semibold text-[0.84rem] text-[rgb(200,200,200)]">{user._count?.orders ?? 0}</td>
+                <td className="font-mono font-semibold text-[0.84rem] text-[rgb(200,200,200)]">
                   {user.lifetimeValue !== undefined && user.lifetimeValue !== null
                     ? formatArs(user.lifetimeValue * exchangeRate)
                     : "—"}
                 </td>
                 <td>
-                  <span className={`${styles.statusBadge} ${getStatusClass(user.status)}`}>
+                  <span className={`${STATUS_BADGE} ${getStatusClass(user.status)}`}>
                     {user.status === "ACTIVE" ? <Check size={12} /> : <XIcon size={12} />}
                     {STATUS_LABELS[user.status] || user.status}
                   </span>
@@ -217,45 +227,45 @@ export default function UserTable({
       </div>
 
       {/* MOBILE CARDS */}
-      <div className={styles.mobileCards}>
+      <div className="hidden max-[640px]:flex max-[640px]:flex-col max-[640px]:gap-3">
         {users.map((user) => (
-          <article key={user.id} className={styles.card}>
-            <div className={styles.cardHeader}>
-              <div className={styles.userAvatar}>
+          <article key={user.id} className="bg-[rgb(14,14,14)] border border-[rgba(255,255,255,0.05)] rounded-[10px] p-3.5 transition-colors duration-200 transition-shadow duration-200 hover:border-[rgba(36,171,243,0.15)] hover:shadow-[0_0_12px_rgba(36,171,243,0.05)]">
+            <div className="flex items-center justify-between mb-2.5">
+              <div className={USER_AVATAR}>
                 {user.name?.charAt(0) || "?"}
               </div>
-              <div className={styles.cardInfo}>
-                <h4 className={styles.cardTitle}>{user.name}</h4>
-                <span className={styles.cardEmail}>{user.email}</span>
+              <div className="flex flex-col gap-[3px] min-w-0">
+                <h4 className="text-[0.9rem] font-semibold text-[#e4e4e4] m-0">{user.name}</h4>
+                <span className="text-[0.72rem] text-[rgb(145,145,145)]">{user.email}</span>
               </div>
             </div>
 
-            <div className={styles.cardBody}>
-              <div className={styles.cardRow}>
-                <span className={styles.cardLabel}>Estado</span>
-                <span className={`${styles.statusBadge} ${getStatusClass(user.status)}`}>
+            <div className="flex flex-col gap-2 py-2.5 border-t border-b border-[rgba(255,255,255,0.05)] mb-2.5">
+              <div className="flex justify-between items-center">
+                <span className="text-[0.7rem] font-semibold text-[rgb(145,145,145)] uppercase tracking-[0.5px]">Estado</span>
+                <span className={`${STATUS_BADGE} ${getStatusClass(user.status)}`}>
                   {STATUS_LABELS[user.status] || user.status}
                 </span>
               </div>
-              <div className={styles.cardRow}>
-                <span className={styles.cardLabel}>Rol</span>
+              <div className="flex justify-between items-center">
+                <span className="text-[0.7rem] font-semibold text-[rgb(145,145,145)] uppercase tracking-[0.5px]">Rol</span>
                 <select
                   value={user.role}
                   onChange={(e) => handleRoleChange(user.id, e.target.value, user.name, user.role)}
-                  className={styles.roleSelect}
+                  className={ROLE_SELECT}
                   disabled={roleLoading === user.id || user.deletedAt !== null}
                 >
                   <option value="CUSTOMER">Cliente</option>
                   <option value="ADMIN">Admin</option>
                 </select>
               </div>
-              <div className={styles.cardRow}>
-                <span className={styles.cardLabel}>Órdenes</span>
-                <span className={styles.cardValue}>{user._count?.orders ?? 0}</span>
+              <div className="flex justify-between items-center">
+                <span className="text-[0.7rem] font-semibold text-[rgb(145,145,145)] uppercase tracking-[0.5px]">Órdenes</span>
+                <span className="text-[0.82rem] font-semibold text-[#e4e4e4] max-w-[60%] overflow-hidden text-ellipsis whitespace-nowrap text-right">{user._count?.orders ?? 0}</span>
               </div>
-              <div className={styles.cardRow}>
-                <span className={styles.cardLabel}>LTV</span>
-                <span className={styles.cardValue}>
+              <div className="flex justify-between items-center">
+                <span className="text-[0.7rem] font-semibold text-[rgb(145,145,145)] uppercase tracking-[0.5px]">LTV</span>
+                <span className="text-[0.82rem] font-semibold text-[#e4e4e4] max-w-[60%] overflow-hidden text-ellipsis whitespace-nowrap text-right">
                   {user.lifetimeValue !== undefined && user.lifetimeValue !== null
                     ? formatArs(user.lifetimeValue * exchangeRate)
                     : "—"}
@@ -263,7 +273,7 @@ export default function UserTable({
               </div>
             </div>
 
-            <div className={styles.cardActions}>
+            <div className="flex gap-2 items-center flex-wrap">
               <UserActions user={user} onViewOrders={onViewOrders} />
             </div>
           </article>
@@ -272,10 +282,10 @@ export default function UserTable({
 
       {/* PAGINATION */}
       {totalPages > 1 && (
-        <nav className={styles.pagination} aria-label="Paginación de usuarios">
+        <nav className="flex items-center justify-center gap-1 px-4 py-3.5 border-t border-[rgba(255,255,255,0.06)] bg-[rgba(16,16,16,0.98)] max-[640px]:flex-wrap max-[640px]:gap-1" aria-label="Paginación de usuarios">
           <button
             type="button"
-            className={styles.pageBtn}
+            className={PAGE_BTN}
             onClick={() => onPage?.(page - 1)}
             disabled={page <= 1}
             aria-label="Página anterior"
@@ -283,7 +293,7 @@ export default function UserTable({
             <ChevronLeft size={16} />
           </button>
 
-          <div className={styles.pageNumbers}>
+          <div className="flex gap-1 max-[640px]:flex-wrap max-[640px]:justify-center">
             {Array.from({ length: totalPages }, (_, i) => i + 1)
               .filter((n) => {
                 if (totalPages <= 7) return true;
@@ -294,13 +304,13 @@ export default function UserTable({
               .map((n, idx, arr) => {
                 const showEllipsis = idx > 0 && n - arr[idx - 1] > 1;
                 return (
-                  <span key={n} className={styles.pageGroup}>
+                  <span key={n} className="flex items-center">
                     {showEllipsis && (
-                      <span className={styles.ellipsis} aria-hidden="true">…</span>
+                      <span className="inline-flex items-center justify-center min-w-9 h-9 text-[rgb(100,100,100)] text-[0.85rem] select-none" aria-hidden="true">…</span>
                     )}
                     <button
                       type="button"
-                      className={`${styles.pageBtn} ${n === page ? styles.pageBtnActive : ""}`}
+                      className={`${PAGE_BTN} ${n === page ? PAGE_BTN_ACTIVE : ""}`}
                       onClick={() => onPage?.(n)}
                       aria-current={n === page ? "page" : undefined}
                       aria-label={`Página ${n}`}
@@ -314,7 +324,7 @@ export default function UserTable({
 
           <button
             type="button"
-            className={styles.pageBtn}
+            className={PAGE_BTN}
             onClick={() => onPage?.(page + 1)}
             disabled={page >= totalPages}
             aria-label="Página siguiente"

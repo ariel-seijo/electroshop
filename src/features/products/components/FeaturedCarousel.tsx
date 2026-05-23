@@ -101,7 +101,7 @@ export default function FeaturedCarousel({ products }: FeaturedCarouselProps) {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div className="overflow-hidden py-2 md:py-2.5 md:pb-[14px] lg:py-3 lg:pb-4 motion-reduce:overflow-x-auto motion-reduce:[scroll-snap-type:x_mandatory]" ref={emblaRef}>
+      <div className="overflow-hidden py-2 pb-[10px] md:py-2.5 md:pb-[14px] lg:py-3 lg:pb-4 motion-reduce:overflow-x-auto motion-reduce:[scroll-snap-type:x_mandatory]" ref={emblaRef}>
         <div className="flex ml-[-0.5rem]">
           {products.map((product) => (
             <div
@@ -128,7 +128,7 @@ export default function FeaturedCarousel({ products }: FeaturedCarouselProps) {
         {scrollSnaps.map((_, index) => (
           <button
             key={index}
-            className={`size-2.5 rounded-full border-none p-0 cursor-pointer transition-[background,transform] duration-200 hover:bg-accent/40 focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 ${
+            className={`size-2.5 rounded-full border-none p-0 cursor-pointer transition-[background,transform] duration-200 ease-linear hover:bg-accent/40 focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 ${
               index === selectedIndex
                 ? "bg-accent scale-[1.3]"
                 : "bg-white/15"

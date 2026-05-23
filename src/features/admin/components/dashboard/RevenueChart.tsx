@@ -1,7 +1,6 @@
 "use client";
 
 import { formatArs } from "@/lib/utils/currency";
-import styles from "./RevenueChart.module.css";
 
 interface RevenueDataPoint {
   date: string;
@@ -17,12 +16,12 @@ interface RevenueChartProps {
 export default function RevenueChart({ data, totalRevenue, exchangeRate = 1400 }: RevenueChartProps) {
   if (!data || data.length === 0) {
     return (
-      <div className={styles.wrapper}>
-        <div className={styles.header}>
-          <h3 className={styles.title}>Tendencia de Ventas</h3>
-          <span className={styles.subtitle}>Últimos 7 días</span>
+      <div className="bg-[rgb(22,22,22)] border border-[rgb(40,40,40)] rounded-[10px] p-[22px] mb-6 shadow-[0_8px_24px_rgba(0,0,0,0.4)] max-[640px]:p-4">
+        <div className="flex items-baseline gap-3 mb-5 max-[640px]:flex-col max-[640px]:gap-1">
+          <h3 className="text-[0.9rem] font-semibold text-[#e4e4e4] uppercase tracking-[0.5px] m-0">Tendencia de Ventas</h3>
+          <span className="text-[0.72rem] text-[rgb(145,145,145)] uppercase tracking-[0.5px]">Últimos 7 días</span>
         </div>
-        <div className={styles.empty}>
+        <div className="flex items-center justify-center h-[200px] text-[rgb(145,145,145)] text-[0.85rem]">
           <span>No hay datos de ventas en los últimos 7 días</span>
         </div>
       </div>
@@ -83,24 +82,24 @@ export default function RevenueChart({ data, totalRevenue, exchangeRate = 1400 }
   const isEmpty = maxRevenue === 0;
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.header}>
-        <h3 className={styles.title}>Tendencia de Ventas</h3>
-        <span className={styles.subtitle}>Últimos 7 días</span>
+    <div className="bg-[rgb(22,22,22)] border border-[rgb(40,40,40)] rounded-[10px] p-[22px] mb-6 shadow-[0_8px_24px_rgba(0,0,0,0.4)] max-[640px]:p-4">
+      <div className="flex items-baseline gap-3 mb-5 max-[640px]:flex-col max-[640px]:gap-1">
+        <h3 className="text-[0.9rem] font-semibold text-[#e4e4e4] uppercase tracking-[0.5px] m-0">Tendencia de Ventas</h3>
+        <span className="text-[0.72rem] text-[rgb(145,145,145)] uppercase tracking-[0.5px]">Últimos 7 días</span>
       </div>
 
       {isEmpty && (
-        <div className={styles.emptyBanner}>
+        <div className="bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.05)] rounded-md px-[14px] py-2 text-center text-[0.75rem] text-[#a0a0a0] font-semibold mb-3">
           <span>Sin ventas en este período</span>
         </div>
       )}
 
-      <div className={styles.chartContainer}>
+      <div className="relative overflow-visible max-w-[700px]">
         <svg
           viewBox={`0 0 ${width} ${height}`}
           width="100%"
           height={height}
-          className={styles.chart}
+          className="overflow-visible"
         >
           <defs>
             <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
@@ -129,7 +128,7 @@ export default function RevenueChart({ data, totalRevenue, exchangeRate = 1400 }
                   x={padding.left - 12}
                   y={y + 4}
                   textAnchor="end"
-                  className={styles.axisLabel}
+                  className="text-[10px] fill-[rgb(145,145,145)] font-mono"
                 >
                   {formatArs(tick * exchangeRate)}
                 </text>
@@ -146,7 +145,7 @@ export default function RevenueChart({ data, totalRevenue, exchangeRate = 1400 }
                 x={x}
                 y={height - 10}
                 textAnchor="middle"
-                className={styles.axisLabel}
+                className="text-[10px] fill-[rgb(145,145,145)] font-mono"
               >
                 {label}
               </text>
@@ -158,7 +157,7 @@ export default function RevenueChart({ data, totalRevenue, exchangeRate = 1400 }
               <path
                 d={areaPathD}
                 fill="url(#areaGradient)"
-                className={styles.area}
+                className="opacity-100"
               />
 
               <path
@@ -169,7 +168,7 @@ export default function RevenueChart({ data, totalRevenue, exchangeRate = 1400 }
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 filter="url(#glow)"
-                className={styles.line}
+                className="opacity-100"
               />
             </>
           )}
@@ -186,7 +185,7 @@ export default function RevenueChart({ data, totalRevenue, exchangeRate = 1400 }
                   fill="#0a0a0a"
                   stroke="#24abf3"
                   strokeWidth="2"
-                  className={styles.point}
+                  className="cursor-pointer transition-[r] duration-150 ease hover:[r:7]"
                 >
                   <title>{`${dateLabel}: ${formattedRevenue}`}</title>
                 </circle>
@@ -196,9 +195,9 @@ export default function RevenueChart({ data, totalRevenue, exchangeRate = 1400 }
         </svg>
       </div>
 
-      <div className={styles.footer}>
-        <span className={styles.footerLabel}>Total período</span>
-        <span className={styles.footerValue}>{formatArs((totalRevenue || 0) * exchangeRate)}</span>
+      <div className="flex items-center justify-between mt-4 pt-4 border-t border-[rgba(255,255,255,0.05)]">
+        <span className="text-[0.72rem] text-[rgb(145,145,145)] uppercase tracking-[0.8px] font-semibold">Total período</span>
+        <span className="font-mono text-[1.1rem] font-semibold text-[#24abf3] max-[640px]:text-[1rem]">{formatArs((totalRevenue || 0) * exchangeRate)}</span>
       </div>
     </div>
   );

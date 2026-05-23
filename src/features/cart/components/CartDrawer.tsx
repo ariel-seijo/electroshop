@@ -69,14 +69,14 @@ export function Cart() {
               {cart.map((product) => (
                 <li
                   key={product.id}
-                  className="flex gap-3 mb-3 bg-surface-28 border border-border-38 p-2.5 transition-colors duration-200 hover:border-[rgb(60,60,60)]"
+                  className="flex gap-3 mb-3 bg-surface-28 border border-border-38 p-2.5 transition-colors duration-200 ease-[ease] hover:border-[rgb(60,60,60)]"
                 >
                   <Image
                     src={product.thumbnail}
                     alt={product.title}
                     width={64}
                     height={64}
-                    className="rounded-md"
+                    className="rounded-md object-cover size-16"
                   />
 
                   <div className="flex-1 flex flex-col justify-between">
@@ -92,7 +92,7 @@ export function Cart() {
                     <footer className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <button
-                          className="px-[9px] py-1 border border-border-52 bg-border-34 text-text-secondary cursor-pointer text-[0.85rem] font-semibold transition-all duration-200 hover:bg-border-50 hover:border-accent hover:text-accent disabled:opacity-50 disabled:cursor-not-allowed disabled:border-[rgb(80,80,80)] disabled:text-[rgb(100,100,100)] disabled:hover:bg-border-34 disabled:hover:border-[rgb(80,80,80)] disabled:hover:text-[rgb(100,100,100)]"
+                          className="px-[9px] py-1 bg-transparent border border-transparent text-text-secondary cursor-pointer text-[0.85rem] font-semibold transition-all duration-200 ease-[ease] hover:bg-[rgb(50,50,50)] hover:border-transparent hover:text-accent disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-transparent disabled:text-[rgb(100,100,100)] disabled:border-transparent disabled:hover:bg-transparent disabled:hover:text-[rgb(100,100,100)]"
                           onClick={() => decreaseQuantity(product.id)}
                           disabled={product.quantity <= 1}
                         >
@@ -104,7 +104,7 @@ export function Cart() {
                         </small>
 
                         <button
-                          className="px-[9px] py-1 border border-border-52 bg-border-34 text-text-secondary cursor-pointer text-[0.85rem] font-semibold transition-all duration-200 hover:bg-border-50 hover:border-accent hover:text-accent disabled:opacity-50 disabled:cursor-not-allowed disabled:border-[rgb(80,80,80)] disabled:text-[rgb(100,100,100)] disabled:hover:bg-border-34 disabled:hover:border-[rgb(80,80,80)] disabled:hover:text-[rgb(100,100,100)]"
+                          className="px-[9px] py-1 bg-transparent border border-transparent text-text-secondary cursor-pointer text-[0.85rem] font-semibold transition-all duration-200 ease-[ease] hover:bg-[rgb(50,50,50)] hover:border-transparent hover:text-accent disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-transparent disabled:text-[rgb(100,100,100)] disabled:border-transparent disabled:hover:bg-transparent disabled:hover:text-[rgb(100,100,100)]"
                           onClick={() => increaseQuantity(product.id)}
                           disabled={product.quantity >= product.stock}
                         >

@@ -4,7 +4,6 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { Upload, Trash2, Loader, Link, AlertTriangle } from "lucide-react";
 import { getCloudinarySignatureAction } from "@/features/admin/actions/imageActions";
 import { useToastStore } from "@/features/toast";
-import styles from "./ThumbnailUploader.module.css";
 
 interface ThumbnailUploaderProps {
   value?: string;
@@ -165,43 +164,43 @@ export default function ThumbnailUploader({ value, onChange }: ThumbnailUploader
   }
 
   return (
-    <div className={styles.wrapper}>
+    <div className="relative">
         {previewUrl ? (
-          <div className={styles.preview}>
+          <div className="w-[120px] h-[120px] border-2 border-[#1f1f1f] rounded-md overflow-hidden bg-[#0a0a0a] mb-2.5 [&_img]:w-full [&_img]:h-full [&_img]:object-cover">
             <img src={previewUrl} alt="Vista previa de la miniatura" />
           </div>
         ) : (
-          <div className={styles.preview}>
-            <div className={styles.placeholder}>
+          <div className="w-[120px] h-[120px] border-2 border-[#1f1f1f] rounded-md overflow-hidden bg-[#0a0a0a] mb-2.5 [&_img]:w-full [&_img]:h-full [&_img]:object-cover">
+            <div className="w-full h-full flex items-center justify-center text-[#3a3a3a]">
               <Upload size={24} aria-hidden="true" />
             </div>
           </div>
         )}
 
-        <div className={styles.actions}>
+        <div className="flex items-center gap-2.5 flex-wrap">
           {scriptError && (
-            <div className={styles.scriptError} role="alert">
+            <div className="flex items-center gap-1.5 px-2.5 py-1.5 mb-2 w-full bg-[rgba(255,60,60,0.08)] border border-[rgba(255,60,60,0.18)] rounded-md text-[0.7rem] text-[#ff5c5c]" role="alert">
               <AlertTriangle size={12} aria-hidden="true" />
               <span>No se pudo cargar Cloudinary. Verificá tu conexión.</span>
             </div>
           )}
 
           {!scriptLoaded && !scriptError && (
-            <div className={styles.scriptLoading}>
-              <Loader size={12} className={styles.spinner} aria-hidden="true" />
+            <div className="flex items-center gap-1.5 px-2.5 py-1.5 mb-2 w-full bg-[rgba(0,127,255,0.05)] border border-[rgba(0,127,255,0.12)] rounded-md text-[0.7rem] text-[#6a9fd8]">
+              <Loader size={12} className="animate-spin" aria-hidden="true" />
               <span>Cargando widget...</span>
             </div>
           )}
 
           <button
             type="button"
-            className={styles.btnUpload}
+            className="inline-flex items-center gap-[7px] px-5 py-2 bg-[rgb(22,22,22)] border border-[#1f1f1f] rounded-md text-[#c0c0c0] font-[inherit] text-[0.78rem] font-semibold tracking-[0.4px] cursor-pointer transition-colors duration-200 hover:border-[#007fff] hover:text-[#007fff] hover:bg-[rgba(0,127,255,0.06)] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-[#007fff] focus-visible:outline-offset-2"
             onClick={openWidget}
             disabled={!scriptLoaded || isUploading}
           >
             {isUploading ? (
               <>
-                <Loader size={14} className={styles.spinner} aria-hidden="true" />
+                <Loader size={14} className="animate-spin" aria-hidden="true" />
                 Subiendo...
               </>
             ) : (
@@ -214,7 +213,7 @@ export default function ThumbnailUploader({ value, onChange }: ThumbnailUploader
 
           <button
             type="button"
-            className={styles.btnUpload}
+            className="inline-flex items-center gap-[7px] px-5 py-2 bg-[rgb(22,22,22)] border border-[#1f1f1f] rounded-md text-[#c0c0c0] font-[inherit] text-[0.78rem] font-semibold tracking-[0.4px] cursor-pointer transition-colors duration-200 hover:border-[#007fff] hover:text-[#007fff] hover:bg-[rgba(0,127,255,0.06)] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-[#007fff] focus-visible:outline-offset-2"
             onClick={() => setShowUrlInput(!showUrlInput)}
             disabled={isUploading}
           >
@@ -226,7 +225,7 @@ export default function ThumbnailUploader({ value, onChange }: ThumbnailUploader
             <>
               <button
                 type="button"
-                className={styles.btnUpload}
+                className="inline-flex items-center gap-[7px] px-5 py-2 bg-[rgb(22,22,22)] border border-[#1f1f1f] rounded-md text-[#c0c0c0] font-[inherit] text-[0.78rem] font-semibold tracking-[0.4px] cursor-pointer transition-colors duration-200 hover:border-[#007fff] hover:text-[#007fff] hover:bg-[rgba(0,127,255,0.06)] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-[#007fff] focus-visible:outline-offset-2"
                 onClick={handleConfirm}
                 disabled={isUploading}
                 style={previewUrl === value ? { opacity: 0.4 } : undefined}
@@ -235,7 +234,7 @@ export default function ThumbnailUploader({ value, onChange }: ThumbnailUploader
               </button>
               <button
                 type="button"
-                className={styles.btnRemove}
+                className="inline-flex items-center gap-1 px-3.5 py-2 bg-transparent border border-[rgba(239,68,68,0.2)] rounded-md text-[#ef4444] font-[inherit] text-[0.75rem] font-semibold cursor-pointer transition-all duration-[0.15s] hover:bg-[rgba(239,68,68,0.1)] hover:border-[rgba(239,68,68,0.4)] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-[#ef4444] focus-visible:outline-offset-2"
                 onClick={handleRemove}
                 disabled={isUploading}
               >
@@ -250,7 +249,7 @@ export default function ThumbnailUploader({ value, onChange }: ThumbnailUploader
           <div style={{ marginTop: "10px" }}>
             <input
               type="url"
-              className={styles.urlInput}
+              className="flex-1 min-w-[240px] h-[38px] px-3 border border-[#1f1f1f] rounded-md text-[0.82rem] font-[inherit] text-[#d4d4d4] bg-[#0a0a0a] outline-none transition-colors duration-200 placeholder:text-[#3a3a3a] focus:border-[#007fff]"
               value={urlValue}
               onChange={(e) => setUrlValue(e.target.value)}
               onKeyDown={handleUrlKeyDown}

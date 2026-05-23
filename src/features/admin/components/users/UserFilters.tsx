@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect, type ChangeEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search, X } from "lucide-react";
-import styles from "./UserFilters.module.css";
 
 const STATUS_OPTIONS = [
   { value: "", label: "Todos los estados" },
@@ -74,22 +73,22 @@ export default function UserFilters({ total }: UserFiltersProps) {
   }
 
   return (
-    <div className={styles.filtersRow}>
-      <div className={styles.searchWrapper}>
-        <Search size={16} className={styles.searchIcon} aria-hidden="true" />
+    <div className="flex flex-wrap items-center gap-3 mb-4 pb-3.5 border-b border-[rgb(40,40,40)] max-[640px]:gap-2">
+      <div className="relative flex-1 min-w-[220px] max-w-[360px] max-[640px]:min-w-full max-[640px]:max-w-full max-[640px]:basis-full">
+        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[rgb(145,145,145)] pointer-events-none w-4 h-4" aria-hidden="true" />
         <input
           type="text"
           value={searchInput}
           onChange={handleSearchChange}
           placeholder="Buscar por nombre o email..."
-          className={styles.searchInput}
+          className="w-full h-10 pr-3.5 pl-[38px] border border-[rgb(42,42,42)] rounded-md text-[0.82rem] text-[#e4e4e4] bg-[rgb(16,16,16)] transition-colors duration-[0.12s] outline-none placeholder:text-[rgb(72,72,72)] focus:border-[#24abf3] focus:shadow-[0_0_10px_rgba(36,171,243,0.08)]"
           aria-label="Buscar usuarios"
         />
         {searchInput && (
           <button
             type="button"
             onClick={handleClearSearch}
-            className={styles.clearBtn}
+            className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center min-w-7 min-h-7 bg-[rgb(16,16,16)] border border-[rgb(42,42,42)] rounded text-[rgb(145,145,145)] cursor-pointer transition-colors duration-[0.12s] hover:text-[#24abf3] hover:border-[#24abf3]"
             aria-label="Limpiar búsqueda"
           >
             <X size={14} />
@@ -100,7 +99,7 @@ export default function UserFilters({ total }: UserFiltersProps) {
       <select
         value={paramStatus}
         onChange={handleStatusChange}
-        className={styles.filterSelect}
+        className={`h-10 pr-8 pl-3 border border-[rgb(42,42,42)] rounded-md text-[0.82rem] font-semibold text-[#e4e4e4] bg-[rgb(16,16,16)] cursor-pointer appearance-none outline-none min-w-[140px] transition-colors duration-[0.12s] focus:border-[#24abf3] focus:shadow-[0_0_10px_rgba(36,171,243,0.08)] [&_option]:bg-[rgb(16,16,16)] [&_option]:text-[#e4e4e4] bg-[url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239a9a9a' d='M6 8L1 3h10z'/%3E%3C/svg%3E")] bg-no-repeat bg-[right_10px_center] max-[640px]:flex-1 max-[640px]:min-w-0`}
         aria-label="Filtrar por estado"
       >
         {STATUS_OPTIONS.map((opt) => (
@@ -113,7 +112,7 @@ export default function UserFilters({ total }: UserFiltersProps) {
       <select
         value={paramRole}
         onChange={handleRoleChange}
-        className={styles.filterSelect}
+        className={`h-10 pr-8 pl-3 border border-[rgb(42,42,42)] rounded-md text-[0.82rem] font-semibold text-[#e4e4e4] bg-[rgb(16,16,16)] cursor-pointer appearance-none outline-none min-w-[140px] transition-colors duration-[0.12s] focus:border-[#24abf3] focus:shadow-[0_0_10px_rgba(36,171,243,0.08)] [&_option]:bg-[rgb(16,16,16)] [&_option]:text-[#e4e4e4] bg-[url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239a9a9a' d='M6 8L1 3h10z'/%3E%3C/svg%3E")] bg-no-repeat bg-[right_10px_center] max-[640px]:flex-1 max-[640px]:min-w-0`}
         aria-label="Filtrar por rol"
       >
         {ROLE_OPTIONS.map((opt) => (
@@ -124,7 +123,7 @@ export default function UserFilters({ total }: UserFiltersProps) {
       </select>
 
       {total !== undefined && (
-        <span className={styles.resultCount}>
+        <span className="text-[0.72rem] font-semibold whitespace-nowrap uppercase tracking-[0.5px] text-[rgb(145,145,145)] max-[640px]:basis-full max-[640px]:text-left">
           {total} {total === 1 ? "usuario" : "usuarios"}
         </span>
       )}

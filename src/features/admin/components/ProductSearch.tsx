@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect, type ChangeEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search, X } from "lucide-react";
-import styles from "./ProductSearch.module.css";
 
 export default function ProductSearch() {
   const router = useRouter();
@@ -14,10 +13,6 @@ export default function ProductSearch() {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const committedRef = useRef(urlValue);
 
-  /* Sync local state when URL changes externally (browser back/forward, direct navigation).
-     Only syncs when the URL value differs from what we last committed — avoids
-     overwriting user input when our own debounced push triggers a re-render.
-     committedRef acts as the guard that prevents cascading renders. */
   useEffect(() => {
     if (urlValue !== committedRef.current) {
       committedRef.current = urlValue;
@@ -54,21 +49,21 @@ export default function ProductSearch() {
   }
 
   return (
-    <div className={styles.wrapper} role="search">
-      <Search size={16} className={styles.icon} aria-hidden="true" />
+    <div className="relative flex items-center mb-4" role="search">
+      <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[rgb(130,130,130)] pointer-events-none" aria-hidden="true" />
       <input
         type="text"
         value={local}
         onChange={handleChange}
         placeholder="Buscar por título, SKU o marca…"
-        className={styles.input}
+        className="w-full h-11 pr-14 pl-[38px] border border-[rgb(42,42,42)] rounded-md text-[0.82rem] text-[#e4e4e4] bg-[rgb(16,16,16)] transition-colors duration-[0.12s] outline-none placeholder:text-[rgb(72,72,72)] focus:border-[#24abf3] focus:shadow-[0_0_10px_rgba(36,171,243,0.08)]"
         aria-label="Buscar productos"
       />
       {local && (
         <button
           type="button"
           onClick={handleClear}
-          className={styles.clear}
+          className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center min-w-10 min-h-10 bg-[rgb(16,16,16)] border border-[rgb(42,42,42)] rounded-md text-[rgb(145,145,145)] cursor-pointer transition-colors duration-[0.12s] hover:text-[#24abf3] hover:border-[#24abf3]"
           aria-label="Limpiar búsqueda"
         >
           <X size={14} />
