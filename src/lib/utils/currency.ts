@@ -17,6 +17,17 @@ async function _fetchFromDb(): Promise<number> {
   return settings.usdToArs;
 }
 
+export async function loadExchangeRate(): Promise<number> {
+  if (!_loading) {
+    _loading = _fetchFromDb().then((rate) => {
+      _cachedRate = rate;
+      _version++;
+    });
+  }
+  await _loading;
+  return _cachedRate;
+}
+
 function _isClient(): boolean {
   return typeof window !== "undefined";
 }
@@ -33,13 +44,6 @@ function _bootstrap(): void {
   const versionAtStart = _version;
 
   if (_isClient()) {
-    const stored = sessionStorage.getItem("usdToArs");
-    if (stored) {
-      const parsed = Number(stored);
-      if (!isNaN(parsed) && parsed > 0) {
-        _cachedRate = parsed;
-      }
-    }
     _loading = _fetchFromApi()
       .then((rate) => {
         if (_version === versionAtStart) {

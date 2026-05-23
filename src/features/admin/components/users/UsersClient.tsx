@@ -23,6 +23,7 @@ interface UsersClientProps {
   total: number;
   page: number;
   totalPages: number;
+  exchangeRate: number;
 }
 
 export default function UsersClient({
@@ -30,6 +31,7 @@ export default function UsersClient({
   total,
   page,
   totalPages,
+  exchangeRate,
 }: UsersClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -82,6 +84,7 @@ export default function UsersClient({
         totalPages={totalPages}
         sort={sort}
         order={order}
+        exchangeRate={exchangeRate}
         onSort={handleSort}
         onPage={handlePage}
         onViewOrders={handleViewOrders}

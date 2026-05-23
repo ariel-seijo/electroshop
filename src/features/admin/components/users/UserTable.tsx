@@ -9,7 +9,7 @@ import {
   Check,
   X as XIcon,
 } from "lucide-react";
-import { formatPrice } from "@/lib/utils/currency";
+import { formatArs } from "@/lib/utils/currency";
 import { updateUserRoleAction } from "@/features/admin/actions/userActions";
 import { useToastStore } from "@/features/toast";
 import ConfirmModal from "@/features/admin/components/ConfirmModal";
@@ -57,6 +57,7 @@ interface UserTableProps {
   totalPages: number;
   sort?: string;
   order?: "asc" | "desc";
+  exchangeRate: number;
   onSort?: (field: string) => void;
   onPage?: (page: number) => void;
   onViewOrders?: (user: { id: string; email: string; name?: string | null; createdAt?: string }) => void;
@@ -69,6 +70,7 @@ export default function UserTable({
   totalPages,
   sort = "createdAt",
   order = "desc",
+  exchangeRate,
   onSort,
   onPage,
   onViewOrders,
@@ -196,7 +198,7 @@ export default function UserTable({
                 <td className={styles.metricCell}>{user._count?.orders ?? 0}</td>
                 <td className={styles.metricCell}>
                   {user.lifetimeValue !== undefined && user.lifetimeValue !== null
-                    ? formatPrice(user.lifetimeValue)
+                    ? formatArs(user.lifetimeValue * exchangeRate)
                     : "—"}
                 </td>
                 <td>
@@ -255,7 +257,7 @@ export default function UserTable({
                 <span className={styles.cardLabel}>LTV</span>
                 <span className={styles.cardValue}>
                   {user.lifetimeValue !== undefined && user.lifetimeValue !== null
-                    ? formatPrice(user.lifetimeValue)
+                    ? formatArs(user.lifetimeValue * exchangeRate)
                     : "—"}
                 </span>
               </div>
