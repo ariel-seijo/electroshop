@@ -5,7 +5,6 @@ import Link from "next/link";
 import { SlidersHorizontal, X } from "lucide-react";
 import { buildCategoryUrl } from "../utils/buildCategoryUrl";
 import { cn } from "@/lib/utils/cn";
-import styles from "./FiltersSidebar.module.css";
 
 interface FiltersSidebarProps {
   name: string;
@@ -25,6 +24,14 @@ const sortLabels: Record<string, string> = {
   popular: "Más vendidos",
   rating: "Mejor valorados",
 };
+
+const filterTitle = "text-[0.72rem] font-semibold uppercase tracking-[1.5px] text-text-dim";
+
+const selectedTag =
+  "bg-accent/10 border border-accent/30 text-accent text-xs font-semibold px-[0.65rem] py-[0.35rem] no-underline transition-all duration-200 hover:bg-accent/18 hover:border-accent focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2";
+
+const brandLinkBase =
+  "no-underline text-text-tertiary px-3 py-[0.65rem] text-[0.88rem] font-semibold border border-transparent transition-all duration-200 hover:bg-surface-30 hover:text-white focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-1";
 
 export default function FiltersSidebar({
   name,
@@ -79,14 +86,14 @@ export default function FiltersSidebar({
 
   const filterGroups = (
     <>
-      <div className={styles.filterGroup}>
-        <span className={styles.filterTitle}>Seleccionados</span>
+      <div className="flex flex-col gap-[0.7rem] [&+div]:pt-[1.2rem] [&+div]:border-t [&+div]:border-border-38">
+        <span className={filterTitle}>Seleccionados</span>
 
-        <div className={styles.selectedArea}>
+        <div className="flex flex-wrap gap-2">
           {sort !== "recent" && (
             <Link
               href={buildCategoryUrl(name, current, { sort: "recent" })}
-              className={styles.selectedTag}
+              className={selectedTag}
             >
               {sortLabels[sort]} ✕
             </Link>
@@ -95,7 +102,7 @@ export default function FiltersSidebar({
           {brand && (
             <Link
               href={buildCategoryUrl(name, current, { brand: "" })}
-              className={styles.selectedTag}
+              className={selectedTag}
             >
               {brand} ✕
             </Link>
@@ -104,29 +111,29 @@ export default function FiltersSidebar({
           {(min || max) && (
             <Link
               href={buildCategoryUrl(name, current, { min: "", max: "" })}
-              className={styles.selectedTag}
+              className={selectedTag}
             >
               ${min || minPrice} - ${max || maxPrice} ✕
             </Link>
           )}
 
           {!brand && sort === "recent" && !min && !max && (
-            <span className={styles.noneSelected}>Sin filtros</span>
+            <span className="text-[rgb(100,100,100)] text-[0.82rem] font-semibold">Sin filtros</span>
           )}
         </div>
       </div>
 
-      <div className={styles.filterGroup}>
-        <span className={styles.filterTitle}>Precio</span>
+      <div className="flex flex-col gap-[0.7rem] [&+div]:pt-[1.2rem] [&+div]:border-t [&+div]:border-border-38">
+        <span className={filterTitle}>Precio</span>
 
-        <form action={`/category/${name}`} method="GET" className={styles.priceForm}>
+        <form action={`/category/${name}`} method="GET" className="flex flex-col gap-[0.8rem]">
           <input type="hidden" name="sort" value={sort} />
           <input type="hidden" name="brand" value={brand} />
           {view !== "grid" && <input type="hidden" name="view" value={view} />}
 
-          <div className={styles.priceInputGroup}>
-            <label className={styles.priceInputLabel}>
-              <span className={styles.priceInputTag}>Mín</span>
+          <div className="grid grid-cols-[1fr_auto_1fr] items-end gap-2">
+            <label className="flex flex-col gap-[0.35rem]">
+              <span className="text-[0.72rem] font-semibold uppercase tracking-[1px] text-text-dim">Mín</span>
               <input
                 type="number"
                 name="min"
@@ -136,17 +143,13 @@ export default function FiltersSidebar({
                 placeholder="0"
                 value={minInput}
                 onChange={(e) => setMinInput(e.target.value)}
-                onBlur={() => {
-                  if (minInput === "") return;
-                  const val = Number(minInput);
-                  if (val < 0) setMinInput("0");
-                }}
-                className={styles.priceInput}
+                onBlur={() => { if (minInput === "") return; const val = Number(minInput); if (val < 0) setMinInput("0"); }}
+                className="w-full px-[0.7rem] py-[0.6rem] bg-surface-18 border border-border-44 text-text-secondary text-[0.85rem] font-semibold [appearance:textfield] transition-colors duration-200 hover:border-[rgb(70,70,70)] focus:outline-none focus:border-accent placeholder:text-[rgb(100,100,100)] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-outer-spin-button]:m-0"
               />
             </label>
-            <span className={styles.priceInputSep}>—</span>
-            <label className={styles.priceInputLabel}>
-              <span className={styles.priceInputTag}>Máx</span>
+            <span className="text-[rgb(100,100,100)] font-semibold pb-[0.6rem]">—</span>
+            <label className="flex flex-col gap-[0.35rem]">
+              <span className="text-[0.72rem] font-semibold uppercase tracking-[1px] text-text-dim">Máx</span>
               <input
                 type="number"
                 name="max"
@@ -156,29 +159,24 @@ export default function FiltersSidebar({
                 placeholder={String(maxPrice)}
                 value={maxInput}
                 onChange={(e) => setMaxInput(e.target.value)}
-                onBlur={() => {
-                  if (maxInput === "") return;
-                  const val = Number(maxInput);
-                  if (val > maxPrice) setMaxInput(String(maxPrice));
-                  if (val < 0) setMaxInput("0");
-                }}
-                className={styles.priceInput}
+                onBlur={() => { if (maxInput === "") return; const val = Number(maxInput); if (val > maxPrice) setMaxInput(String(maxPrice)); if (val < 0) setMaxInput("0"); }}
+                className="w-full px-[0.7rem] py-[0.6rem] bg-surface-18 border border-border-44 text-text-secondary text-[0.85rem] font-semibold [appearance:textfield] transition-colors duration-200 hover:border-[rgb(70,70,70)] focus:outline-none focus:border-accent placeholder:text-[rgb(100,100,100)] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-outer-spin-button]:m-0"
               />
             </label>
           </div>
 
-          <button type="submit" className={styles.priceBtn}>Aplicar</button>
+          <button type="submit" className="border-none bg-accent text-[#111] px-[0.7rem] py-[0.7rem] cursor-pointer font-semibold text-[0.8rem] uppercase tracking-[0.5px] transition-all duration-[250ms] hover:bg-accent-hover hover:shadow-[0_0_16px_rgba(36,171,243,0.25)] focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2">Aplicar</button>
         </form>
       </div>
 
-      <div className={styles.filterGroup}>
-        <span className={styles.filterTitle}>Marca</span>
+      <div className="flex flex-col gap-[0.7rem] [&+div]:pt-[1.2rem] [&+div]:border-t [&+div]:border-border-38">
+        <span className={filterTitle}>Marca</span>
 
         {brands.map((item) => (
           <Link
             key={item.brand}
             href={buildCategoryUrl(name, current, { brand: item.brand })}
-            className={cn(styles.brandLink, brand === item.brand && styles.brandLinkActive)}
+            className={cn(brandLinkBase, brand === item.brand && "bg-accent/10 border-accent/30 text-accent")}
           >
             {item.brand}
           </Link>
@@ -190,7 +188,7 @@ export default function FiltersSidebar({
   return (
     <>
       <button
-        className={styles.triggerBtn}
+        className="flex items-center justify-center gap-2 w-full px-4 py-[0.85rem] bg-surface-22 border border-border-34 text-text-secondary text-[0.9rem] font-semibold cursor-pointer mb-4 transition-[background,border-color,color] duration-200 hover:bg-surface-28 hover:border-accent hover:text-accent focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 [&>svg]:shrink-0 ms:px-[1.25rem] ms:py-[0.9rem] ms:text-[0.92rem] [&>svg]:ms:w-5 [&>svg]:ms:h-5 md:hidden"
         onClick={() => setIsOpen(true)}
         aria-expanded={isOpen}
         aria-controls="filter-drawer"
@@ -201,26 +199,31 @@ export default function FiltersSidebar({
 
       {isOpen && (
         <div
-          className={styles.backdrop}
+          className="fixed inset-0 bg-black/60 z-[2000] animate-fade-in md:hidden"
           onClick={() => setIsOpen(false)}
           aria-hidden="true"
         />
       )}
 
-      <aside className={styles.sidebar}>{filterGroups}</aside>
+      <aside className="hidden md:flex md:flex-col md:gap-6 md:bg-surface-22 md:border md:border-border-34 md:p-6 md:sticky md:top-[100px]">
+        {filterGroups}
+      </aside>
 
       <div
         id="filter-drawer"
         ref={drawerRef}
-        className={cn(styles.drawer, isOpen && styles.drawerOpen)}
+        className={cn(
+          "fixed top-0 right-0 bottom-[60px] w-[320px] max-w-[85vw] bg-surface-16 border-l border-border-34 z-[2001] flex flex-col shadow-[-8px_0_30px_rgba(0,0,0,0.5)] transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] md:hidden max-ms:bottom-14",
+          isOpen ? "translate-x-0" : "translate-x-[105%]"
+        )}
         role="dialog"
         aria-modal="true"
         aria-label="Filtros de productos"
       >
-        <div className={styles.drawerHeader}>
-          <span className={styles.drawerTitle}>Filtros</span>
+        <div className="flex items-center justify-between px-5 py-5 pb-4 border-b border-[rgb(30,30,30)] shrink-0">
+          <span className="text-base font-semibold text-[rgb(220,220,220)] uppercase tracking-[1px]">Filtros</span>
           <button
-            className={styles.drawerClose}
+            className="flex items-center justify-center size-9 bg-transparent border border-border-44 text-text-muted cursor-pointer transition-[color,border-color] duration-200 hover:text-danger hover:border-danger/40 focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2"
             onClick={() => setIsOpen(false)}
             aria-label="Cerrar filtros"
           >
@@ -228,9 +231,12 @@ export default function FiltersSidebar({
           </button>
         </div>
 
-        <div className={styles.drawerBody}>{filterGroups}</div>
+        <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-6">{filterGroups}</div>
 
-        <button className={styles.applyBtn} onClick={() => setIsOpen(false)}>
+        <button
+          className="flex items-center justify-center w-[calc(100%-2.5rem)] mx-5 mb-5 py-[0.9rem] bg-accent text-[#111] border-none text-[0.9rem] font-semibold uppercase tracking-[0.5px] cursor-pointer shrink-0 transition-[background,box-shadow] duration-[250ms] hover:bg-accent-hover hover:shadow-[0_0_18px_rgba(36,171,243,0.3)] focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2"
+          onClick={() => setIsOpen(false)}
+        >
           Ver resultados
         </button>
       </div>
