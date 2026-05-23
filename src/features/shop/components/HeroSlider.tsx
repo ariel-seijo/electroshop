@@ -1,6 +1,5 @@
 "use client";
 
-import styles from "../styles/HeroSlider.module.css";
 import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -51,28 +50,42 @@ export default function HeroSlider() {
 
   return (
     <section
-      className={styles.slider}
+      className="w-full overflow-hidden relative select-none group"
       onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => { setIsPaused(false); setResumeKey((k) => k + 1); }}
+      onMouseLeave={() => {
+        setIsPaused(false);
+        setResumeKey((k) => k + 1);
+      }}
     >
       <div
-        className={styles["slider-track"]}
+        className="flex transition-transform duration-[700ms] ease-[cubic-bezier(0.25,0.1,0.25,1)]"
         style={{ transform: `translateX(-${current * 100}%)` }}
       >
         {slides.map((slide, index) => (
-          <div className={styles.slide} key={index}>
+          <div
+            className="min-w-full relative aspect-[1920/511] max-xl2:aspect-[1920/550] max-md:aspect-[1920/650] max-ms:aspect-[1920/850]"
+            key={index}
+          >
             <Image
               src={slide.src}
               alt={`Banner ${index + 1}`}
               fill
               priority={index === 0}
               sizes="100vw"
+              className="object-cover block"
             />
-            <div className={styles["slide-overlay"]} />
-            <div className={styles["slide-content"]}>
-              <h2 className={styles["slide-title"]}>{slide.title}</h2>
-              <p className={styles["slide-subtitle"]}>{slide.subtitle}</p>
-              <Link href={slide.href} className={styles["slide-cta"]}>
+            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(10,10,10,0.95)_0%,rgba(10,10,10,0.6)_45%,rgba(10,10,10,0.25)_70%,transparent_100%)] pointer-events-none max-md:bg-[linear-gradient(0deg,rgba(10,10,10,0.9)_0%,rgba(10,10,10,0.4)_60%,transparent_100%)]" />
+            <div className="absolute left-[7%] top-1/2 -translate-y-1/2 max-w-[520px] z-[2] max-xl2:left-[5%] max-xl2:max-w-[400px] max-md:left-0 max-md:right-0 max-md:top-auto max-md:bottom-12 max-md:px-6 max-md:max-w-full max-md:text-center max-md:-translate-y-0 max-ms:bottom-10">
+              <h2 className="font-cosmic text-[3rem] font-thin tracking-[4px] text-white [text-shadow:0_0_40px_rgba(36,171,243,0.5)] leading-[1.1] m-0 mb-[0.8rem] animate-slide-fade-up max-xl2:text-[2.2rem] max-xl2:tracking-[2px] max-md:text-[1.6rem] max-md:tracking-[2px] max-ms:text-[1.3rem]">
+                {slide.title}
+              </h2>
+              <p className="m-0 mb-[1.8rem] text-[1.15rem] font-semibold text-text-tertiary animate-[slideFadeUp_0.8s_ease-out_0.15s_both] max-xl2:text-base max-md:text-[0.9rem] max-md:mb-[1.2rem] max-ms:text-[0.8rem]">
+                {slide.subtitle}
+              </p>
+              <Link
+                href={slide.href}
+                className="inline-flex items-center gap-2 px-8 py-[0.85rem] bg-gradient-to-br from-brand to-brand-end text-[#111] text-[0.9rem] font-semibold uppercase tracking-[1.5px] no-underline transition-all duration-300 animate-[slideFadeUp_0.8s_ease-out_0.3s_both] hover:shadow-[0_0_30px_rgba(0,127,255,0.5),0_0_60px_rgba(0,207,255,0.3)] hover:-translate-y-0.5 max-md:text-[0.8rem] max-md:px-6 max-md:py-[0.7rem]"
+              >
                 {slide.cta}
                 <ChevronRight size={18} />
               </Link>
@@ -81,26 +94,36 @@ export default function HeroSlider() {
         ))}
       </div>
 
-      <button className={`${styles["slider-arrow"]} ${styles["slider-arrow-left"]}`} onClick={prev}>
+      <button
+        className="absolute top-1/2 left-6 -translate-y-1/2 z-[5] size-[46px] rounded-full border border-white/15 bg-white/[0.07] backdrop-blur-[8px] text-white cursor-pointer flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 hover:bg-accent/20 hover:border-accent hover:shadow-[0_0_20px_rgba(36,171,243,0.3)] max-xl2:size-[38px] max-xl2:opacity-100 max-md:size-[34px] max-md:left-3 max-md:opacity-100"
+        onClick={prev}
+      >
         <ChevronLeft size={24} />
       </button>
-      <button className={`${styles["slider-arrow"]} ${styles["slider-arrow-right"]}`} onClick={next}>
+      <button
+        className="absolute top-1/2 right-6 -translate-y-1/2 z-[5] size-[46px] rounded-full border border-white/15 bg-white/[0.07] backdrop-blur-[8px] text-white cursor-pointer flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 hover:bg-accent/20 hover:border-accent hover:shadow-[0_0_20px_rgba(36,171,243,0.3)] max-xl2:size-[38px] max-xl2:opacity-100 max-md:size-[34px] max-md:right-3 max-md:opacity-100"
+        onClick={next}
+      >
         <ChevronRight size={24} />
       </button>
 
-      <div className={styles["slider-dots"]}>
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-[0.6rem] z-[5] max-md:bottom-4">
         {slides.map((_, index) => (
           <button
             key={index}
-            className={`${styles["slider-dot"]} ${index === current ? styles.active : ""}`}
+            className={`size-2.5 rounded-full border-2 border-white/30 bg-transparent cursor-pointer transition-all duration-300 p-0 hover:border-white/70 ${
+              index === current
+                ? "bg-accent border-accent shadow-[0_0_12px_rgba(36,171,243,0.5)]"
+                : ""
+            }`}
             onClick={() => setCurrent(index)}
           />
         ))}
       </div>
 
-      <div className={styles["slider-progress"]}>
+      <div className="absolute bottom-0 left-0 w-full h-[3px] bg-white/5 z-[5]">
         <div
-          className={styles["slider-progress-bar"]}
+          className="h-full bg-[linear-gradient(90deg,#007fff,#00cfff,#24abf3)] animate-progress-bar group-hover:[animation-play-state:paused]"
           style={{ animationDuration: "6s" }}
           key={`${current}-${resumeKey}`}
         />
