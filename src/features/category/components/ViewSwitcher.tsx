@@ -44,7 +44,7 @@ export default function ViewSwitcher({ resolvedView = "grid" }: ViewSwitcherProp
     <div className="flex border border-border-38 rounded-md overflow-hidden shrink-0 max-3lg:hidden" role="radiogroup" aria-label="Vista de productos">
       <button
         onClick={() => handleToggle("grid")}
-        className={`${btnBase} border-r border-border-38 ${activeView === "grid" ? "bg-accent/10 text-accent shadow-[inset_0_0_12px_rgba(36,171,243,0.08)] hover:bg-accent/14 hover:text-accent" : ""}`}
+        className={`${btnBase} border-r border-border-38 ${activeView === "grid" ? "bg-[rgba(36,171,243,0.1)] text-accent shadow-[inset_0_0_12px_rgba(36,171,243,0.08)] hover:bg-[rgba(36,171,243,0.14)] hover:text-accent" : ""}`}
         role="radio"
         aria-checked={activeView === "grid"}
         aria-label="Vista en cuadrícula"
@@ -53,7 +53,7 @@ export default function ViewSwitcher({ resolvedView = "grid" }: ViewSwitcherProp
       </button>
       <button
         onClick={() => handleToggle("list")}
-        className={`${btnBase} ${activeView === "list" ? "bg-accent/10 text-accent shadow-[inset_0_0_12px_rgba(36,171,243,0.08)] hover:bg-accent/14 hover:text-accent" : ""}`}
+        className={`${btnBase} ${activeView === "list" ? "bg-[rgba(36,171,243,0.1)] text-accent shadow-[inset_0_0_12px_rgba(36,171,243,0.08)] hover:bg-[rgba(36,171,243,0.14)] hover:text-accent" : ""}`}
         role="radio"
         aria-checked={activeView === "list"}
         aria-label="Vista en lista"
