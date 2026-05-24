@@ -93,7 +93,7 @@ export default function ForgotPasswordPage() {
           RECUPERAR CONTRASEÑA
         </h1>
 
-        <p className="text-center text-[0.85rem] text-text-dim m-0 mb-[1.8rem]">
+        <p className="text-center leading-[1.4] text-[0.85rem] text-text-dim m-0 mb-[1.8rem]">
           Ingresá tu email y te enviaremos un enlace para restablecer tu contraseña.
         </p>
 
@@ -144,7 +144,7 @@ export default function ForgotPasswordPage() {
         </form>
 
         <p className="mt-6 text-center text-[0.88rem] text-text-dim">
-          <Link href="/login" className="text-accent no-underline font-semibold transition-all duration-200 hover:text-accent-hover hover:underline">
+          <Link href="/login" className="text-accent no-underline font-semibold transition-all duration-200 hover:text-accent-hover hover:underline flex items-center justify-center">
             <ArrowLeft size={14} style={{ marginRight: "0.25rem", verticalAlign: "middle" }} />
             Volver al inicio de sesión
           </Link>
