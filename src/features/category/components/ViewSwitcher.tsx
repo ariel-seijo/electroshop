@@ -12,11 +12,7 @@ function persist(view: string) {
 
 function buildUrl(pathname: string, searchParams: URLSearchParams, newView: string) {
   const params = new URLSearchParams(searchParams.toString());
-  if (newView === "grid") {
-    params.delete("view");
-  } else {
-    params.set("view", newView);
-  }
+  params.set("view", newView);
   const qs = params.toString();
   return qs ? `${pathname}?${qs}` : pathname;
 }

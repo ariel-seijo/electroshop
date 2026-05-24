@@ -60,7 +60,7 @@ export default function ProductCard({ product, view = "grid", priority = false }
   const isList = view === "list";
 
   const btnBase =
-    "group/btn mx-[0.4rem] my-[0.4rem] w-[calc(100%-0.8rem)] py-[0.42rem] px-[0.4rem] border rounded-[5px] font-semibold text-[0.66rem] uppercase tracking-[0.4px] cursor-pointer flex justify-center items-center overflow-hidden relative min-h-[34px] transition-all duration-300 ease-linear focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 focus-visible:rounded-[5px] not-disabled:active:scale-[0.97] not-disabled:active:transition-transform not-disabled:active:duration-[100ms] not-disabled:active:ease-linear disabled:cursor-not-allowed ms:py-[0.55rem] ms:text-[0.72rem] ms:rounded-md ms:min-h-10 ms:mx-3 ms:my-[0.45rem] ms:mb-3 ms:w-[calc(100%-1.5rem)] md:py-[0.65rem] md:text-[0.76rem] md:min-h-[42px] md:mx-4 md:my-2 md:mb-4 md:w-[calc(100%-2rem)] lg:py-[0.72rem] lg:text-[0.8rem] lg:min-h-11 lg:mx-[1.2rem] lg:my-[0.6rem] lg:mb-[1.2rem] lg:w-[calc(100%-2.4rem)]";
+    "group/btn mx-[0.4rem] my-[0.4rem] w-[calc(100%-0.8rem)] py-[0.42rem] px-[0.4rem] border rounded-[5px] font-semibold text-[0.66rem] uppercase tracking-[0.4px] cursor-pointer flex justify-center items-center overflow-hidden relative min-h-[34px] transition duration-300 ease-linear focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 focus-visible:rounded-[5px] not-disabled:active:scale-[0.97] not-disabled:active:transition-transform not-disabled:active:duration-[100ms] not-disabled:active:ease-linear disabled:cursor-not-allowed ms:py-[0.55rem] ms:text-[0.72rem] ms:rounded-md ms:min-h-10 ms:mx-3 ms:my-[0.45rem] ms:mb-3 ms:w-[calc(100%-1.5rem)] md:py-[0.65rem] md:text-[0.76rem] md:min-h-[42px] md:mx-4 md:my-2 md:mb-4 md:w-[calc(100%-2rem)] lg:py-[0.72rem] lg:text-[0.8rem] lg:min-h-11 lg:mx-[1.2rem] lg:my-[0.6rem] lg:mb-[1.2rem] lg:w-[calc(100%-2.4rem)]";
 
   const btnState = isInCart
     ? "bg-none bg-success/10 border-success/25 text-success hover:bg-success/15 hover:shadow-[0_0_15px_rgba(34,197,94,0.12)] hover:text-success"
@@ -157,7 +157,7 @@ export default function ProductCard({ product, view = "grid", priority = false }
       <button
         className={`${btnBase} ${btnState} ${isOutOfStock ? "opacity-35 cursor-not-allowed" : ""} ${
           isList
-            ? "w-auto min-w-[130px] mt-3 mb-3 ml-0 mr-4 shrink-0 max-3lg:w-[calc(100%-1rem)] max-3lg:min-w-0 max-3lg:mx-2 max-3lg:my-[0.35rem] max-3lg:mb-2 md:min-w-[150px] md:my-4 md:ml-0 md:mr-4 lg:min-w-[170px] lg:my-[1.2rem] lg:ml-0 lg:mr-[1.2rem]"
+            ? "!w-auto ms:!w-auto md:!w-auto lg:!w-auto min-w-[130px] mt-3 mb-3 ml-0 mr-4 shrink-0 max-3lg:w-[calc(100%-1rem)] max-3lg:min-w-0 max-3lg:mx-2 max-3lg:my-[0.35rem] max-3lg:mb-2 md:min-w-[150px] md:my-4 md:ml-0 md:mr-4 lg:min-w-[170px] lg:my-[1.2rem] lg:ml-0 lg:mr-[1.2rem]"
             : ""
         }`}
         onClick={(e) => {
