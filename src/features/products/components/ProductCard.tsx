@@ -70,7 +70,7 @@ export default function ProductCard({ product, view = "grid", priority = false }
     <li
       className={`${cardBase} ${
         isList
-          ? "flex-row items-center gap-4 hover:translate-x-1 hover:-translate-y-0 ms:hover:!-translate-y-0 md:hover:!-translate-y-0 lg:hover:!-translate-y-0 max-3lg:flex-col max-3lg:items-stretch max-3lg:gap-0 max-3lg:hover:-translate-y-[3px] max-3lg:hover:translate-x-0 md:gap-[1.2rem] lg:gap-6"
+          ? "!flex-row items-center gap-4 hover:translate-x-1 hover:-translate-y-0 ms:hover:!-translate-y-0 md:hover:!-translate-y-0 lg:hover:!-translate-y-0 max-3lg:!flex-col max-3lg:!items-stretch max-3lg:gap-0 max-3lg:hover:-translate-y-[3px] max-3lg:hover:translate-x-0 md:gap-[1.2rem] lg:gap-6"
           : ""
       }`}
     >
@@ -78,14 +78,14 @@ export default function ProductCard({ product, view = "grid", priority = false }
         href={`/product/${product.slug}`}
         className={`flex flex-col flex-1 no-underline text-inherit outline-none rounded p-[0.4rem] pb-0 focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 focus-visible:rounded ms:p-3 ms:pb-0 md:p-4 md:pb-0 lg:px-[1.2rem] lg:pt-[1.2rem] lg:pb-0 ${
           isList
-            ? "flex-row items-center gap-4 flex-1 min-w-0 py-3 pl-4 pr-0 max-3lg:flex-col max-3lg:items-stretch max-3lg:gap-0 max-3lg:py-2 max-3lg:px-2 md:py-4 md:pl-4 lg:py-[1.2rem] lg:pl-[1.2rem]"
+            ? "!flex-row items-center gap-4 flex-1 min-w-0 !pt-3 !pb-3 !pl-4 !pr-0 max-3lg:!flex-col max-3lg:!items-stretch max-3lg:gap-0 max-3lg:!py-2 max-3lg:!px-2 md:!pt-4 md:!pb-4 md:!pl-4 lg:!pt-[1.2rem] lg:!pb-[1.2rem] lg:!pl-[1.2rem]"
             : ""
         }`}
         aria-label={`Ver detalles de ${product.title}`}
       >
         <div className={`relative w-full aspect-square overflow-hidden flex justify-center items-center bg-[radial-gradient(circle_at_center,rgb(22,22,22)_0%,rgb(14,14,14)_100%)] rounded ms:rounded-[5px] md:rounded-md       after:content-[''] after:absolute after:inset-0 after:bg-[radial-gradient(circle_at_center,rgba(36,171,243,0.04)_0%,transparent_70%)] after:opacity-0 after:transition-opacity after:duration-[400ms] after:ease-linear after:pointer-events-none after:z-[3] group-hover:after:opacity-100 ${
           isList
-            ? "w-[100px] min-w-[100px] aspect-square max-3lg:w-full max-3lg:min-w-0 md:w-[140px] md:min-w-[140px] lg:w-[160px] lg:min-w-[160px]"
+            ? "!w-[100px] !min-w-[100px] aspect-square max-3lg:!w-full max-3lg:!min-w-0 md:!w-[140px] md:!min-w-[140px] lg:!w-[160px] lg:!min-w-[160px]"
             : ""
         }`}>
           <Image
@@ -126,7 +126,7 @@ export default function ProductCard({ product, view = "grid", priority = false }
           </div>
 
           <h3 className={`text-[0.78rem] font-semibold text-[rgb(215,215,215)] leading-[1.35] line-clamp-2 m-0 min-h-[calc(1.35em*2)] ms:text-[0.84rem] md:text-[0.9rem] md:leading-[1.4] lg:text-[0.92rem] ${
-            isList ? "line-clamp-1 min-h-0 max-3lg:line-clamp-2 max-3lg:min-h-[calc(1.35em*2)]" : ""
+            isList ? "line-clamp-1 !min-h-0 max-3lg:line-clamp-2 max-3lg:!min-h-[calc(1.35em*2)]" : ""
           }`}>{product.title}</h3>
 
           <div className="flex items-center gap-[0.18rem] text-[0.7rem] text-text-tertiary ms:gap-[0.25rem] ms:text-[0.72rem] md:gap-[0.3rem] md:text-[0.78rem]">
@@ -157,7 +157,7 @@ export default function ProductCard({ product, view = "grid", priority = false }
       <button
         className={`${btnBase} ${btnState} ${isOutOfStock ? "opacity-35 cursor-not-allowed" : ""} ${
           isList
-            ? "!w-auto ms:!w-auto md:!w-auto lg:!w-auto min-w-[130px] mt-3 mb-3 ml-0 mr-4 shrink-0 max-3lg:w-[calc(100%-1rem)] max-3lg:min-w-0 max-3lg:mx-2 max-3lg:my-[0.35rem] max-3lg:mb-2 md:min-w-[150px] md:my-4 md:ml-0 md:mr-4 lg:min-w-[170px] lg:my-[1.2rem] lg:ml-0 lg:mr-[1.2rem]"
+            ? "w-auto ms:!w-auto md:!w-auto lg:!w-auto min-w-[130px] mt-3 mb-3 ml-0 mr-4 shrink-0 max-3lg:w-[calc(100%-1rem)] max-3lg:min-w-0 max-3lg:mx-2 max-3lg:my-[0.35rem] max-3lg:mb-2 md:min-w-[150px] md:my-4 md:ml-0 md:mr-4 lg:min-w-[170px] lg:my-[1.2rem] lg:ml-0 lg:mr-[1.2rem]"
             : ""
         }`}
         onClick={(e) => {

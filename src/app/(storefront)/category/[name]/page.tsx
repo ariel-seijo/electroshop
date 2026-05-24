@@ -57,7 +57,7 @@ export default async function CategoryPage({
   return (
     <main className="w-full px-4 py-8 pb-16 max-3lg:px-3 max-3lg:pb-12">
       <div className="max-w-[1200px] mx-auto">
-        <div className="grid grid-cols-1 gap-[1.2rem] items-start md:grid-cols-[260px_1fr]">
+        <div className="grid grid-cols-1 gap-[1.2rem] items-start 7lg:grid-cols-[260px_1fr]">
           <FiltersSidebar
             name={name}
             brands={brands}

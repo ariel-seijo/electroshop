@@ -188,7 +188,7 @@ export default function FiltersSidebar({
   return (
     <>
       <button
-        className="flex items-center justify-center gap-2 w-full px-4 py-[0.85rem] bg-surface-22 border border-border-34 text-text-secondary text-[0.9rem] font-semibold cursor-pointer mb-4 transition-[background,border-color,color] duration-200 hover:bg-surface-28 hover:border-accent hover:text-accent focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 [&>svg]:shrink-0 ms:px-[1.25rem] ms:py-[0.9rem] ms:text-[0.92rem] [&>svg]:ms:w-5 [&>svg]:ms:h-5 md:hidden"
+        className="flex items-center justify-center gap-2 w-full px-4 py-[0.85rem] bg-surface-22 border border-border-34 text-text-secondary text-[0.9rem] font-semibold cursor-pointer mb-4 transition-[background,border-color,color] duration-200 hover:bg-surface-28 hover:border-accent hover:text-accent focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 [&>svg]:shrink-0 ms:px-[1.25rem] ms:py-[0.9rem] ms:text-[0.92rem] [&>svg]:ms:w-5 [&>svg]:ms:h-5 7lg:hidden"
         onClick={() => setIsOpen(true)}
         aria-expanded={isOpen}
         aria-controls="filter-drawer"
@@ -199,13 +199,13 @@ export default function FiltersSidebar({
 
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/60 z-[2000] animate-fade-in md:hidden"
+          className="fixed inset-0 bg-black/60 z-[2000] animate-fade-in 7lg:hidden"
           onClick={() => setIsOpen(false)}
           aria-hidden="true"
         />
       )}
 
-      <aside className="hidden md:flex md:flex-col md:gap-6 md:bg-surface-22 md:border md:border-border-34 md:p-6 md:sticky md:top-[100px]">
+      <aside className="hidden 7lg:flex 7lg:flex-col 7lg:gap-6 7lg:bg-surface-22 7lg:border 7lg:border-border-34 7lg:p-6 7lg:sticky 7lg:top-[100px]">
         {filterGroups}
       </aside>
 
@@ -213,7 +213,7 @@ export default function FiltersSidebar({
         id="filter-drawer"
         ref={drawerRef}
         className={cn(
-          "fixed top-0 right-0 bottom-[60px] w-[320px] max-w-[85vw] bg-surface-16 border-l border-border-34 z-[2001] flex flex-col shadow-[-8px_0_30px_rgba(0,0,0,0.5)] transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] md:hidden max-ms:bottom-14",
+          "fixed top-0 right-0 bottom-[60px] w-[320px] max-w-[85vw] bg-surface-16 border-l border-border-34 z-[2001] flex flex-col shadow-[-8px_0_30px_rgba(0,0,0,0.5)] transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] 7lg:hidden max-ms:bottom-14",
           isOpen ? "translate-x-0" : "translate-x-[105%]"
         )}
         role="dialog"
