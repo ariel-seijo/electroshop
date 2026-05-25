@@ -112,7 +112,7 @@ export default function PaymentForm() {
         </div>
       )}
 
-      <div className={`${actions} ${actionsDual}`}>
+      <div className="mt-6 flex justify-between">
         <button className={btnSecondary} onClick={goPrev}>
           <ArrowLeft size={18} />
           Volver
