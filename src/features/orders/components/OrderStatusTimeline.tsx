@@ -31,7 +31,9 @@ function getStatusIndex(status: string): number { return STATUSES.findIndex((s) 
 
 interface OrderStatusTimelineProps { order: { id: string; orderNumber: string; status: string; }; }
 
-const actionBtn = "inline-flex items-center gap-1.5 px-5 py-2.5 bg-[linear-gradient(135deg,rgba(36,171,243,0.12),rgba(36,171,243,0.04))] border border-accent/20 rounded-lg text-accent text-[0.8rem] font-semibold tracking-[0.4px] cursor-pointer transition-all duration-200 hover:not-disabled:bg-[linear-gradient(135deg,rgba(36,171,243,0.18),rgba(36,171,243,0.06))] hover:not-disabled:border-accent/35 hover:not-disabled:shadow-[0_0_16px_rgba(36,171,243,0.1)] hover:not-disabled:-translate-y-px disabled:opacity-50 disabled:cursor-not-allowed [&>svg]:animate-[spin_0.7s_linear_infinite]";
+const btnBase = "inline-flex items-center gap-1.5 px-5 py-2.5 border rounded-lg text-[0.8rem] font-semibold tracking-[0.4px] cursor-pointer transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed [&>svg]:animate-[spin_0.7s_linear_infinite]";
+const actionBtn = `${btnBase} bg-[linear-gradient(135deg,rgba(36,171,243,0.12),rgba(36,171,243,0.04))] border-accent/20 text-accent hover:not-disabled:bg-[linear-gradient(135deg,rgba(36,171,243,0.18),rgba(36,171,243,0.06))] hover:not-disabled:border-accent/35 hover:not-disabled:shadow-[0_0_16px_rgba(36,171,243,0.1)] hover:not-disabled:-translate-y-px`;
+const dangerBtn = `${btnBase} bg-[rgba(255,51,102,0.06)] border-[rgba(255,51,102,0.15)] text-cancelled not-disabled:hover:bg-[rgba(255,51,102,0.12)] not-disabled:hover:border-[rgba(255,51,102,0.3)] not-disabled:hover:shadow-[0_0_16px_rgba(255,51,102,0.1)]`;
 
 export default function OrderStatusTimeline({ order }: OrderStatusTimelineProps) {
   const toast = useToastStore((s) => s.toast);
@@ -113,7 +115,7 @@ export default function OrderStatusTimeline({ order }: OrderStatusTimelineProps)
               </button>
             ))}
             {availableTransitions.includes("CANCELLED") && (
-              <button type="button" className={`${actionBtn} bg-[rgba(255,51,102,0.06)] border-[rgba(255,51,102,0.15)] text-cancelled not-disabled:hover:bg-[rgba(255,51,102,0.12)] not-disabled:hover:border-[rgba(255,51,102,0.3)] not-disabled:hover:shadow-[0_0_16px_rgba(255,51,102,0.1)]`} onClick={() => setCancelModalOpen(true)} disabled={updating}>
+              <button type="button" className={dangerBtn} onClick={() => setCancelModalOpen(true)} disabled={updating}>
                 {updating && transitioningTo === "CANCELLED" ? <Loader2 size={14} aria-hidden="true" /> : null}Cancelar Pedido
               </button>
             )}

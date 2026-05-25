@@ -116,7 +116,7 @@ export default function AdminOrderDetailPage() {
 
   if (error || !order) {
     return (
-      <div>
+    <div className="pb-10">
         <div className="page-back-wrapper">
           <Link href="/admin/orders" className="btn btn-secondary btn-sm">
             <ArrowLeft size={14} />
@@ -135,7 +135,7 @@ export default function AdminOrderDetailPage() {
   const total = order.total ?? usdToArs(order.subtotal) + (order.shippingCost ?? 0);
 
   return (
-    <div>
+    <div className="pb-10">
       <div className="mb-5">
         <Link href="/admin/orders" className="inline-flex items-center gap-1.5 text-[0.8rem] font-semibold text-[rgb(150,150,150)] no-underline uppercase tracking-[0.8px] transition-colors duration-200 bg-transparent border-0 cursor-pointer p-0 font-[inherit] hover:text-[#24abf3]">
           <ArrowLeft size={16} />
