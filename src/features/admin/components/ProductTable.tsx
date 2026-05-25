@@ -114,7 +114,7 @@ const ACTION_BTN_MOBILE_DANGER = "inline-flex items-center justify-center w-11 h
 
 const BADGE = "inline-flex items-center justify-center py-[3px] px-2.5 rounded-[5px] text-[0.72rem] font-semibold border-[1.5px] cursor-pointer transition-all duration-200 font-[inherit] min-h-7 focus-visible:outline-2 focus-visible:outline-[#24abf3] focus-visible:outline-offset-2";
 
-const TABLE = "w-full table-fixed border-collapse text-[0.82rem] [&_caption]:text-[0.85rem] [&_caption]:font-semibold [&_caption]:text-[rgb(180,180,180)] [&_caption]:text-left [&_caption]:px-4 [&_caption]:py-3 [&_caption]:caption-top [&_tbody_tr]:transition-[background,box-shadow] [&_tbody_tr]:duration-[0.15s] [&_tbody_tr]:relative [&_tbody_tr:nth-child(even)]:bg-[rgba(255,255,255,0.01)] [&_tbody_tr:hover]:bg-[rgba(36,171,243,0.03)] [&_tbody_tr:hover]:shadow-[inset_3px_0_0_rgba(36,171,243,0.5)] [&_tbody_tr:focus-within]:bg-[rgba(36,171,243,0.04)] [&_tbody_tr:focus-within]:outline [&_tbody_tr:focus-within]:outline-1 [&_tbody_tr:focus-within]:outline-[rgba(36,171,243,0.2)] [&_tbody_tr:focus-within]:outline-offset-[-1px] [&_td]:px-3.5 [&_td]:py-3 [&_td]:border-b [&_td]:border-[rgba(255,255,255,0.04)] [&_td]:align-middle [&_td]:text-[rgb(200,200,200)]";
+const TABLE = "w-full table-auto border-collapse text-[0.82rem] [&_caption]:text-[0.85rem] [&_caption]:font-semibold [&_caption]:text-[rgb(180,180,180)] [&_caption]:text-left [&_caption]:px-4 [&_caption]:py-3 [&_caption]:caption-top [&_tbody_tr]:transition-[background,box-shadow] [&_tbody_tr]:duration-[0.15s] [&_tbody_tr]:relative [&_tbody_tr:nth-child(even)]:bg-[rgba(255,255,255,0.01)] [&_tbody_tr:hover]:bg-[rgba(36,171,243,0.03)] [&_tbody_tr:hover]:shadow-[inset_3px_0_0_rgba(36,171,243,0.5)] [&_tbody_tr:focus-within]:bg-[rgba(36,171,243,0.04)] [&_tbody_tr:focus-within]:outline [&_tbody_tr:focus-within]:outline-1 [&_tbody_tr:focus-within]:outline-[rgba(36,171,243,0.2)] [&_tbody_tr:focus-within]:outline-offset-[-1px] [&_td]:px-3.5 [&_td]:py-3 [&_td]:border-b [&_td]:border-[rgba(255,255,255,0.04)] [&_td]:align-middle [&_td]:text-[rgb(200,200,200)]";
 
 export default function ProductTable({
   products,
@@ -272,17 +272,17 @@ export default function ProductTable({
           </caption>
           <thead className="sticky top-0 z-10 [&_th]:px-3.5 [&_th]:py-3 [&_th]:text-left [&_th]:font-semibold [&_th]:text-[0.68rem] [&_th]:text-[rgb(160,160,160)] [&_th]:uppercase [&_th]:tracking-[0.8px] [&_th]:bg-[rgba(16,16,16,0.98)] [&_th]:backdrop-blur-md [&_th]:border-b [&_th]:border-[rgba(36,171,243,0.12)] [&_th]:whitespace-nowrap">
             <tr>
-              <th scope="col" className="w-[220px]">
+              <th scope="col" className="min-w-[200px]">
                 Producto
               </th>
-              <th scope="col" className="w-[130px]">
+              <th scope="col" className="min-w-[110px]">
                 SKU
               </th>
               {SORTABLE_COLUMNS.map((col) => (
                 <th
                   key={col.key}
                   scope="col"
-                  className="w-20"
+                  className="min-w-[90px]"
                   aria-sort={
                     sort === col.key
                       ? order === "asc"
@@ -302,13 +302,13 @@ export default function ProductTable({
                   </button>
                 </th>
               ))}
-              <th scope="col" className="w-[60px] text-center">
+              <th scope="col" className="w-[72px] shrink-0 text-center">
                 Activo
               </th>
-              <th scope="col" className="w-[60px] text-center">
+              <th scope="col" className="w-[80px] shrink-0 text-center">
                 Destacado
               </th>
-              <th scope="col" className="w-[90px] text-center">
+              <th scope="col" className="w-[100px] shrink-0 text-center">
                 Acciones
               </th>
             </tr>

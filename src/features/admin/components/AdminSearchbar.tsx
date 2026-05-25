@@ -23,8 +23,10 @@ export default function AdminSearchbar() {
   const pathname = usePathname();
 
   const close = useCallback(() => setExpanded(false), []);
-  const [prevPathname, setPrevPathname] = useState(pathname);
-  if (pathname !== prevPathname) { setExpanded(false); setPrevPathname(pathname); }
+
+  useEffect(() => {
+    setExpanded(false);
+  }, [pathname]);
 
   useEffect(() => {
     if (!expanded) return;
@@ -46,7 +48,7 @@ export default function AdminSearchbar() {
 
   return (
     <div className="relative" ref={containerRef}>
-      <form className="flex items-center gap-1 max-xl2:hidden" onSubmit={handleSubmit}>
+      <form className="flex items-center gap-1 max-xl:hidden" onSubmit={handleSubmit}>
         <div className="flex items-center gap-1.5 bg-surface-16 border border-white/5 rounded-md px-2.5 h-9 transition-colors duration-200 focus-within:border-white/10">
           <Search size={16} className="text-text-placeholder shrink-0" />
           <input type="text" value={query} onChange={(e: ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)} placeholder={PLACEHOLDERS[scope]} className="bg-transparent border-none outline-none text-text-0 text-[0.78rem] w-[160px] placeholder:text-[rgb(100,100,100)]" aria-label={`Buscar en ${SCOPE_LABELS[scope]}`} />
@@ -58,15 +60,15 @@ export default function AdminSearchbar() {
         </div>
       </form>
 
-      <button type="button" className="hidden max-xl2:flex max-xl2:items-center max-xl2:justify-center max-xl2:min-w-11 max-xl2:min-h-11 max-xl2:bg-transparent max-xl2:border max-xl2:border-white/5 max-xl2:rounded-md max-xl2:text-text-muted max-xl2:cursor-pointer max-xl2:transition-all max-xl2:duration-[150ms] max-xl2:hover:text-text-0 max-xl2:hover:border-white/10 max-xl2:hover:bg-white/[0.03]" onClick={handleToggle} aria-label={expanded ? "Cerrar búsqueda" : "Abrir búsqueda"} aria-expanded={expanded}>
+      <button type="button" className="hidden max-xl:flex max-xl:items-center max-xl:justify-center max-xl:min-w-11 max-xl:min-h-11 max-xl:bg-transparent max-xl:border max-xl:border-white/5 max-xl:rounded-md max-xl:text-text-muted max-xl:cursor-pointer max-xl:transition-all max-xl:duration-[150ms] max-xl:hover:text-text-0 max-xl:hover:border-white/10 max-xl:hover:bg-white/[0.03]" onClick={handleToggle} aria-label={expanded ? "Cerrar búsqueda" : "Abrir búsqueda"} aria-expanded={expanded}>
         {expanded ? <X size={20} /> : <Search size={20} />}
       </button>
 
       {expanded && (
         <>
-          <div className="hidden max-xl2:block max-xl2:fixed max-xl2:top-[var(--admin-header-height,56px)] max-xl2:left-0 max-xl2:right-0 max-xl2:bottom-0 max-xl2:z-[31] max-xl2:bg-black/55 max-xl2:backdrop-blur max-xl2:[-webkit-backdrop-filter:blur(4px)] max-xl2:animate-[fadeBackdrop_0.2s_ease-out] max-xl2:motion-reduce:animate-none" onClick={close} aria-hidden="true" />
+          <div className="hidden max-xl:block max-xl:fixed max-xl:top-[var(--admin-header-height,56px)] max-xl:left-0 max-xl:right-0 max-xl:bottom-0 max-xl:z-[31] max-xl:bg-black/55 max-xl:backdrop-blur max-xl:[-webkit-backdrop-filter:blur(4px)] max-xl:animate-[fadeBackdrop_0.2s_ease-out] max-xl:motion-reduce:animate-none" onClick={close} aria-hidden="true" />
 
-          <div className="hidden max-xl2:block max-xl2:fixed max-xl2:top-[var(--admin-header-height,56px)] max-xl2:left-0 max-xl2:right-0 max-xl2:z-32 max-xl2:bg-surface-14 max-xl2:border-b max-xl2:border-white/5 max-xl2:shadow-[0_16px_40px_rgba(0,0,0,0.7)] max-xl2:animate-[slideDown_0.22s_cubic-bezier(0.4,0,0.2,1)] max-xl2:motion-reduce:animate-none max-xl2:max-h-[calc(100vh-var(--admin-header-height,56px))] max-xl2:overflow-y-auto" role="dialog" aria-label="Buscar">
+          <div className="hidden max-xl:block max-xl:fixed max-xl:top-[var(--admin-header-height,56px)] max-xl:left-0 max-xl:right-0 max-xl:z-32 max-xl:bg-surface-14 max-xl:border-b max-xl:border-white/5 max-xl:shadow-[0_16px_40px_rgba(0,0,0,0.7)] max-xl:animate-[slideDown_0.22s_cubic-bezier(0.4,0,0.2,1)] max-xl:motion-reduce:animate-none max-xl:max-h-[calc(100vh-var(--admin-header-height,56px))] max-xl:overflow-y-auto" role="dialog" aria-label="Buscar">
             <div className="flex items-center justify-between px-4 py-[14px] border-b border-white/5">
               <span className="text-xs font-semibold uppercase tracking-[0.8px] text-accent">Buscar</span>
               <button type="button" className="flex items-center justify-center size-8 border border-white/10 bg-transparent text-text-muted rounded-md cursor-pointer transition-all duration-[150ms] hover:text-white hover:border-white/15 hover:bg-white/5" onClick={close} aria-label="Cerrar búsqueda"><X size={18} /></button>

@@ -169,7 +169,7 @@ export default function Navbar() {
   return (
     <>
       <div className="sticky top-0 z-[1000]">
-        <nav className="w-full h-20 flex items-center bg-surface-2b max-xl2:px-4 max-xl2:gap-4 max-md:h-16 max-md:px-4 max-md:flex-nowrap max-md:gap-0 max-md:justify-between" role="navigation" aria-label="Navegación principal">
+        <nav className="w-full h-20 flex items-center bg-surface-2b max-xl:px-4 max-xl:gap-4 max-md:h-16 max-md:px-4 max-md:flex-nowrap max-md:gap-0 max-md:justify-between" role="navigation" aria-label="Navegación principal">
           <Container>
             <div className="flex items-center gap-3">
               <button
@@ -181,14 +181,14 @@ export default function Navbar() {
                 <Menu size={28} />
               </button>
 
-              <h1 className="text-[2.4rem] m-0 max-xl2:text-[2rem] max-md:text-[1.5rem]">
+              <h1 className="text-[2.4rem] m-0 max-xl:text-[2rem] max-md:text-[1.5rem]">
                 <Link className="no-underline font-cosmic font-thin tracking-[3px] text-accent" href="/" onClick={closeMobileMenu}>
                   ELECTROSHOP
                 </Link>
               </h1>
             </div>
 
-            <div className="relative flex-1 max-w-[440px] min-w-0 max-xl2:max-w-[300px] max-md:hidden" ref={searchRef}>
+            <div className="relative flex-1 max-w-[440px] min-w-0 max-xl:max-w-[300px] max-md:hidden" ref={searchRef}>
               <div className="relative flex items-center">
                 <Search className="absolute right-3 text-accent pointer-events-none shrink-0" size={18} />
                 <input
@@ -376,7 +376,7 @@ export default function Navbar() {
 
       <nav className="w-full h-[50px] flex items-center justify-center bg-[#121212] max-md:fixed max-md:left-0 max-md:bottom-0 max-md:w-full max-md:h-[60px] max-md:px-4 max-md:z-[2000] max-md:bg-[#121212] max-md:border-t max-md:border-[#1f1f1f] max-ms:h-14 max-ms:px-2" role="navigation" aria-label="Categorías">
         <Container>
-          <ul className="p-0 m-0 list-none w-full flex justify-center items-center gap-[60px] max-xl2:gap-[30px] max-md:h-full max-md:justify-around max-md:gap-0 max-md:flex-nowrap">
+          <ul className="p-0 m-0 list-none w-full flex justify-center items-center gap-[60px] max-xl:gap-[30px] max-md:h-full max-md:justify-around max-md:gap-0 max-md:flex-nowrap">
             {categories.map((cat) => (
               <li key={cat.href}>
                 <Link

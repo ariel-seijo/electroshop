@@ -98,7 +98,7 @@ export default function OrderTable({ orders, total, page, totalPages }: OrderTab
 
   return (
     <>
-      <div className="border border-white/5 rounded-[10px] overflow-x-auto bg-[rgba(12,12,12,0.95)] shadow-[0_0_20px_rgba(36,171,243,0.03),0_4px_24px_rgba(0,0,0,0.5)] max-md:hidden">
+      <div className="border border-white/5 rounded-[10px] overflow-x-auto bg-[rgba(12,12,12,0.95)] shadow-[0_0_20px_rgba(36,171,243,0.03),0_4px_24px_rgba(0,0,0,0.5)] max-[640px]:hidden">
         <table className="w-full border-collapse text-[0.82rem]" aria-label="Lista de pedidos">
           <caption className="visually-hidden">Pedidos — {total} registros, página {page} de {totalPages}</caption>
           <thead className="sticky top-0 z-10">
@@ -129,7 +129,7 @@ export default function OrderTable({ orders, total, page, totalPages }: OrderTab
         </table>
       </div>
 
-      <div className="hidden max-md:flex max-md:flex-col max-md:gap-3">
+      <div className="hidden max-[640px]:flex max-[640px]:flex-col max-[640px]:gap-3">
         {orders.map((order) => (
           <article key={order.id} className="bg-surface-14 border border-white/5 rounded-[10px] p-[14px] transition-[border-color,box-shadow] duration-200 hover:border-accent/15 hover:shadow-[0_0_12px_rgba(36,171,243,0.05)]">
             <div className="flex items-center justify-between mb-2.5">

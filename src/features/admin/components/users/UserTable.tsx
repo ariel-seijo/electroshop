@@ -138,12 +138,12 @@ export default function UserTable({
           </caption>
           <thead className="sticky top-0 z-10 [&_th]:px-3.5 [&_th]:py-3 [&_th]:text-left [&_th]:font-semibold [&_th]:text-[0.68rem] [&_th]:text-[rgb(160,160,160)] [&_th]:uppercase [&_th]:tracking-[0.8px] [&_th]:bg-[rgba(16,16,16,0.98)] [&_th]:backdrop-blur-md [&_th]:border-b [&_th]:border-[rgba(36,171,243,0.12)] [&_th]:whitespace-nowrap">
             <tr>
-              <th scope="col" className="w-[220px]">Usuario</th>
+              <th scope="col" className="min-w-[200px]">Usuario</th>
               {SORTABLE_COLUMNS.map((col) => (
                 <th
                   key={col.key}
                   scope="col"
-                  className="w-[90px]"
+                  className="min-w-[100px]"
                   aria-sort={
                     sort === col.key
                       ? order === "asc"
@@ -165,10 +165,10 @@ export default function UserTable({
                   </button>
                 </th>
               ))}
-              <th scope="col" className="w-20">Órdenes</th>
-              <th scope="col" className="w-20">LTV</th>
-              <th scope="col" className="w-[60px] text-center">Estado</th>
-              <th scope="col" className="w-11 text-center">Acciones</th>
+              <th scope="col" className="min-w-[80px]">Órdenes</th>
+              <th scope="col" className="min-w-[80px]">LTV</th>
+              <th scope="col" className="w-20 shrink-0 text-center">Estado</th>
+              <th scope="col" className="w-[60px] shrink-0 text-center">Acciones</th>
             </tr>
           </thead>
           <tbody>

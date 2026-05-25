@@ -331,6 +331,7 @@
     --admin-text-light: #a0a0a0;
     --admin-muted: rgb(145, 145, 145);
     --admin-sidebar-width: 260px;
+    --admin-content-offset: calc(var(--admin-sidebar-width) + 24px);
     --admin-header-height: 64px;
     --admin-radius: 10px;
     --admin-radius-sm: 6px;
