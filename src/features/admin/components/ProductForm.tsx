@@ -712,7 +712,7 @@ export default function ProductForm({
           <div className="flex gap-3 flex-wrap">
             <button
               type="button"
-              className={`inline-flex items-center gap-2 px-4 py-2 bg-[rgb(15,15,15)] border-[1.5px] border-[rgb(50,50,50)] rounded-lg text-[rgb(145,145,145)] text-[0.8rem] font-semibold font-[inherit] cursor-pointer transition-all duration-200 min-h-[42px] hover:border-[rgb(75,75,75)] focus-visible:outline-2 focus-visible:outline-[#24abf3] focus-visible:outline-offset-2 ${formData.active ? "bg-[rgba(36,171,243,0.08)] border-[#24abf3] text-[#24abf3] shadow-[0_0_10px_rgba(36,171,243,0.12)]" : "bg-[rgb(15,15,15)] border-[rgb(45,45,45)] text-[rgb(100,100,100)]"}`}
+              className={`inline-flex items-center gap-2 px-4 py-2 border-[1.5px] rounded-lg text-[0.8rem] font-semibold font-[inherit] cursor-pointer transition-all duration-200 min-h-[42px] hover:border-[rgb(75,75,75)] focus-visible:outline-2 focus-visible:outline-[#24abf3] focus-visible:outline-offset-2 ${formData.active ? "bg-[rgba(36,171,243,0.08)] border-[#24abf3] text-[#24abf3] shadow-[0_0_10px_rgba(36,171,243,0.12)]" : "bg-[rgb(15,15,15)] border-[rgb(45,45,45)] text-[rgb(100,100,100)]"}`}
               onClick={() => handleToggle("active")}
               aria-pressed={formData.active}
               aria-label={formData.active ? "Desactivar producto" : "Activar producto"}
@@ -727,7 +727,7 @@ export default function ProductForm({
 
             <button
               type="button"
-              className={`inline-flex items-center gap-2 px-4 py-2 bg-[rgb(15,15,15)] border-[1.5px] border-[rgb(50,50,50)] rounded-lg text-[rgb(145,145,145)] text-[0.8rem] font-semibold font-[inherit] cursor-pointer transition-all duration-200 min-h-[42px] hover:border-[rgb(75,75,75)] focus-visible:outline-2 focus-visible:outline-[#24abf3] focus-visible:outline-offset-2 ${formData.featured ? "bg-[rgba(36,171,243,0.08)] border-[#24abf3] text-[#24abf3] shadow-[0_0_10px_rgba(36,171,243,0.12)]" : "bg-[rgb(15,15,15)] border-[rgb(45,45,45)] text-[rgb(100,100,100)]"}`}
+              className={`inline-flex items-center gap-2 px-4 py-2 border-[1.5px] rounded-lg text-[0.8rem] font-semibold font-[inherit] cursor-pointer transition-all duration-200 min-h-[42px] hover:border-[rgb(75,75,75)] focus-visible:outline-2 focus-visible:outline-[#24abf3] focus-visible:outline-offset-2 ${formData.featured ? "bg-[rgba(36,171,243,0.08)] border-[#24abf3] text-[#24abf3] shadow-[0_0_10px_rgba(36,171,243,0.12)]" : "bg-[rgb(15,15,15)] border-[rgb(45,45,45)] text-[rgb(100,100,100)]"}`}
               onClick={() => handleToggle("featured")}
               aria-pressed={formData.featured}
               aria-label={formData.featured ? "Quitar destacado" : "Marcar como destacado"}

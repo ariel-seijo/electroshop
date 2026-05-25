@@ -58,7 +58,7 @@ export default function ProductFilters({
           <button
             key={opt.value}
             type="button"
-            className={`inline-flex items-center gap-[5px] px-3.5 h-10 bg-[rgb(16,16,16)] border border-[rgb(42,42,42)] rounded-md text-[rgb(145,145,145)] text-[0.78rem] font-semibold cursor-pointer transition-all duration-[0.12s] whitespace-nowrap hover:border-[rgba(36,171,243,0.25)] hover:text-[#e4e4e4] focus-visible:outline-2 focus-visible:outline-[#24abf3] focus-visible:outline-offset-2 ${status === opt.value ? "bg-[rgba(36,171,243,0.1)] border-[#24abf3] text-[#24abf3] shadow-[0_0_8px_rgba(36,171,243,0.15)]" : ""}`}
+            className={`inline-flex items-center gap-[5px] px-3.5 h-10 border rounded-md text-[0.78rem] font-semibold cursor-pointer transition-all duration-[0.12s] whitespace-nowrap hover:border-[rgba(36,171,243,0.25)] hover:text-[#e4e4e4] focus-visible:outline-2 focus-visible:outline-[#24abf3] focus-visible:outline-offset-2 ${status === opt.value ? "bg-[rgba(36,171,243,0.1)] border-[#24abf3] text-[#24abf3] shadow-[0_0_8px_rgba(36,171,243,0.15)]" : "bg-[rgb(16,16,16)] border-[rgb(42,42,42)] text-[rgb(145,145,145)]"}`}
             onClick={() => onChange("status", opt.value)}
             aria-pressed={status === opt.value}
           >
@@ -69,7 +69,7 @@ export default function ProductFilters({
 
       <button
         type="button"
-        className={`inline-flex items-center gap-[5px] px-3.5 h-10 bg-[rgb(16,16,16)] border border-[rgb(42,42,42)] rounded-md text-[rgb(145,145,145)] text-[0.78rem] font-semibold cursor-pointer transition-all duration-[0.12s] whitespace-nowrap hover:border-[rgba(36,171,243,0.25)] hover:text-[#e4e4e4] focus-visible:outline-2 focus-visible:outline-[#24abf3] focus-visible:outline-offset-2 ${featured === "true" ? "bg-[rgba(36,171,243,0.1)] border-[#24abf3] text-[#24abf3] shadow-[0_0_8px_rgba(36,171,243,0.15)]" : ""}`}
+        className={`inline-flex items-center gap-[5px] px-3.5 h-10 border rounded-md text-[0.78rem] font-semibold cursor-pointer transition-all duration-[0.12s] whitespace-nowrap hover:border-[rgba(36,171,243,0.25)] hover:text-[#e4e4e4] focus-visible:outline-2 focus-visible:outline-[#24abf3] focus-visible:outline-offset-2 ${featured === "true" ? "bg-[rgba(36,171,243,0.1)] border-[#24abf3] text-[#24abf3] shadow-[0_0_8px_rgba(36,171,243,0.15)]" : "bg-[rgb(16,16,16)] border-[rgb(42,42,42)] text-[rgb(145,145,145)]"}`}
         onClick={() => onChange("featured", featured === "true" ? "" : "true")}
         aria-pressed={featured === "true"}
       >
