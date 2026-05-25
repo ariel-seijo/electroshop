@@ -46,7 +46,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           </header>
 
           <main
-            className="flex-1 px-7 pt-[calc(var(--admin-header-height)+28px)] lg:pl-[var(--admin-content-offset)] max-w-none w-full min-w-0 max-[1023px]:px-4 max-[1023px]:pt-[calc(var(--admin-header-height)+16px)] max-md:px-3 max-md:pt-[calc(var(--admin-header-height)+12px)]"
+            className="flex-1 px-7 pb-7 pt-[calc(var(--admin-header-height)+28px)] lg:pl-[var(--admin-content-offset)] max-w-none w-full min-w-0 max-[1023px]:px-4 max-[1023px]:pb-4 max-[1023px]:pt-[calc(var(--admin-header-height)+16px)] max-md:px-3 max-md:pb-3 max-md:pt-[calc(var(--admin-header-height)+12px)]"
             id="admin-content"
             tabIndex={-1}
           >

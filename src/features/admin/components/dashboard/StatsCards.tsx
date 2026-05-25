@@ -50,8 +50,8 @@ export default function StatsCards({ data, formattedRevenue }: StatsCardsProps) 
             </p>
             {typeof trend === "number" && (
               <div className="inline-flex items-center gap-1 mt-2 px-2 py-[3px] rounded text-xs font-semibold bg-[var(--admin-hover-bg)] [&>span:last-child]:font-mono [&>span:last-child]:text-[0.72rem]" data-positive={isPositiveTrend || undefined} data-negative={isNegativeTrend || undefined}>
-                <span>{isPositiveTrend ? "▲" : isNegativeTrend ? "▼" : "–"}</span>
-                <span>{Math.abs(trend)}%</span>
+                <span className={isPositiveTrend ? "text-success" : isNegativeTrend ? "text-danger" : ""}>{isPositiveTrend ? "▲" : isNegativeTrend ? "▼" : "–"}</span>
+                <span className={isPositiveTrend ? "text-success" : isNegativeTrend ? "text-danger" : ""}>{Math.abs(trend)}%</span>
               </div>
             )}
           </article>
