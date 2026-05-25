@@ -29,13 +29,13 @@ const TRANSITION_LABELS: Record<string, string> = {
 
 function getStatusIndex(status: string): number { return STATUSES.findIndex((s) => s.key === status); }
 
-interface OrderStatusTimelineProps { order: { id: string; orderNumber: string; status: string; }; }
+interface OrderStatusTimelineProps { order: { id: string; orderNumber: string; status: string; }; onStatusChange?: (newStatus: string) => void; }
 
 const btnBase = "inline-flex items-center gap-1.5 px-5 py-2.5 border rounded-lg text-[0.8rem] font-semibold tracking-[0.4px] cursor-pointer transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed [&>svg]:animate-[spin_0.7s_linear_infinite]";
 const actionBtn = `${btnBase} bg-[linear-gradient(135deg,rgba(36,171,243,0.12),rgba(36,171,243,0.04))] border-accent/20 text-accent hover:not-disabled:bg-[linear-gradient(135deg,rgba(36,171,243,0.18),rgba(36,171,243,0.06))] hover:not-disabled:border-accent/35 hover:not-disabled:shadow-[0_0_16px_rgba(36,171,243,0.1)] hover:not-disabled:-translate-y-px`;
 const dangerBtn = `${btnBase} bg-[rgba(255,51,102,0.06)] border-[rgba(255,51,102,0.15)] text-cancelled not-disabled:hover:bg-[rgba(255,51,102,0.12)] not-disabled:hover:border-[rgba(255,51,102,0.3)] not-disabled:hover:shadow-[0_0_16px_rgba(255,51,102,0.1)]`;
 
-export default function OrderStatusTimeline({ order }: OrderStatusTimelineProps) {
+export default function OrderStatusTimeline({ order, onStatusChange }: OrderStatusTimelineProps) {
   const toast = useToastStore((s) => s.toast);
   const [localStatus, setLocalStatus] = useState<string>(order.status);
   const [updating, setUpdating] = useState(false);
@@ -55,7 +55,7 @@ export default function OrderStatusTimeline({ order }: OrderStatusTimelineProps)
     setUpdating(false);
     setTransitioningTo(null);
     if ("error" in result && result.error) toast(result.error, "error");
-    else { setLocalStatus(newStatus); toast(`Pedido actualizado a "${STATUSES.find((s) => s.key === newStatus)?.label}"`, "success"); }
+    else { setLocalStatus(newStatus); onStatusChange?.(newStatus); toast(`Pedido actualizado a "${STATUSES.find((s) => s.key === newStatus)?.label}"`, "success"); }
   };
 
   const handleCancelConfirm = async () => {
@@ -66,7 +66,7 @@ export default function OrderStatusTimeline({ order }: OrderStatusTimelineProps)
     setUpdating(false);
     setTransitioningTo(null);
     if ("error" in result && result.error) toast(result.error, "error");
-    else { setLocalStatus("CANCELLED"); toast("Pedido cancelado. Stock restaurado.", "success"); }
+    else { setLocalStatus("CANCELLED"); onStatusChange?.("CANCELLED"); toast("Pedido cancelado. Stock restaurado.", "success"); }
   };
 
   const availableTransitions: StatusKey[] = isCancelled ? [] : (STATUS_TRANSITIONS[status as StatusKey] || []);

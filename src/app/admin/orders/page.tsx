@@ -6,6 +6,7 @@ import OrderMetrics from "@/features/orders/components/OrderMetrics";
 import OrderFilters from "@/features/orders/components/OrderFilters";
 import OrderTable from "@/features/orders/components/OrderTable";
 import OrderTableSkeleton from "@/features/orders/components/OrderTableSkeleton";
+import OrdersRefreshOnMount from "@/features/orders/components/OrdersRefreshOnMount";
 
 export const metadata: Metadata = {
   title: "Pedidos | Panel de Administración",
@@ -64,7 +65,9 @@ export default function AdminOrdersPage({ searchParams }: { searchParams: Promis
     <div>
       <h2 className="visually-hidden">Gestión de pedidos</h2>
       <Suspense fallback={<OrderTableSkeleton />}>
-        <OrdersContent searchParams={searchParams} />
+        <OrdersRefreshOnMount>
+          <OrdersContent searchParams={searchParams} />
+        </OrdersRefreshOnMount>
       </Suspense>
     </div>
   );

@@ -134,6 +134,10 @@ export default function AdminOrderDetailPage() {
   const shipping = order.shippingAddress || {};
   const total = order.total ?? usdToArs(order.subtotal) + (order.shippingCost ?? 0);
 
+  const handleStatusChange = (newStatus: string) => {
+    setOrder((prev) => prev ? { ...prev, status: newStatus } : prev);
+  };
+
   return (
     <div className="pb-10">
       <div className="mb-5">
@@ -161,7 +165,7 @@ export default function AdminOrderDetailPage() {
         </div>
       </div>
 
-      <OrderStatusTimeline order={order} />
+      <OrderStatusTimeline order={order} onStatusChange={handleStatusChange} />
 
       <div className="grid grid-cols-[1fr_340px] gap-6 items-start max-[860px]:grid-cols-1">
         <div className="flex flex-col gap-6">
