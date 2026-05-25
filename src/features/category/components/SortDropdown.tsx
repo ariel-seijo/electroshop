@@ -4,7 +4,6 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { buildCategoryUrl } from "../utils/buildCategoryUrl";
 import { cn } from "@/lib/utils/cn";
-import styles from "./SortDropdown.module.css";
 
 const OPTIONS = [
   { label: "Más reciente", value: "recent" },
@@ -63,25 +62,31 @@ export default function SortDropdown({ name, sort, brand, min, max, view = "grid
   }
 
   return (
-    <div className={styles.sortDropdown} ref={dropdownRef}>
-      <span className={styles.sortLabel}>Ordenar por:</span>
+    <div className="flex items-center gap-[0.6rem] relative max-3lg:w-full max-3lg:justify-between" ref={dropdownRef}>
+      <span className="text-text-dim text-[0.82rem] font-semibold whitespace-nowrap">Ordenar por:</span>
 
       <button
-        className={cn(styles.trigger, isOpen && styles.triggerActive)}
+        className={cn(
+          "flex items-center justify-between gap-2 min-w-[160px] bg-surface-18 border border-border-44 text-text-secondary px-4 py-[0.6rem] text-[0.82rem] font-semibold cursor-pointer transition-colors duration-200 hover:border-accent focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 max-3lg:flex-1 max-3lg:w-full",
+          isOpen && "border-accent"
+        )}
         onClick={() => setIsOpen((prev) => !prev)}
         aria-expanded={isOpen}
         aria-haspopup="listbox"
       >
         {currentLabel}
-        <span className={cn(styles.arrow, isOpen && styles.arrowOpen)} aria-hidden="true">▾</span>
+        <span className={cn("text-[0.7rem] transition-transform duration-200 text-text-dim", isOpen && "rotate-180")} aria-hidden="true">▾</span>
       </button>
 
       {isOpen && (
-        <ul className={styles.menu} role="listbox">
+        <ul className="absolute right-0 top-[calc(100%+8px)] min-w-[200px] bg-surface-18 border border-border-44 list-none m-0 p-0 z-20 shadow-[0_12px_30px_rgba(0,0,0,0.5)] animate-menu-in max-3lg:left-0 max-3lg:right-auto max-3lg:w-full" role="listbox">
           {OPTIONS.map((item) => (
             <li key={item.value} role="option" aria-selected={item.value === sort}>
               <button
-                className={cn(styles.option, item.value === sort && styles.optionActive)}
+                className={cn(
+                  "block w-full px-4 py-3 bg-transparent border-none text-[rgb(190,190,190)] text-[0.85rem] font-semibold text-left cursor-pointer transition-all duration-200 hover:bg-surface-30 hover:text-accent focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-[-2px]",
+                  item.value === sort && "text-accent bg-accent/5"
+                )}
                 onClick={() => handleSelect(item.value)}
               >
                 {item.label}

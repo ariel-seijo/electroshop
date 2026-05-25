@@ -1,11 +1,13 @@
 "use client";
 
-import styles from "./ResetPassword.module.css";
 import { useState, Suspense, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { KeyRound, Eye, EyeOff, Check, ArrowLeft } from "lucide-react";
 import { useToastStore } from "@/features/toast";
+
+const inputBase =
+  "w-full h-[50px] px-4 bg-surface-18 border border-border-44 text-text-body text-[0.95rem] outline-none transition-[border-color,box-shadow] duration-[250ms] placeholder:text-text-placeholder-dark placeholder:font-semibold focus:border-accent focus:shadow-[0_0_0_3px_rgba(36,171,243,0.08)] max-ms:h-[46px] max-ms:text-[0.9rem]";
 
 function ResetPasswordForm() {
   const router = useRouter();
@@ -74,15 +76,19 @@ function ResetPasswordForm() {
 
   if (!token) {
     return (
-      <div className={styles.page}>
-        <div className={styles.card}>
-          <div className={styles.logo}>
-            <span>ELECTROSHOP</span>
+      <div className="flex items-center justify-center min-h-[calc(100vh-130px)] px-4 py-8 max-ms:px-3 max-ms:py-4">
+        <div className="w-full max-w-[440px] bg-surface-22 border border-border-38 px-[2.2rem] py-10 relative overflow-hidden before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-0.5 before:bg-[linear-gradient(90deg,transparent,#24abf3,#00cfff,#24abf3,transparent)] before:bg-[length:200%_100%] before:animate-auth-glow max-ms:px-[1.2rem] max-ms:py-8">
+          <div className="text-center mb-8">
+            <span className="font-cosmic text-[1.4rem] tracking-[4px] text-accent">
+              ELECTROSHOP
+            </span>
           </div>
 
-          <div className={styles.invalidToken}>
-            <p>Enlace de restablecimiento inválido o faltante.</p>
-            <Link href="/forgot-password" className={styles.link}>
+          <div className="text-center py-4">
+            <p className="text-danger-light text-sm font-semibold m-0 mb-6">
+              Enlace de restablecimiento inválido o faltante.
+            </p>
+            <Link href="/forgot-password" className="text-accent no-underline font-semibold transition-all duration-200 hover:text-accent-hover hover:underline">
               Solicitar un nuevo enlace
             </Link>
           </div>
@@ -92,22 +98,30 @@ function ResetPasswordForm() {
   }
 
   return (
-    <div className={styles.page}>
-      <div className={styles.card}>
-        <div className={styles.logo}>
-          <span>ELECTROSHOP</span>
+    <div className="flex items-center justify-center min-h-[calc(100vh-130px)] px-4 py-8 max-ms:px-3 max-ms:py-4">
+      <div className="w-full max-w-[440px] bg-surface-22 border border-border-38 px-[2.2rem] py-10 relative overflow-hidden before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-0.5 before:bg-[linear-gradient(90deg,transparent,#24abf3,#00cfff,#24abf3,transparent)] before:bg-[length:200%_100%] before:animate-auth-glow max-ms:px-[1.2rem] max-ms:py-8">
+        <div className="text-center mb-8">
+          <span className="font-cosmic text-[1.4rem] tracking-[4px] text-accent">
+            ELECTROSHOP
+          </span>
         </div>
 
-        <h1 className={styles.title}>NUEVA CONTRASEÑA</h1>
+        <h1 className="font-cosmic text-[1.8rem] font-thin tracking-[4px] text-text-secondary text-center m-0 mb-[1.8rem] [text-shadow:0_0_30px_rgba(36,171,243,0.15)] max-ms:text-[1.5rem]">
+          NUEVA CONTRASEÑA
+        </h1>
 
-        {error && <div className={styles.error}>{error}</div>}
+        {error && (
+          <div className="mb-5 py-3 px-4 bg-danger/10 border border-danger/25 text-danger-light text-[0.82rem] font-semibold leading-relaxed text-center">
+            {error}
+          </div>
+        )}
 
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <div className={styles.field}>
-            <label htmlFor="password" className={styles.label}>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="password" className="text-xs font-semibold text-text-dim uppercase tracking-[1px]">
               Nueva Contraseña
             </label>
-            <div className={styles.inputWrapper}>
+            <div className="relative flex items-center">
               <input
                 id="password"
                 type={showPassword ? "text" : "password"}
@@ -116,7 +130,7 @@ function ResetPasswordForm() {
                   setPassword(e.target.value);
                   setError("");
                 }}
-                className={styles.input}
+                className={inputBase}
                 placeholder="Mínimo 6 caracteres"
                 required
                 minLength={6}
@@ -124,7 +138,7 @@ function ResetPasswordForm() {
               />
               <button
                 type="button"
-                className={styles.revealBtn}
+                className="absolute right-3 bg-transparent border-none text-text-placeholder cursor-pointer p-1 flex items-center justify-center transition-colors duration-200 hover:text-accent"
                 onClick={() => setShowPassword(!showPassword)}
                 tabIndex={-1}
               >
@@ -132,10 +146,10 @@ function ResetPasswordForm() {
               </button>
             </div>
             {password && (
-              <div className={styles.strength}>
-                <div className={styles.strengthBarContainer}>
+              <div className="flex items-center gap-2 mt-1">
+                <div className="flex-1 h-[3px] bg-border-44 rounded-sm overflow-hidden">
                   <div
-                    className={styles.strengthBar}
+                    className="h-full rounded-sm transition-[width,background] duration-300"
                     style={{
                       width: `${(passwordStrength.level / 3) * 100}%`,
                       background: passwordStrength.color,
@@ -149,11 +163,11 @@ function ResetPasswordForm() {
             )}
           </div>
 
-          <div className={styles.field}>
-            <label htmlFor="confirmPassword" className={styles.label}>
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="confirmPassword" className="text-xs font-semibold text-text-dim uppercase tracking-[1px]">
               Confirmar Contraseña
             </label>
-            <div className={styles.inputWrapper}>
+            <div className="relative flex items-center">
               <input
                 id="confirmPassword"
                 type={showConfirm ? "text" : "password"}
@@ -162,7 +176,7 @@ function ResetPasswordForm() {
                   setConfirmPassword(e.target.value);
                   setError("");
                 }}
-                className={`${styles.input} ${passwordsMismatch ? styles.inputError : ""}`}
+                className={`${inputBase} ${passwordsMismatch ? "border-danger focus:shadow-[0_0_0_3px_rgba(239,68,68,0.08)]" : ""}`}
                 placeholder="Repetí tu contraseña"
                 required
                 minLength={6}
@@ -170,7 +184,7 @@ function ResetPasswordForm() {
               />
               <button
                 type="button"
-                className={styles.revealBtn}
+                className="absolute right-3 bg-transparent border-none text-text-placeholder cursor-pointer p-1 flex items-center justify-center transition-colors duration-200 hover:text-accent"
                 onClick={() => setShowConfirm(!showConfirm)}
                 tabIndex={-1}
               >
@@ -178,12 +192,12 @@ function ResetPasswordForm() {
               </button>
             </div>
             {passwordsMismatch && (
-              <span className={styles.fieldError}>
+              <span className="text-[0.74rem] font-semibold text-danger-light">
                 Las contraseñas no coinciden
               </span>
             )}
             {!passwordsMismatch && confirmPassword && password === confirmPassword && (
-              <span className={styles.fieldSuccess}>
+              <span className="text-[0.74rem] font-bold text-success flex items-center gap-1">
                 <Check size={14} />
                 Las contraseñas coinciden
               </span>
@@ -193,11 +207,11 @@ function ResetPasswordForm() {
           <button
             type="submit"
             disabled={loading || passwordsMismatch}
-            className={styles.btn}
+            className="w-full h-[52px] mt-2 border-none bg-[linear-gradient(135deg,#007fff,#00cfff)] text-[#111] text-[0.92rem] font-semibold uppercase tracking-[1.5px] cursor-pointer transition-all duration-300 relative overflow-hidden flex items-center justify-center gap-2 hover:not-disabled:-translate-y-0.5 hover:not-disabled:shadow-[0_10px_30px_rgba(0,127,255,0.35)] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none max-ms:h-[48px]"
           >
             {loading ? (
               <>
-                <span className={styles.spinner} />
+                <span className="inline-block size-[18px] border-2 border-[rgba(17,17,17,0.3)] border-t-[#111] rounded-full animate-[spin_0.6s_linear_infinite]" />
                 GUARDANDO...
               </>
             ) : (
@@ -209,8 +223,8 @@ function ResetPasswordForm() {
           </button>
         </form>
 
-        <p className={styles.footer}>
-          <Link href="/login" className={styles.link}>
+        <p className="mt-6 text-center text-sm text-text-dim">
+          <Link href="/login" className="text-accent no-underline font-semibold transition-all duration-200 hover:text-accent-hover hover:underline">
             <ArrowLeft size={14} style={{ marginRight: "0.25rem", verticalAlign: "middle" }} />
             Volver al inicio de sesión
           </Link>
@@ -224,8 +238,8 @@ export default function ResetPasswordPage() {
   return (
     <Suspense
       fallback={
-        <div className={styles.page}>
-          <div className={styles.card} />
+        <div className="flex items-center justify-center min-h-[calc(100vh-130px)] px-4 py-8 max-ms:px-3 max-ms:py-4">
+          <div className="w-full max-w-[440px] bg-surface-22 border border-border-38 px-[2.2rem] py-10 max-ms:px-[1.2rem] max-ms:py-8" />
         </div>
       }
     >

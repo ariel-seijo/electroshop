@@ -14,7 +14,6 @@ import ImageUploadWidget from "./ImageUploadWidget";
 import AdminGallery from "./AdminGallery";
 import ThumbnailUploader from "./ThumbnailUploader";
 import ProductCardPreview from "./ProductCardPreview";
-import styles from "./ProductForm.module.css";
 
 interface FormData {
   title: string;
@@ -352,26 +351,32 @@ export default function ProductForm({
   const fieldErrorId = (name: keyof FormData): string | undefined =>
     errors[name] ? `${name}-error` : undefined;
 
+  const inputClass =
+    "py-2 px-3 bg-[#080808] border-[1.5px] border-[rgb(45,45,45)] rounded-[7px] text-[#e4e4e4] text-[0.84rem] font-[inherit] transition-all duration-200 placeholder:text-[rgb(65,65,65)] focus:outline-none focus:border-[#24abf3] focus:shadow-[0_0_10px_rgba(36,171,243,0.2)] max-[640px]:py-2.5 max-[640px]:min-h-11";
+  const inputMonoClass = "font-mono text-[0.78rem] tracking-[0.3px]";
+  const inputErrorClass =
+    "border-[#ef4444] shadow-[0_0_8px_rgba(239,68,68,0.15)] focus:border-[#ef4444] focus:shadow-[0_0_12px_rgba(239,68,68,0.25)]";
+
   return (
-    <div className={styles.layout}>
+    <div className="grid grid-cols-[1fr_320px] gap-7 items-start min-w-0 max-md:grid-cols-1">
       <form
         onSubmit={handleSubmit}
-        className={styles.main}
+        className="flex flex-col gap-0 min-w-0"
         noValidate
       >
         {/* ======== SECTION 1: Información general ======== */}
-        <fieldset className={styles.section}>
-          <legend className={styles.sectionTitle}>Información general</legend>
+        <fieldset className="border border-[rgb(35,35,35)] rounded-[10px] px-[22px] py-5 mb-[18px] bg-[rgb(10,10,10)] transition-colors duration-[0.25s] hover:border-[rgb(50,50,50)] focus-within:border-[rgba(36,171,243,0.4)] focus-within:shadow-[0_0_12px_rgba(36,171,243,0.06)] max-[640px]:py-3.5 max-[640px]:px-4">
+          <legend className="text-[0.72rem] font-semibold uppercase tracking-[1.2px] text-[#24abf3] px-2 mb-4 w-auto">Información general</legend>
 
-          <div className={styles.group}>
-            <label className={styles.label} htmlFor="title">
-              <span className={styles.labelRequired}>Título</span>
+          <div className="flex flex-col gap-[5px] mb-3.5 flex-1 min-w-0">
+            <label className="text-[0.72rem] font-semibold text-[#a0a0a0] tracking-[0.3px]" htmlFor="title">
+              <span className="after:content-['_*'] after:text-[#ef4444] after:font-semibold">Título</span>
             </label>
             <input
               type="text"
               id="title"
               name="title"
-              className={`${styles.input} ${errors.title ? styles.inputError : ""}`}
+              className={`${inputClass} ${errors.title ? inputErrorClass : ""}`}
               value={formData.title}
               onChange={handleChange}
               onBlur={handleTitleBlur}
@@ -380,21 +385,21 @@ export default function ProductForm({
               aria-describedby={fieldErrorId("title")}
             />
             {errors.title && (
-              <span className={styles.error} id="title-error" role="alert">
+              <span className="text-[0.72rem] font-semibold text-[#ef4444] flex items-center gap-1" id="title-error" role="alert">
                 {errors.title}
               </span>
             )}
           </div>
 
-          <div className={styles.group}>
-            <label className={styles.label} htmlFor="slug">
-              <span className={styles.labelRequired}>Slug</span>
+          <div className="flex flex-col gap-[5px] mb-3.5 flex-1 min-w-0">
+            <label className="text-[0.72rem] font-semibold text-[#a0a0a0] tracking-[0.3px]" htmlFor="slug">
+              <span className="after:content-['_*'] after:text-[#ef4444] after:font-semibold">Slug</span>
             </label>
             <input
               type="text"
               id="slug"
               name="slug"
-              className={`${styles.input} ${styles.inputMono} ${errors.slug ? styles.inputError : ""}`}
+              className={`${inputClass} ${inputMonoClass} ${errors.slug ? inputErrorClass : ""}`}
               value={formData.slug}
               onChange={handleChange}
               placeholder="slug-url-producto"
@@ -402,23 +407,23 @@ export default function ProductForm({
               aria-describedby={fieldErrorId("slug")}
             />
             {errors.slug && (
-              <span className={styles.error} id="slug-error" role="alert">
+              <span className="text-[0.72rem] font-semibold text-[#ef4444] flex items-center gap-1" id="slug-error" role="alert">
                 {errors.slug}
               </span>
             )}
-            <span className={styles.hint}>
+            <span className="text-[0.68rem] text-[rgb(100,100,100)] italic">
               Se genera automáticamente del título si se deja vacío al crear
             </span>
           </div>
 
-          <div className={styles.group}>
-            <label className={styles.label} htmlFor="description">
+          <div className="flex flex-col gap-[5px] mb-3.5 flex-1 min-w-0">
+            <label className="text-[0.72rem] font-semibold text-[#a0a0a0] tracking-[0.3px]" htmlFor="description">
               Descripción
             </label>
             <textarea
               id="description"
               name="description"
-              className={styles.textarea}
+              className="py-2.5 px-3 bg-[#080808] border-[1.5px] border-[rgb(45,45,45)] rounded-[7px] text-[#e4e4e4] text-[0.84rem] font-[inherit] resize-y min-h-20 transition-all duration-200 placeholder:text-[rgb(65,65,65)] focus:outline-none focus:border-[#24abf3] focus:shadow-[0_0_10px_rgba(36,171,243,0.2)]"
               value={formData.description}
               onChange={handleChange}
               placeholder="Descripción del producto…"
@@ -428,20 +433,20 @@ export default function ProductForm({
         </fieldset>
 
         {/* ======== SECTION 2: Precios y Stock ======== */}
-        <fieldset className={styles.section}>
-          <legend className={styles.sectionTitle}>Precios y Stock</legend>
+        <fieldset className="border border-[rgb(35,35,35)] rounded-[10px] px-[22px] py-5 mb-[18px] bg-[rgb(10,10,10)] transition-colors duration-[0.25s] hover:border-[rgb(50,50,50)] focus-within:border-[rgba(36,171,243,0.4)] focus-within:shadow-[0_0_12px_rgba(36,171,243,0.06)] max-[640px]:py-3.5 max-[640px]:px-4">
+          <legend className="text-[0.72rem] font-semibold uppercase tracking-[1.2px] text-[#24abf3] px-2 mb-4 w-auto">Precios y Stock</legend>
 
-          <div className={styles.row}>
-            <div className={styles.group}>
-              <label className={styles.label} htmlFor="price">
-                <span className={styles.labelRequired}>Precio ($)</span>
+          <div className="flex gap-3.5 mb-0 max-[640px]:flex-col max-[640px]:gap-0">
+            <div className="flex flex-col gap-[5px] mb-3.5 flex-1 min-w-0">
+              <label className="text-[0.72rem] font-semibold text-[#a0a0a0] tracking-[0.3px]" htmlFor="price">
+                <span className="after:content-['_*'] after:text-[#ef4444] after:font-semibold">Precio ($)</span>
               </label>
               <input
                 type="number"
                 id="price"
                 name="price"
                 inputMode="decimal"
-                className={`${styles.input} ${errors.price ? styles.inputError : ""}`}
+                className={`${inputClass} ${errors.price ? inputErrorClass : ""}`}
                 value={formData.price}
                 onChange={handleChange}
                 placeholder="0.00"
@@ -451,13 +456,13 @@ export default function ProductForm({
                 aria-describedby={fieldErrorId("price")}
               />
               {errors.price && (
-                <span className={styles.error} id="price-error" role="alert">
+                <span className="text-[0.72rem] font-semibold text-[#ef4444] flex items-center gap-1" id="price-error" role="alert">
                   {errors.price}
                 </span>
               )}
             </div>
-            <div className={styles.group}>
-              <label className={styles.label} htmlFor="oldPrice">
+            <div className="flex flex-col gap-[5px] mb-3.5 flex-1 min-w-0">
+              <label className="text-[0.72rem] font-semibold text-[#a0a0a0] tracking-[0.3px]" htmlFor="oldPrice">
                 Precio anterior ($)
               </label>
               <input
@@ -465,7 +470,7 @@ export default function ProductForm({
                 id="oldPrice"
                 name="oldPrice"
                 inputMode="decimal"
-                className={styles.input}
+                className={inputClass}
                 value={formData.oldPrice}
                 onChange={handleChange}
                 placeholder="0.00"
@@ -475,17 +480,17 @@ export default function ProductForm({
             </div>
           </div>
 
-          <div className={styles.row}>
-            <div className={styles.group}>
-              <label className={styles.label} htmlFor="stock">
-                <span className={styles.labelRequired}>Inventario</span>
+          <div className="flex gap-3.5 mb-0 max-[640px]:flex-col max-[640px]:gap-0">
+            <div className="flex flex-col gap-[5px] mb-3.5 flex-1 min-w-0">
+              <label className="text-[0.72rem] font-semibold text-[#a0a0a0] tracking-[0.3px]" htmlFor="stock">
+                <span className="after:content-['_*'] after:text-[#ef4444] after:font-semibold">Inventario</span>
               </label>
               <input
                 type="number"
                 id="stock"
                 name="stock"
                 inputMode="numeric"
-                className={`${styles.input} ${errors.stock ? styles.inputError : ""}`}
+                className={`${inputClass} ${errors.stock ? inputErrorClass : ""}`}
                 value={formData.stock}
                 onChange={handleChange}
                 placeholder="0"
@@ -494,20 +499,20 @@ export default function ProductForm({
                 aria-describedby={fieldErrorId("stock")}
               />
               {errors.stock && (
-                <span className={styles.error} id="stock-error" role="alert">
+                <span className="text-[0.72rem] font-semibold text-[#ef4444] flex items-center gap-1" id="stock-error" role="alert">
                   {errors.stock}
                 </span>
               )}
             </div>
-            <div className={styles.group}>
-              <label className={styles.label} htmlFor="brand">
+            <div className="flex flex-col gap-[5px] mb-3.5 flex-1 min-w-0">
+              <label className="text-[0.72rem] font-semibold text-[#a0a0a0] tracking-[0.3px]" htmlFor="brand">
                 Marca
               </label>
               {!isCustomBrand ? (
                 <select
                   id="brand"
                   name="brand"
-                  className={styles.select}
+                  className="py-2 pl-3 pr-[30px] bg-[#080808] border-[1.5px] border-[rgb(45,45,45)] rounded-[7px] text-[#e4e4e4] text-[0.84rem] font-[inherit] cursor-pointer appearance-none bg-no-repeat bg-[right_10px_center] transition-all duration-200 focus:outline-none focus:border-[#24abf3] focus:shadow-[0_0_10px_rgba(36,171,243,0.2)] bg-[url('data:image/svg+xml,%3Csvg%20width=%2710%27%20height=%276%27%20fill=%27none%27%20xmlns=%27http://www.w3.org/2000/svg%27%3E%3Cpath%20d=%27m1%201%204%204%204-4%27%20stroke=%27%23828282%27%20stroke-width=%271.5%27%20stroke-linecap=%27round%27/%3E%3C/svg%3E')]"
                   value={formData.brand}
                   onChange={handleBrandSelect}
                 >
@@ -520,12 +525,12 @@ export default function ProductForm({
                   <option value="__custom_brand__">Otra...</option>
                 </select>
               ) : (
-                <div className={styles.skuRow}>
+                <div className="flex gap-2 [&_input]:flex-1">
                   <input
                     type="text"
                     id="brand"
                     name="brand"
-                    className={styles.input}
+                    className={inputClass}
                     value={formData.brand}
                     onChange={handleChange}
                     placeholder="Escribí la marca"
@@ -533,7 +538,7 @@ export default function ProductForm({
                   />
                   <button
                     type="button"
-                    className={styles.skuBtn}
+                    className="inline-flex items-center gap-1.5 px-3.5 bg-[rgba(36,171,243,0.08)] border-[1.5px] border-[rgba(36,171,243,0.3)] rounded-[7px] text-[#24abf3] text-[0.75rem] font-semibold font-[inherit] cursor-pointer whitespace-nowrap transition-all duration-200 min-h-10 hover:bg-[rgba(36,171,243,0.15)] hover:shadow-[0_0_10px_rgba(36,171,243,0.2)] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-[#24abf3] focus-visible:outline-offset-2"
                     onClick={() => {
                       setIsCustomBrand(false);
                       setFormData((prev) => ({ ...prev, brand: "" }));
@@ -549,19 +554,19 @@ export default function ProductForm({
         </fieldset>
 
         {/* ======== SECTION 3: SKU y Clasificación ======== */}
-        <fieldset className={styles.section}>
-          <legend className={styles.sectionTitle}>SKU y Clasificación</legend>
+        <fieldset className="border border-[rgb(35,35,35)] rounded-[10px] px-[22px] py-5 mb-[18px] bg-[rgb(10,10,10)] transition-colors duration-[0.25s] hover:border-[rgb(50,50,50)] focus-within:border-[rgba(36,171,243,0.4)] focus-within:shadow-[0_0_12px_rgba(36,171,243,0.06)] max-[640px]:py-3.5 max-[640px]:px-4">
+          <legend className="text-[0.72rem] font-semibold uppercase tracking-[1.2px] text-[#24abf3] px-2 mb-4 w-auto">SKU y Clasificación</legend>
 
-          <div className={styles.group}>
-            <label className={styles.label} htmlFor="sku">
+          <div className="flex flex-col gap-[5px] mb-3.5 flex-1 min-w-0">
+            <label className="text-[0.72rem] font-semibold text-[#a0a0a0] tracking-[0.3px]" htmlFor="sku">
               SKU
             </label>
-            <div className={styles.skuRow}>
+            <div className="flex gap-2 [&_input]:flex-1">
               <input
                 type="text"
                 id="sku"
                 name="sku"
-                className={`${styles.input} ${styles.inputMono}`}
+                className={`${inputClass} ${inputMonoClass}`}
                 value={formData.sku}
                 onChange={handleChange}
                 placeholder="COMP-CAT-BRD-MODEL-001"
@@ -569,33 +574,33 @@ export default function ProductForm({
               />
               <button
                 type="button"
-                className={styles.skuBtn}
+                className="inline-flex items-center gap-1.5 px-3.5 bg-[rgba(36,171,243,0.08)] border-[1.5px] border-[rgba(36,171,243,0.3)] rounded-[7px] text-[#24abf3] text-[0.75rem] font-semibold font-[inherit] cursor-pointer whitespace-nowrap transition-all duration-200 min-h-10 hover:bg-[rgba(36,171,243,0.15)] hover:shadow-[0_0_10px_rgba(36,171,243,0.2)] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-[#24abf3] focus-visible:outline-offset-2"
                 onClick={handleGenerateSku}
                 disabled={isGeneratingSku}
                 aria-label="Generar SKU automáticamente"
               >
                 {isGeneratingSku ? (
-                  <Loader2 size={14} className={styles.spin} aria-hidden="true" />
+                  <Loader2 size={14} className="animate-spin" aria-hidden="true" />
                 ) : (
                   <Wand2 size={14} aria-hidden="true" />
                 )}
                 Generar
               </button>
             </div>
-            <span className={styles.hint}>
+            <span className="text-[0.68rem] text-[rgb(100,100,100)] italic">
               Formato: COMP-&#123;CAT&#125;-&#123;BRD&#125;-&#123;MODELO&#125;-&#123;SEQ&#125;
             </span>
           </div>
 
-          <div className={styles.row}>
-            <div className={styles.group}>
-              <label className={styles.label} htmlFor="categoryId">
-                <span className={styles.labelRequired}>Categoría</span>
+          <div className="flex gap-3.5 mb-0 max-[640px]:flex-col max-[640px]:gap-0">
+            <div className="flex flex-col gap-[5px] mb-3.5 flex-1 min-w-0">
+              <label className="text-[0.72rem] font-semibold text-[#a0a0a0] tracking-[0.3px]" htmlFor="categoryId">
+                <span className="after:content-['_*'] after:text-[#ef4444] after:font-semibold">Categoría</span>
               </label>
               <select
                 id="categoryId"
                 name="categoryId"
-                className={`${styles.select} ${errors.categoryId ? styles.inputError : ""}`}
+                className={`py-2 pl-3 pr-[30px] bg-[#080808] border-[1.5px] border-[rgb(45,45,45)] rounded-[7px] text-[#e4e4e4] text-[0.84rem] font-[inherit] cursor-pointer appearance-none bg-no-repeat bg-[right_10px_center] transition-all duration-200 focus:outline-none focus:border-[#24abf3] focus:shadow-[0_0_10px_rgba(36,171,243,0.2)] bg-[url('data:image/svg+xml,%3Csvg%20width=%2710%27%20height=%276%27%20fill=%27none%27%20xmlns=%27http://www.w3.org/2000/svg%27%3E%3Cpath%20d=%27m1%201%204%204%204-4%27%20stroke=%27%23828282%27%20stroke-width=%271.5%27%20stroke-linecap=%27round%27/%3E%3C/svg%3E')] ${errors.categoryId ? inputErrorClass : ""}`}
                 value={formData.categoryId}
                 onChange={handleChange}
                 aria-invalid={!!errors.categoryId}
@@ -609,20 +614,20 @@ export default function ProductForm({
                 ))}
               </select>
               {errors.categoryId && (
-                <span className={styles.error} id="categoryId-error" role="alert">
+                <span className="text-[0.72rem] font-semibold text-[#ef4444] flex items-center gap-1" id="categoryId-error" role="alert">
                   {errors.categoryId}
                 </span>
               )}
             </div>
-            <div className={styles.group}>
-              <label className={styles.label} htmlFor="rating">
+            <div className="flex flex-col gap-[5px] mb-3.5 flex-1 min-w-0">
+              <label className="text-[0.72rem] font-semibold text-[#a0a0a0] tracking-[0.3px]" htmlFor="rating">
                 Rating (0-5)
               </label>
               <input
                 type="number"
                 id="rating"
                 name="rating"
-                className={styles.input}
+                className={inputClass}
                 value={formData.rating}
                 onChange={handleChange}
                 placeholder="0"
@@ -635,12 +640,12 @@ export default function ProductForm({
         </fieldset>
 
         {/* ======== SECTION 4: Medios ======== */}
-        <fieldset className={styles.section}>
-          <legend className={styles.sectionTitle}>Medios</legend>
+        <fieldset className="border border-[rgb(35,35,35)] rounded-[10px] px-[22px] py-5 mb-[18px] bg-[rgb(10,10,10)] transition-colors duration-[0.25s] hover:border-[rgb(50,50,50)] focus-within:border-[rgba(36,171,243,0.4)] focus-within:shadow-[0_0_12px_rgba(36,171,243,0.06)] max-[640px]:py-3.5 max-[640px]:px-4">
+          <legend className="text-[0.72rem] font-semibold uppercase tracking-[1.2px] text-[#24abf3] px-2 mb-4 w-auto">Medios</legend>
 
-          <div className={styles.group}>
-            <label className={styles.label}>
-              <span className={styles.labelRequired}>Miniatura</span>
+          <div className="flex flex-col gap-[5px] mb-3.5 flex-1 min-w-0">
+            <label className="text-[0.72rem] font-semibold text-[#a0a0a0] tracking-[0.3px]">
+              <span className="after:content-['_*'] after:text-[#ef4444] after:font-semibold">Miniatura</span>
             </label>
             <ThumbnailUploader
               key={`thumb-${formVersion}`}
@@ -653,15 +658,15 @@ export default function ProductForm({
               }}
             />
             {errors.thumbnail && (
-              <span className={styles.error} id="thumbnail-error" role="alert">
+              <span className="text-[0.72rem] font-semibold text-[#ef4444] flex items-center gap-1" id="thumbnail-error" role="alert">
                 {errors.thumbnail}
               </span>
             )}
           </div>
 
           {effectiveProductId ? (
-            <div className={styles.group}>
-              <label className={styles.label}>
+            <div className="flex flex-col gap-[5px] mb-3.5 flex-1 min-w-0">
+              <label className="text-[0.72rem] font-semibold text-[#a0a0a0] tracking-[0.3px]">
                 Galería Cloudinary ({productImages.length}/10)
               </label>
               <AdminGallery
@@ -679,7 +684,7 @@ export default function ProductForm({
                     : undefined
                 }
               />
-              <div className={styles.galleryUpload}>
+              <div className="mt-3">
                 <ImageUploadWidget
                   productId={effectiveProductId}
                   existingCount={productImagesRel.length}
@@ -688,9 +693,9 @@ export default function ProductForm({
               </div>
             </div>
           ) : (
-            <div className={styles.group}>
-              <label className={styles.label}>Galería Cloudinary</label>
-              <div className={styles.galleryPlaceholder}>
+            <div className="flex flex-col gap-[5px] mb-3.5 flex-1 min-w-0">
+              <label className="text-[0.72rem] font-semibold text-[#a0a0a0] tracking-[0.3px]">Galería Cloudinary</label>
+              <div className="flex items-center justify-center px-5 py-7 bg-[rgba(0,127,255,0.04)] border border-dashed border-[rgba(0,127,255,0.18)] rounded-lg text-[0.78rem] text-[#6a8eb8] text-center leading-relaxed">
                 <span>
                   La galería de imágenes estará disponible después de crear el
                   producto.
@@ -701,13 +706,13 @@ export default function ProductForm({
         </fieldset>
 
         {/* ======== SECTION 5: Estado ======== */}
-        <fieldset className={styles.section}>
-          <legend className={styles.sectionTitle}>Estado del producto</legend>
+        <fieldset className="border border-[rgb(35,35,35)] rounded-[10px] px-[22px] py-5 mb-[18px] bg-[rgb(10,10,10)] transition-colors duration-[0.25s] hover:border-[rgb(50,50,50)] focus-within:border-[rgba(36,171,243,0.4)] focus-within:shadow-[0_0_12px_rgba(36,171,243,0.06)] max-[640px]:py-3.5 max-[640px]:px-4">
+          <legend className="text-[0.72rem] font-semibold uppercase tracking-[1.2px] text-[#24abf3] px-2 mb-4 w-auto">Estado del producto</legend>
 
-          <div className={styles.toggles}>
+          <div className="flex gap-3 flex-wrap">
             <button
               type="button"
-              className={`${styles.switch} ${formData.active ? styles.switchOn : styles.switchOff}`}
+              className={`inline-flex items-center gap-2 px-4 py-2 border-[1.5px] rounded-lg text-[0.8rem] font-semibold font-[inherit] cursor-pointer transition-all duration-200 min-h-[42px] hover:border-[rgb(75,75,75)] focus-visible:outline-2 focus-visible:outline-[#24abf3] focus-visible:outline-offset-2 ${formData.active ? "bg-[rgba(36,171,243,0.08)] border-[#24abf3] text-[#24abf3] shadow-[0_0_10px_rgba(36,171,243,0.12)]" : "bg-[rgb(15,15,15)] border-[rgb(45,45,45)] text-[rgb(100,100,100)]"}`}
               onClick={() => handleToggle("active")}
               aria-pressed={formData.active}
               aria-label={formData.active ? "Desactivar producto" : "Activar producto"}
@@ -722,7 +727,7 @@ export default function ProductForm({
 
             <button
               type="button"
-              className={`${styles.switch} ${formData.featured ? styles.switchOn : styles.switchOff}`}
+              className={`inline-flex items-center gap-2 px-4 py-2 border-[1.5px] rounded-lg text-[0.8rem] font-semibold font-[inherit] cursor-pointer transition-all duration-200 min-h-[42px] hover:border-[rgb(75,75,75)] focus-visible:outline-2 focus-visible:outline-[#24abf3] focus-visible:outline-offset-2 ${formData.featured ? "bg-[rgba(36,171,243,0.08)] border-[#24abf3] text-[#24abf3] shadow-[0_0_10px_rgba(36,171,243,0.12)]" : "bg-[rgb(15,15,15)] border-[rgb(45,45,45)] text-[rgb(100,100,100)]"}`}
               onClick={() => handleToggle("featured")}
               aria-pressed={formData.featured}
               aria-label={formData.featured ? "Quitar destacado" : "Marcar como destacado"}
@@ -738,16 +743,16 @@ export default function ProductForm({
         </fieldset>
 
         {/* ======== Actions ======== */}
-        <div className={styles.actions}>
+        <div className="flex gap-2.5 pt-1.5 mb-3 max-[640px]:sticky max-[640px]:bottom-0 max-[640px]:z-20 max-[640px]:bg-[rgb(10,10,10)] max-[640px]:border-t max-[640px]:border-[rgb(35,35,35)] max-[640px]:py-3 max-[640px]:mb-0">
           <button
             type="submit"
-            className={styles.submitBtn}
+            className="inline-flex items-center gap-2 py-2.5 px-6 bg-[#007fff] border-0 rounded-lg text-white text-[0.82rem] font-semibold font-[inherit] cursor-pointer tracking-[0.3px] transition-all duration-200 min-h-11 hover:bg-[#3399ff] hover:-translate-y-px hover:shadow-[0_4px_16px_rgba(0,127,255,0.3)] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-[#24abf3] focus-visible:outline-offset-2"
             disabled={isSubmitting}
             aria-busy={isSubmitting}
           >
             {isSubmitting ? (
               <>
-                <Loader2 size={16} className={styles.spin} aria-hidden="true" />
+                <Loader2 size={16} className="animate-spin" aria-hidden="true" />
                 {isEdit || createdProductId ? "Actualizando…" : "Creando…"}
               </>
             ) : isEdit || createdProductId ? (
@@ -758,7 +763,7 @@ export default function ProductForm({
           </button>
           <button
             type="button"
-            className={styles.cancelBtn}
+            className="inline-flex items-center gap-2 py-2.5 px-6 bg-[rgb(20,20,20)] border-[1.5px] border-[rgb(50,50,50)] rounded-lg text-[#a0a0a0] text-[0.82rem] font-semibold font-[inherit] cursor-pointer no-underline transition-all duration-200 min-h-11 hover:bg-[rgb(30,30,30)] hover:border-[#24abf3] hover:text-[#24abf3] disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isSubmitting}
             onClick={() => onCancel?.()}
           >
@@ -768,8 +773,8 @@ export default function ProductForm({
       </form>
 
       {/* ======== Live Preview ======== */}
-      <aside className={styles.preview} aria-label="Vista previa del producto">
-        <h3 className={styles.previewTitle}>Vista previa</h3>
+      <aside className="sticky top-[calc(64px+28px)] bg-[rgb(10,10,10)] border border-[rgb(35,35,35)] rounded-xl p-[18px]" aria-label="Vista previa del producto">
+        <h3 className="text-[0.7rem] font-semibold uppercase tracking-[1px] text-[#24abf3] mb-3.5 pb-2.5 border-b border-[rgb(35,35,35)]">Vista previa</h3>
         <ProductCardPreview
           product={{
             thumbnail: formData.thumbnail,

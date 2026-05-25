@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useCart, type CartItem } from "@/features/cart";
-import styles from "../styles/ProductPage.module.css";
 import { formatPrice } from "@/lib/utils/currency";
 import ProductCard from "./ProductCard";
 import ProductGallery from "./ProductGallery";
@@ -70,9 +69,11 @@ export default function ProductPage({ product, relatedProducts }: ProductPagePro
     setTimeout(() => setAdded(false), 1800);
   };
 
+  const tagBase = "inline-flex items-center gap-[0.3rem] text-[0.7rem] font-semibold uppercase tracking-[0.5px] px-[0.65rem] py-[0.35rem]";
+
   return (
-    <main className={styles["product-page"]}>
-      <nav className={styles["pp-breadcrumb"]}>
+    <main className="max-w-[1200px] w-full mx-auto px-4 py-8 pb-16 text-text-body max-3lg:px-[0.8rem] max-3lg:py-4 max-3lg:pb-12">
+      <nav className="flex flex-wrap items-center gap-[0.35rem] text-[0.8rem] font-semibold text-text-placeholder mb-8 max-ms:text-[0.72rem] [&>a]:text-text-muted [&>a]:no-underline [&>a]:transition-colors [&>a]:duration-200 [&>a:hover]:text-accent [&>svg]:shrink-0 [&>span:last-child]:text-text-secondary">
         <Link href="/">Inicio</Link>
         <ChevronRight size={14} />
         <Link href={`/category/${product.category.name.toLowerCase()}`}>
@@ -82,35 +83,28 @@ export default function ProductPage({ product, relatedProducts }: ProductPagePro
         <span>{product.title}</span>
       </nav>
 
-      <section className={styles["pp-hero"]}>
+      <section className="grid grid-cols-[1.05fr_1fr] gap-12 mb-16 max-3xl:grid-cols-1 max-3xl:gap-8">
         <ProductGallery product={product} />
 
-        <div className={styles["pp-info"]}>
-          <div className={styles["pp-tags"]}>
+        <div className="flex flex-col gap-[1.2rem]">
+          <div className="flex flex-wrap gap-2">
             {isOutOfStock ? (
-              <span className={`${styles["pp-tag"]} ${styles["pp-tag-out"]}`}>Agotado</span>
+              <span className={`${tagBase} bg-danger/10 border border-danger/25 text-danger`}>Agotado</span>
             ) : isLowStock ? (
-              <span className={`${styles["pp-tag"]} ${styles["pp-tag-low"]}`}>
-                Últimas {product.stock} unidades
-              </span>
+              <span className={`${tagBase} bg-warning/10 border border-warning/25 text-warning`}>Últimas {product.stock} unidades</span>
             ) : (
-              <span className={`${styles["pp-tag"]} ${styles["pp-tag-stock"]}`}>
-                <Check size={14} />
-                En stock
-              </span>
+              <span className={`${tagBase} bg-success/10 border border-success/25 text-success`}><Check size={14} />En stock</span>
             )}
-
-            <span className={`${styles["pp-tag"]} ${styles["pp-tag-brand"]}`}>{product.brand}</span>
-
+            <span className={`${tagBase} bg-border-34 border border-border-52 text-text-muted`}>{product.brand}</span>
             {product.featured && (
-              <span className={`${styles["pp-tag"]} ${styles["pp-tag-featured"]}`}>Destacado</span>
+              <span className={`${tagBase} bg-accent/10 border border-accent/25 text-accent`}>Destacado</span>
             )}
           </div>
 
-          <h1 className={styles["pp-title"]}>{product.title}</h1>
+          <h1 className="text-[2rem] leading-[1.1] font-semibold m-0 text-[rgb(230,230,230)] max-3lg:text-[1.5rem]">{product.title}</h1>
 
-          <div className={styles["pp-rating"]}>
-            <div className={styles["pp-stars"]}>
+          <div className="flex items-center gap-2 text-[0.85rem] text-[rgb(170,170,170)]">
+            <div className="flex gap-0.5">
               {[...Array(5)].map((_, i) => (
                 <Star
                   key={i}
@@ -120,80 +114,72 @@ export default function ProductPage({ product, relatedProducts }: ProductPagePro
                 />
               ))}
             </div>
-            <span className={styles["pp-rating-value"]}>{product.rating.toFixed(1)}</span>
-            <span className={styles["pp-rating-sep"]}>|</span>
-            <span className={styles["pp-rating-sold"]}>{product.sold} vendidos</span>
+            <span className="font-semibold text-accent">{product.rating.toFixed(1)}</span>
+            <span className="text-[rgb(80,80,80)]">|</span>
+            <span className="text-text-subtle">{product.sold} vendidos</span>
           </div>
 
-          <div className={styles["pp-price-box"]}>
-            <div className={styles["pp-price-main"]}>
-              <span className={styles["pp-price"]}>
-                {formattedPrice}
-              </span>
+          <div className="flex flex-col gap-[0.3rem]">
+            <div className="flex items-center flex-wrap gap-[0.7rem]">
+              <span className="text-[2.2rem] font-semibold text-accent max-3lg:text-[1.7rem]">{formattedPrice}</span>
               {hasDiscount && (
                 <>
-                  <span className={styles["pp-old-price"]}>
-                    {formattedOldPrice}
-                  </span>
-                  <span className={styles["pp-discount"]}>-{discount}%</span>
+                  <span className="text-[1.1rem] text-text-subtle line-through">{formattedOldPrice}</span>
+                  <span className="text-xs font-semibold px-[0.6rem] py-[0.3rem] bg-danger/10 border border-danger/30 text-danger tracking-[0.5px]">-{discount}%</span>
                 </>
               )}
             </div>
             {hasDiscount && (
-              <p className={styles["pp-savings"]}>
-                Ahorrás {formattedSavings} ({discount}% OFF)
-              </p>
+              <p className="m-0 text-[0.8rem] text-success font-semibold">Ahorrás {formattedSavings} ({discount}% OFF)</p>
             )}
           </div>
 
-          <p className={styles["pp-description"]}>{product.description}</p>
+          <p className="text-text-tertiary leading-[1.7] text-[0.95rem] m-0">{product.description}</p>
 
-          <div className={styles["pp-meta"]}>
-            <div className={styles["pp-meta-box"]}>
+          <div className="grid grid-cols-2 gap-[0.7rem] max-3lg:grid-cols-1">
+            <div className="flex items-center gap-[0.7rem] bg-surface-26 border border-border-38 px-4 py-[0.9rem] [&>svg]:text-accent [&>svg]:shrink-0">
               <PackageOpen size={18} />
               <div>
-                <span className={styles["pp-meta-label"]}>SKU</span>
-                <strong className={styles["pp-meta-value"]}>{product.sku}</strong>
+                <span className="block text-[0.68rem] font-semibold uppercase text-text-subtle tracking-[0.5px] mb-[0.15rem]">SKU</span>
+                <strong className="text-[0.85rem] font-semibold text-text-body">{product.sku}</strong>
               </div>
             </div>
-            <div className={styles["pp-meta-box"]}>
+            <div className="flex items-center gap-[0.7rem] bg-surface-26 border border-border-38 px-4 py-[0.9rem] [&>svg]:text-accent [&>svg]:shrink-0">
               <ShieldCheck size={18} />
               <div>
-                <span className={styles["pp-meta-label"]}>Garantía</span>
-                <strong className={styles["pp-meta-value"]}>12 meses</strong>
+                <span className="block text-[0.68rem] font-semibold uppercase text-text-subtle tracking-[0.5px] mb-[0.15rem]">Garantía</span>
+                <strong className="text-[0.85rem] font-semibold text-text-body">12 meses</strong>
               </div>
             </div>
-            <div className={styles["pp-meta-box"]}>
+            <div className="flex items-center gap-[0.7rem] bg-surface-26 border border-border-38 px-4 py-[0.9rem] [&>svg]:text-accent [&>svg]:shrink-0">
               <Truck size={18} />
               <div>
-                <span className={styles["pp-meta-label"]}>Stock</span>
-                <strong className={styles["pp-meta-value"]}>
-                  {product.stock > 0 ? `${product.stock} unidades` : "Sin stock"}
-                </strong>
+                <span className="block text-[0.68rem] font-semibold uppercase text-text-subtle tracking-[0.5px] mb-[0.15rem]">Stock</span>
+                <strong className="text-[0.85rem] font-semibold text-text-body">{product.stock > 0 ? `${product.stock} unidades` : "Sin stock"}</strong>
               </div>
             </div>
-            <div className={styles["pp-meta-box"]}>
+            <div className="flex items-center gap-[0.7rem] bg-surface-26 border border-border-38 px-4 py-[0.9rem] [&>svg]:text-accent [&>svg]:shrink-0">
               <RotateCcw size={18} />
               <div>
-                <span className={styles["pp-meta-label"]}>Devolución</span>
-                <strong className={styles["pp-meta-value"]}>30 días</strong>
+                <span className="block text-[0.68rem] font-semibold uppercase text-text-subtle tracking-[0.5px] mb-[0.15rem]">Devolución</span>
+                <strong className="text-[0.85rem] font-semibold text-text-body">30 días</strong>
               </div>
             </div>
           </div>
 
-          <div className={styles["pp-actions"]}>
-            <div className={styles["pp-qty"]}>
+          <div className="flex gap-3 items-stretch max-3lg:flex-col">
+            <div className="flex items-center border border-border-52 bg-surface-20 max-3lg:h-12">
               <button
+                className="flex items-center justify-center w-11 h-full bg-transparent border-none text-text-tertiary cursor-pointer transition-all duration-200 hover:not-disabled:text-accent hover:not-disabled:bg-accent/10 disabled:text-[rgb(80,80,80)] disabled:cursor-not-allowed"
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
                 disabled={quantity <= 1}
               >
                 <Minus size={16} />
               </button>
-              <span>{quantity}</span>
+              <span className="w-10 text-center text-base font-semibold text-text-body max-3lg:flex-1">{quantity}</span>
               <button
-                onClick={() =>
-                  setQuantity(Math.min(product.stock, quantity + 1))
-                }
+                className="flex items-center justify-center w-11 h-full bg-transparent border-none text-text-tertiary cursor-pointer transition-all duration-200 hover:not-disabled:text-accent hover:not-disabled:bg-accent/10 disabled:text-[rgb(80,80,80)] disabled:cursor-not-allowed"
+                onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
                 disabled={quantity >= product.stock}
               >
                 <Plus size={16} />
@@ -201,7 +187,13 @@ export default function ProductPage({ product, relatedProducts }: ProductPagePro
             </div>
 
             <button
-              className={`${styles["pp-add-btn"]} ${added ? styles.added : ""} ${isInCart ? styles["in-cart"] : ""}`}
+              className={`flex-1 flex items-center justify-center gap-2 px-6 py-[0.95rem] border-none text-[0.9rem] font-semibold uppercase tracking-[1px] cursor-pointer transition-all duration-300 ${
+                isInCart
+                  ? "bg-none bg-success/10 border border-success/25 text-success hover:bg-success/15 hover:shadow-[0_0_18px_rgba(34,197,94,0.18)]"
+                  : added
+                    ? "bg-none bg-success text-[#111] animate-added-pulse"
+                    : "bg-[linear-gradient(135deg,#007fff,#00cfff)] text-[#111] hover:not-disabled:shadow-[0_0_28px_rgba(0,127,255,0.4)] hover:not-disabled:-translate-y-0.5"
+              } ${isOutOfStock || isMaxReached ? "opacity-40 cursor-not-allowed bg-border-52 text-text-dim shadow-none" : ""}`}
               onClick={handleAdd}
               disabled={isOutOfStock || isMaxReached}
             >
@@ -223,14 +215,12 @@ export default function ProductPage({ product, relatedProducts }: ProductPagePro
             </button>
           </div>
 
-          <div className={styles["pp-features"]}>
-            <div className={styles["pp-feature-item"]}>
+          <div className="flex flex-col gap-2 p-4 bg-surface-20 border border-border-34">
+            <div className="flex items-center gap-[0.6rem] text-[0.82rem] text-text-muted [&>svg]:text-accent [&>svg]:shrink-0">
               <Truck size={16} />
-              <span>
-                Envío gratis en compras superiores a $50.000
-              </span>
+              <span>Envío gratis en compras superiores a $50.000</span>
             </div>
-            <div className={styles["pp-feature-item"]}>
+            <div className="flex items-center gap-[0.6rem] text-[0.82rem] text-text-muted [&>svg]:text-accent [&>svg]:shrink-0">
               <ShieldCheck size={16} />
               <span>Garantía oficial del fabricante</span>
             </div>
@@ -239,19 +229,19 @@ export default function ProductPage({ product, relatedProducts }: ProductPagePro
       </section>
 
       {relatedProducts.length > 0 && (
-        <section className={styles["pp-related"]}>
-          <div className={styles["pp-related-header"]}>
-            <h2 className={styles["pp-related-title"]}>Productos similares</h2>
+        <section className="mt-4">
+          <div className="flex items-center justify-between mb-[1.2rem]">
+            <h2 className="text-[1.3rem] font-semibold text-text-body m-0">Productos similares</h2>
             <Link
               href={`/category/${product.category.name.toLowerCase()}`}
-              className={styles["pp-related-link"]}
+              className="inline-flex items-center gap-[0.3rem] text-[0.82rem] font-semibold text-accent no-underline uppercase tracking-[0.5px] transition-opacity duration-200 hover:opacity-80"
             >
               Ver todos
               <ChevronRight size={16} />
             </Link>
           </div>
 
-          <div className={styles["pp-related-grid"]}>
+          <div className="grid grid-cols-4 gap-4 max-3xl:grid-cols-2 max-3lg:grid-cols-2 max-3lg:gap-[0.7rem] max-ms:grid-cols-2">
             {relatedProducts.map((item) => (
               <ProductCard key={item.id} product={item} />
             ))}

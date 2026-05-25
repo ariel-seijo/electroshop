@@ -1,7 +1,5 @@
 "use client";
 
-import styles from "./Skeleton.module.css";
-
 interface SkeletonProps {
   width?: number | string;
   height?: number | string;
@@ -21,8 +19,8 @@ export default function Skeleton({
   ...props
 }: SkeletonProps) {
   const classes = [
-    styles.skeleton,
-    variant === "circle" && styles.circle,
+    "block rounded bg-[linear-gradient(90deg,rgb(28,28,28)_25%,rgb(35,35,35)_50%,rgb(28,28,28)_75%)] bg-[length:200%_100%] animate-shimmer motion-reduce:animate-none motion-reduce:bg-surface-28",
+    variant === "circle" && "rounded-full",
     className,
   ]
     .filter(Boolean)

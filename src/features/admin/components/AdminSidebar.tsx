@@ -57,7 +57,8 @@ export default function AdminSidebar({ className }: SidebarProps) {
 
       <aside
         id="admin-sidebar"
-        className={`${className || ""} admin-sidebar ${sidebarOpen ? "open" : ""}`}
+        className={`${className || ""} admin-sidebar`}
+        data-state={sidebarOpen ? "open" : "closed"}
         aria-label="Navegación principal"
       >
         <div className="admin-sidebar-logo">
