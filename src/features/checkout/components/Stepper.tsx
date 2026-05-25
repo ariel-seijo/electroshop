@@ -26,13 +26,13 @@ export default function Stepper({ currentStep, onStepClick }: StepperProps) {
         return (
           <div
             key={label}
-            data-state={state}
             className={`flex items-center gap-2 relative ${
               canClick ? "cursor-pointer group" : ""
             }`}
             onClick={canClick ? () => onStepClick(i) : undefined}
           >
             <div
+              data-state={state}
               className={`size-9 rounded-full flex items-center justify-center text-[0.85rem] font-semibold bg-border-34 text-text-placeholder border-2 border-border-52 transition-all duration-300 shrink-0
                 data-[state=active]:bg-transparent data-[state=active]:text-accent data-[state=active]:border-accent data-[state=active]:animate-step-pulse
                 data-[state=done]:bg-accent data-[state=done]:text-[#111] data-[state=done]:border-accent
@@ -42,22 +42,22 @@ export default function Stepper({ currentStep, onStepClick }: StepperProps) {
               {isDone ? <Check size={16} /> : <span>{i + 1}</span>}
             </div>
             <span
+              data-state={state}
               className={`text-[0.8rem] font-semibold uppercase tracking-[1px] text-text-placeholder transition-colors duration-300
                 data-[state=active]:text-accent
                 data-[state=done]:text-text-tertiary
                 group-hover:text-accent
                 max-3md:text-[0.68rem] max-3md:tracking-normal`}
-              data-state={state}
             >
               {label}
             </span>
             {i < STEPS.length - 1 && (
               <div
+                data-state={state}
                 className={`w-20 h-0.5 bg-border-52 mx-4 transition-colors duration-400
                   data-[state=done]:bg-accent
                   max-6lg:w-10 max-6lg:mx-2
                   max-3md:w-6 max-3md:mx-[0.3rem]`}
-                data-state={state}
               />
             )}
           </div>
