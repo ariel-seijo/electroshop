@@ -71,6 +71,7 @@ export default function HeroSlider() {
               alt={`Banner ${index + 1}`}
               fill
               priority={index === 0}
+              loading={index !== 0 ? "eager" : undefined}
               sizes="100vw"
               className="object-cover block"
             />
