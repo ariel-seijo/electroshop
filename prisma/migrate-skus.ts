@@ -2,18 +2,18 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// ── Helpers (mirror src/lib/sku.js for standalone use) ──────────────
+// ── Helpers (mirror src/lib/sku.ts for standalone use) ──────────────
 
 const COMPANY_PREFIX = "COMP";
 
-const CATEGORY_CODES = {
+const CATEGORY_CODES: Record<string, string> = {
   GPU: "GPU",
   CPU: "CPU",
   RAM: "RAM",
   STORAGE: "STO",
 };
 
-const BRAND_CODES = {
+const BRAND_CODES: Record<string, string> = {
   NVIDIA: "NVD",
   AMD: "AMD",
   INTEL: "INL",
@@ -23,19 +23,19 @@ const BRAND_CODES = {
   GENERIC: "GEN",
 };
 
-function getCategoryCode(categoryName) {
+function getCategoryCode(categoryName: string): string {
   const key = categoryName.toUpperCase().replace(/[^A-Z0-9]/g, "");
   if (CATEGORY_CODES[key]) return CATEGORY_CODES[key];
   return key.slice(0, 3).padEnd(3, "X");
 }
 
-function getBrandCode(brandName) {
+function getBrandCode(brandName: string): string {
   const key = brandName.toUpperCase().replace(/[^A-Z0-9]/g, "");
   if (BRAND_CODES[key]) return BRAND_CODES[key];
   return key.slice(0, 3).padEnd(3, "X");
 }
 
-function extractModel(title, category) {
+function extractModel(title: string, category: string): string {
   const t = title.toUpperCase();
   const cat = category.toUpperCase();
 
@@ -65,7 +65,9 @@ function extractModel(title, category) {
   }
 
   if (cat === "STORAGE") {
-    const ssdModel = t.match(/(NV\d+|SN\d+|A\d+|980\s*PRO|990\s*PRO|970\s*EVO)/);
+    const ssdModel = t.match(
+      /(NV\d+|SN\d+|A\d+|980\s*PRO|990\s*PRO|970\s*EVO)/
+    );
     if (ssdModel) return ssdModel[0].replace(/\s/g, "");
     const tb = t.match(/(\d+)\s*TB/);
     if (tb) return tb[1] + "TB";
@@ -79,7 +81,11 @@ function extractModel(title, category) {
   return "0M";
 }
 
-async function generateSku(title, brand, categoryName) {
+async function generateSku(
+  title: string,
+  brand: string,
+  categoryName: string
+): Promise<string> {
   const catCode = getCategoryCode(categoryName);
   const brandCode = getBrandCode(brand);
   const model = extractModel(title, categoryName);
@@ -93,7 +99,7 @@ async function generateSku(title, brand, categoryName) {
 
   if (!last) return `${prefix}001`;
 
-  const lastNumber = parseInt(last.sku.split("-").pop(), 10);
+  const lastNumber = parseInt(last.sku.split("-").pop()!, 10);
   const next = isNaN(lastNumber) ? 1 : lastNumber + 1;
   return `${prefix}${String(next).padStart(3, "0")}`;
 }
@@ -142,7 +148,7 @@ async function main() {
 }
 
 main()
-  .catch((err) => {
+  .catch((err: unknown) => {
     console.error("Migration failed:", err);
     process.exit(1);
   })

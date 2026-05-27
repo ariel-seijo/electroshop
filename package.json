@@ -11,7 +11,7 @@
     "typecheck:watch": "tsc --noEmit --watch"
   },
   "prisma": {
-    "seed": "node prisma/seed.mjs"
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -44,6 +44,7 @@
     "eslint-config-next": "16.2.1",
     "eslint-plugin-import": "^2.32.0",
     "tailwindcss": "^4.3.0",
+    "tsx": "^4.22.3",
     "typescript": "^6.0.3"
   }
 }

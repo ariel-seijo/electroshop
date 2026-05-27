@@ -186,8 +186,9 @@ npm run lint               # ESLint must still pass
 - [x] Batch 2 — 17 core admin CRUD components (ProductForm, ProductTable, UserTable...)
 - [x] Batch 3 — 21 dashboard, orders, and re-export files
 - [x] Sub-batch — 3 admin action files (productActions, userActions, imageActions)
+- [x] Batch 4 — Remanentes: prisma/data/*.js, prisma/seed.mjs, prisma/migrate-skus.mjs, next.config.mjs → .ts
 
-**100% migration complete — 0 JavaScript files · 213 TypeScript files**
+**src/ y app/ están 100% en TypeScript.** Solo quedan 2 archivos `.mjs` por razones del ecosistema (`eslint.config.mjs` y `postcss.config.mjs`), que no son código de aplicación.
 
 ---
 

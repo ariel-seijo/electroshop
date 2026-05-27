@@ -1,7 +1,8 @@
-/** @type {import('next').NextConfig} */
+import type { NextConfig } from "next";
+
 const isProduction = process.env.NODE_ENV === "production";
 
-const nextConfig = {
+const nextConfig: NextConfig = {
   images: {
     formats: ["image/webp", "image/avif"],
     remotePatterns: [
@@ -19,7 +20,7 @@ const nextConfig = {
     optimizePackageImports: ["lucide-react"],
   },
   async headers() {
-    const securityHeaders = [
+    const securityHeaders: Array<{ key: string; value: string }> = [
       { key: "X-Content-Type-Options", value: "nosniff" },
       { key: "X-Frame-Options", value: "DENY" },
       { key: "X-XSS-Protection", value: "1; mode=block" },
