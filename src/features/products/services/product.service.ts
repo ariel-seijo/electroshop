@@ -1,7 +1,9 @@
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { generateSku as generateSkuLib } from "@/lib/sku";
 import { deleteAsset } from "@/lib/cloudinary";
 import { createProductSchema, updateProductSchema, formatZodError } from "@/lib/validations";
+import type { CreateProductInput, UpdateProductInput } from "@/lib/validations";
 
 const VALID_SORT_FIELDS = ["price", "stock", "sold", "createdAt"];
 
@@ -21,7 +23,7 @@ export async function getAllProducts(params: ProductFilters = {}) {
   const limit = Math.min(50, Math.max(1, parseInt(String(params.limit)) || 10));
   const skip = (page - 1) * limit;
 
-  const where: Record<string, unknown> = {};
+  const where: Prisma.ProductWhereInput = {};
 
   if (params.categoryId) {
     where.categoryId = parseInt(String(params.categoryId));
@@ -42,7 +44,7 @@ export async function getAllProducts(params: ProductFilters = {}) {
       { title: { contains: params.search, mode: "insensitive" } },
       { sku: { contains: params.search, mode: "insensitive" } },
       { brand: { contains: params.search, mode: "insensitive" } },
-    ] as const;
+    ];
   }
 
   const sortField = params.sort && VALID_SORT_FIELDS.includes(params.sort) ? params.sort : "createdAt";
@@ -83,41 +85,41 @@ export async function getProductById(id: number) {
   return product;
 }
 
-export async function createProduct(data: Record<string, unknown>) {
+export async function createProduct(data: unknown) {
   const parsed = createProductSchema.safeParse(data);
   if (!parsed.success) {
     throw new Error(`Missing required fields: ${formatZodError(parsed.error)}`);
   }
 
-  const { slug, categoryId, thumbnail, ...rest } = parsed.data as Record<string, unknown>;
+  const { slug, categoryId, thumbnail, sku: inputSku, ...rest } = parsed.data;
 
   const [existingSlug, category] = await Promise.all([
-    prisma.product.findUnique({ where: { slug: slug as string }, select: { id: true } }),
-    prisma.category.findUnique({ where: { id: categoryId as number } }),
+    prisma.product.findUnique({ where: { slug }, select: { id: true } }),
+    prisma.category.findUnique({ where: { id: categoryId } }),
   ]);
 
   if (existingSlug) throw new Error("Slug already exists");
   if (!category) throw new Error("Category not found");
 
-  const sku = parsed.data.sku || await generateSkuLib({
-    title: parsed.data.title as string,
-    brand: parsed.data.brand as string,
+  const sku = inputSku || await generateSkuLib({
+    title: parsed.data.title,
+    brand: parsed.data.brand,
     categoryName: category.name,
   });
 
   return prisma.product.create({
-    data: ({
+    data: {
       ...rest,
-      slug: slug as string,
-      thumbnail: thumbnail as string,
-      categoryId: categoryId as number,
-      sku: sku as string,
-    }) as never,
+      slug,
+      thumbnail,
+      categoryId,
+      sku,
+    },
     include: { category: true },
   });
 }
 
-export async function updateProduct(id: number, data: Record<string, unknown>) {
+export async function updateProduct(id: number, data: unknown) {
   const existing = await prisma.product.findUnique({ where: { id }, include: { category: true } });
   if (!existing) throw new Error("Product not found");
 
@@ -126,16 +128,16 @@ export async function updateProduct(id: number, data: Record<string, unknown>) {
     throw new Error(`Validation error: ${formatZodError(parsed.error)}`);
   }
 
-  const { slug, ...rest } = parsed.data as Record<string, unknown>;
+  const { slug, ...rest } = parsed.data;
 
   if (slug && slug !== existing.slug) {
-    const slugExists = await prisma.product.findUnique({ where: { slug: slug as string }, select: { id: true } });
+    const slugExists = await prisma.product.findUnique({ where: { slug }, select: { id: true } });
     if (slugExists) throw new Error("Slug already exists");
   }
 
   return prisma.product.update({
     where: { id },
-    data: { ...rest, ...(slug ? { slug: slug as string } : {}) },
+    data: { ...rest, ...(slug ? { slug } : {}) },
     include: { category: true },
   });
 }

@@ -37,8 +37,8 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
 
   return (
     <ProductPage
-      product={serializeProductForClient(product) as never}
-      relatedProducts={serializeProductsForClient(relatedProducts) as never}
+      product={serializeProductForClient(product)}
+      relatedProducts={serializeProductsForClient(relatedProducts)}
     />
   );
 }

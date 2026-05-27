@@ -1,5 +1,6 @@
 import "server-only";
 
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { VALID_STATUSES, canTransitionOrderStatus, type OrderStatus } from "@/lib/order-state";
 
@@ -64,10 +65,10 @@ export async function getAllOrders(params: OrderFilters = {}) {
   const limit = Math.min(50, Math.max(1, parseInt(String(params.limit)) || 10));
   const skip = (page - 1) * limit;
 
-  const where: Record<string, unknown> = {};
+  const where: Prisma.OrderWhereInput = {};
 
   if (params.status && VALID_STATUSES.includes(params.status as OrderStatus)) {
-    where.status = params.status;
+    where.status = params.status as OrderStatus;
   }
 
   if (params.search) {
@@ -78,23 +79,21 @@ export async function getAllOrders(params: OrderFilters = {}) {
   }
 
   if (params.dateFrom || params.dateTo) {
-    where.createdAt = {} as Record<string, Date>;
+    const createdAt: Prisma.DateTimeFilter = {};
     if (params.dateFrom) {
-      (where.createdAt as Record<string, Date>).gte = new Date(params.dateFrom);
+      createdAt.gte = new Date(params.dateFrom);
     }
     if (params.dateTo) {
       const endDate = new Date(params.dateTo);
       endDate.setHours(23, 59, 59, 999);
-      (where.createdAt as Record<string, Date>).lte = endDate;
+      createdAt.lte = endDate;
     }
+    where.createdAt = createdAt;
   }
 
-  const orderBy: Record<string, string> = {};
-  if (VALID_SORT_FIELDS.includes(params.sort || "")) {
-    orderBy[params.sort!] = params.order === "asc" ? "asc" : "desc";
-  } else {
-    orderBy.createdAt = "desc";
-  }
+  const sortField: string = VALID_SORT_FIELDS.includes(params.sort || "") ? params.sort as string : "createdAt";
+  const sortDir = params.order === "asc" ? "asc" : "desc";
+  const orderBy: Prisma.OrderOrderByWithRelationInput = { [sortField]: sortDir };
 
   const [orders, total] = await Promise.all([
     prisma.order.findMany({

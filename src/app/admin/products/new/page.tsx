@@ -8,8 +8,8 @@ import ProductForm from "@/features/admin/components/ProductForm";
 import { useToastStore } from "@/features/toast";
 
 export default function NewProductPage() {
-  const [categories, setCategories] = useState<Array<Record<string, unknown>>>([]);
-  const [brands, setBrands] = useState<unknown[]>([]);
+  const [categories, setCategories] = useState<{ id: number; name: string }[]>([]);
+  const [brands, setBrands] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const toast = useToastStore((s) => s.toast);
@@ -22,10 +22,10 @@ export default function NewProductPage() {
           fetch("/api/brands"),
         ]);
         if (!catRes.ok) throw new Error("Error al obtener las categorías");
-        const catData = await catRes.json();
+        const catData = await catRes.json() as { id: number; name: string }[];
         setCategories(catData);
         if (brandsRes.ok) {
-          const brandsData = await brandsRes.json();
+          const brandsData = await brandsRes.json() as string[];
           setBrands(brandsData);
         }
       } catch {
@@ -57,9 +57,7 @@ export default function NewProductPage() {
         <div className="admin-card-header">
           <h3 className="admin-card-title">Crear nuevo producto</h3>
         </div>
-        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-        {/* @ts-ignore */}
-        <ProductForm mode="create" categories={categories} brands={brands as never} onSuccess={handleSuccess} onCancel={handleSuccess} />
+        <ProductForm mode="create" categories={categories} brands={brands} onSuccess={handleSuccess} onCancel={handleSuccess} />
       </div>
     </div>
   );

@@ -1,12 +1,15 @@
 import "server-only";
 
+import { Prisma } from "@prisma/client";
+import type { Role, AccountStatus, OrderStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+
+type UserWhereInput = Prisma.UserWhereInput & { __softDeleteBypass?: boolean };
 
 const VALID_ROLES = ["CUSTOMER", "ADMIN"];
 const VALID_STATUSES = ["ACTIVE", "BANNED"];
-import { type OrderStatus } from "@prisma/client";
 
-const SUCCESSFUL_ORDER_STATUSES: OrderStatus[] = ["PAID", "SHIPPED", "DELIVERED"] as OrderStatus[];
+const SUCCESSFUL_ORDER_STATUSES: OrderStatus[] = ["PAID", "SHIPPED", "DELIVERED"];
 
 const USER_LIST_SELECT = {
   id: true,
@@ -50,7 +53,7 @@ export async function getAllUsers(params: UserFilters = {}) {
   const skip = (page - 1) * limit;
   const sortDir = params.order === "asc" ? "asc" : "desc";
 
-  const where: Record<string, unknown> = {};
+  const where: UserWhereInput = {};
 
   if (params.search) {
     where.OR = [
@@ -60,7 +63,7 @@ export async function getAllUsers(params: UserFilters = {}) {
   }
 
   if (params.role && VALID_ROLES.includes(params.role)) {
-    where.role = params.role;
+    where.role = params.role as Role;
   }
 
   if (params.status) {
@@ -68,21 +71,23 @@ export async function getAllUsers(params: UserFilters = {}) {
       where.deletedAt = { not: null };
     } else if (VALID_STATUSES.includes(params.status)) {
       where.deletedAt = null;
-      where.status = params.status;
+      where.status = params.status as AccountStatus;
     }
   } else {
     where.__softDeleteBypass = true;
   }
 
-  const orderBy: Record<string, unknown> = {};
+  let orderBy: Prisma.UserOrderByWithRelationInput;
   if (params.sort === "name") {
-    orderBy.name = sortDir;
+    orderBy = { name: sortDir };
   } else if (params.sort === "email") {
-    orderBy.email = sortDir;
+    orderBy = { email: sortDir };
   } else if (params.sort === "orders") {
-    orderBy.orders = { _count: sortDir };
+    orderBy = { orders: { _count: sortDir } };
+  } else if (params.sort === "lifetimeValue") {
+    orderBy = { createdAt: sortDir };
   } else {
-    orderBy.createdAt = sortDir;
+    orderBy = { createdAt: sortDir };
   }
 
   const isLtvSort = params.sort === "lifetimeValue";
@@ -243,7 +248,7 @@ export async function toggleUserStatus(id: string) {
     throw new Error("No se puede modificar un usuario eliminado");
   }
 
-  const newStatus = existing.status === "ACTIVE" ? "BANNED" : "ACTIVE";
+  const newStatus: AccountStatus = existing.status === "ACTIVE" ? "BANNED" : "ACTIVE";
 
   const user = await prisma.user.update({
     where: { id },
@@ -284,7 +289,7 @@ export async function updateUserRole(id: string, newRole: string) {
 
   const user = await prisma.user.update({
     where: { id },
-    data: { role: newRole as "CUSTOMER" | "ADMIN" },
+    data: { role: newRole as Role },
     select: {
       id: true,
       name: true,
