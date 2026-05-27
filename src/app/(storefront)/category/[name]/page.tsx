@@ -10,6 +10,7 @@ import {
   ViewSwitcher,
 } from "@/features/category";
 import { serializeProductsForClient } from "@/lib/utils/serialize-product";
+import { loadExchangeRate } from "@/lib/utils/currency";
 
 function truncate(text: string, max: number): string {
   if (text.length <= max) return text;
@@ -32,6 +33,8 @@ export default async function CategoryPage({
   searchParams: Promise<Record<string, string | undefined>>;
 }) {
   const { name } = await params;
+  await loadExchangeRate();
+
   const query = await searchParams;
 
   const categoryName = name.toUpperCase();
