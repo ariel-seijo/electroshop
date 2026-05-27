@@ -1,12 +1,12 @@
 # ElectroShop
 
-**Tienda de hardware gamer de alto rendimiento** — Proyecto full-stack con Next.js 16, Clean Architecture y sincronización de carrito en tiempo real.
+**Tienda de hardware gamer de alto rendimiento** — Proyecto full-stack con Next.js 16, Clean Architecture, TypeScript estricto y Tailwind CSS v4.
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.2-black?logo=next.js)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript)](https://typescriptlang.org)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.3-38BDF8?logo=tailwindcss)](https://tailwindcss.com)
 [![Prisma](https://img.shields.io/badge/Prisma-5.22-2D3748?logo=prisma)](https://prisma.io)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-336791?logo=postgresql)](https://neon.tech)
-[![JavaScript](https://img.shields.io/badge/JavaScript-ES2024-F7DF1E?logo=javascript)](https://developer.mozilla.org)
-[![CSS Modules](https://img.shields.io/badge/CSS-Modules-000?logo=cssmodules)](https://github.com/css-modules/css-modules)
 [![Vercel](https://img.shields.io/badge/Deploy-Vercel-000?logo=vercel)](https://electroshop-store.vercel.app)
 [![Portfolio](https://img.shields.io/badge/Proyecto-Portfolio_|_Demo-8B5CF6)](https://electroshop-store.vercel.app)
 
@@ -29,8 +29,8 @@ La experiencia de usuario prioriza **velocidad y cero friccion**: carrito sincro
 | Decision | Tecnologia | Justificacion |
 |---|---|---|
 | **Framework** | Next.js 16 (App Router) | Server Components por defecto, Server Actions para mutaciones, ISR para dashboard. |
-| **Lenguaje** | **JavaScript puro** | El proyecto arranco antes de aprender TypeScript. Toda la logica de negocio esta validada con Zod en runtime. Tipado progresivo planeado a futuro. |
-| **Estilos** | **CSS Modules** | Scope nativo sin runtime cost. +25 archivos `.module.css` con diseno cohesivo y variables CSS globales. Tailwind se aprendio a mitad del proyecto y se priorizo terminar antes que migrar. |
+| **Lenguaje** | **TypeScript 6** (`strict: true`) | Migracion completa bottom-up (213 archivos, 0 JS). Tipos canonicos de dominio exportados desde `src/types/`. Schemas Zod con `z.infer` para tipos runtime ↔ compilacion. |
+| **Estilos** | **Tailwind CSS v4** | CSS atomico con `@theme` para design tokens. `@tailwindcss/postcss` como plugin de build. Sin runtime cost. Migrado desde CSS Modules (~60 `.module.css` eliminados). Iconos con Lucide React. |
 | **ORM** | Prisma + PostgreSQL (Neon) | Type-safe queries, schema declarativo, `$transaction` para operaciones atomicas de carrito y ordenes. |
 | **Autenticacion** | iron-session | Cookies selladas y encriptadas. Sin JWT, sin tabla de sesiones, sin estado en servidor. Ideal para serverless. |
 | **Estado global** | Zustand (auth) + Context/Reducer (cart) | Zustand solo para auth. El carrito usa `useReducer` porque su logica es local y no necesita propagarse globalmente. |
@@ -52,7 +52,7 @@ Solo ~30% de los componentes llevan `"use client"`. Las paginas de listado (prod
 El problema: un usuario agrega productos al carrito como visitante y luego inicia sesion. El carrito guest (en `localStorage`) debe fusionarse con el carrito existente en base de datos sin perder items de ninguna fuente.
 
 ```javascript
-// src/features/cart/actions/syncCart.js — Algoritmo de merge idempotente
+// src/features/cart/actions/syncCart.ts — Algoritmo de merge idempotente
 await prisma.$transaction(async (tx) => {
   // 1. Obtener stock actual y estado active de cada producto
   const products = await tx.product.findMany({
@@ -118,7 +118,7 @@ model CartItem {
 **Sin JWT. Sin tabla de sesiones. Sin estado en servidor.** La sesion se almacena en una cookie encriptada (`ecommerce-session`) que solo el servidor puede descifrar con `SESSION_SECRET`.
 
 ```javascript
-// src/lib/session.js
+// src/lib/session.ts
 export const sessionOptions = {
   password: process.env.SESSION_SECRET,  // 32 bytes base64
   cookieName: "ecommerce-session",
@@ -175,8 +175,8 @@ Panel completo para gestionar el negocio con **21 Server Actions** protegidas po
 
 Dos botones con icono ✨ que llenan instantaneamente los formularios de shipping y pago con datos demo para testing rapido:
 
-```javascript
-// src/mocks/checkoutDemoData.js
+```typescript
+// src/mocks/checkoutDemoData.ts
 export const SHIPPING_DEMO = {
   fullName: "Homero Simpson",        email: "hsimpson@mail.com",
   phone:    "+54 11 1111-1111",       address: "P. Sherman, Calle Wallaby 42",
@@ -213,14 +213,14 @@ src/
 │   └── api/                      #   12 grupos de rutas REST (+ Server Actions en features/)
 │
 ├── features/                     # Modulos de dominio con API publica
-│   ├── admin/                    #   actions/ | components/ | services/ | styles/
-│   ├── auth/                     #   hooks/useAuth.js (Zustand) | components/AuthProvider.jsx
-│   ├── cart/                     #   context/CartContext.jsx + CartReducer.js
+│   ├── admin/                    #   actions/ | components/ | services/
+│   ├── auth/                     #   hooks/useAuth.ts (Zustand) | components/AuthProvider.tsx
+│   ├── cart/                     #   context/CartContext.tsx + CartReducer.ts
 │   │   │                         #   actions/ (syncCart, saveCart, fetchCart)
-│   │   └── components/           #   CartDrawer.jsx
+│   │   └── components/           #   CartDrawer.tsx
 │   ├── category/                 #   components/ (ViewSwitcher, ProductGrid, etc.)
 │   ├── checkout/                 #   context/ | components/ (Shipping, Payment, Review)
-│   ├── orders/                   #   actions/ | services/ | lib/orderNumber.js
+│   ├── orders/                   #   actions/ | services/ | lib/orderNumber.ts
 │   ├── products/                 #   components/ (ProductCard, ProductPage, etc.)
 │   ├── shop/                     #   Navbar, Footer, HeroSlider, Brands, PromoBanner
 │   └── toast/                    #   Sistema de notificaciones toast
@@ -229,16 +229,19 @@ src/
 │   └── ui/                       #   Atomos agnosticos de dominio (Skeleton, etc.)
 │
 ├── lib/                          # Utilidades transversales
-│   ├── prisma.js                 #   Cliente singleton + extension soft-delete
-│   ├── session.js                #   Configuracion iron-session
-│   ├── auth-guards.js            #   requireAuth() | requireAdmin()
-│   ├── rate-limit.js             #   Sliding window in-memory
-│   ├── email.js                  #   Nodemailer + sendResetEmail()
+│   ├── prisma.ts                 #   Cliente singleton + extension soft-delete
+│   ├── session.ts                #   Configuracion iron-session
+│   ├── auth-guards.ts            #   requireAuth() | requireAdmin()
+│   ├── rate-limit.ts             #   Sliding window in-memory
+│   ├── email.ts                  #   Nodemailer + sendResetEmail()
+│   ├── errors.ts                 #   Errores tipados de dominio
+│   ├── fetch.ts                  #   Wrapper tipado de fetch con manejo de errores
 │   ├── validations/              #   Schemas Zod (auth, order)
 │   └── utils/                    #   currency, input-formatters, etc.
 │
-├── proxy.ts                  # Proteccion de rutas (iron-session + role check)
-└── mocks/                        # Datos demo (checkoutDemoData.js)
+├── types/                        # Tipos canonicos de dominio (Product, Order, Category, ApiResponse)
+├── proxy.ts                      # Proteccion de rutas (iron-session + role check)
+└── mocks/                        # Datos demo (checkoutDemoData.ts)
 ```
 
 ### Reglas de Arquitectura (ESLint)
@@ -246,10 +249,10 @@ src/
 ```javascript
 // eslint.config.mjs — Boundary enforcement con no-restricted-paths
 {
-  // Layer 1: app/ no importa de features/ directamente (solo barrel index.js)
+  // Layer 1: app/ no importa de features/ directamente (solo barrel index.ts)
   target: "./src/app/**",
   from: "./src/features/**",
-  except: ["./index.js", "./styles/**"],
+  except: ["./index.ts", "./index.js", "./index.jsx"],
 },
 {
   // Layer 2: components/ui/ es agnostico de dominio
@@ -257,17 +260,17 @@ src/
   from: "./src/features/**",
 },
 {
-  // Layer 3: features/ no importa de app/ (solo layout.js y globals.css)
+  // Layer 3: features/ no importa de app/ (solo layout.tsx y globals.css)
   target: "./src/features/**",
   from: "./src/app/**",
-  except: ["./layout.js", "./layout.jsx", "./globals.css"],
+  except: ["./layout.tsx", "./layout.jsx", "./globals.css"],
 }
 ```
 
 Estas reglas garantizan que:
 - El dominio no conoce los detalles del framework.
 - La UI base es reutilizable en cualquier contexto.
-- Los features exponen una API publica deliberada a traves de `index.js`.
+- Los features exponen una API publica deliberada a traves de `index.ts`.
 
 ---
 
@@ -284,7 +287,7 @@ Estas reglas garantizan que:
 
 ```bash
 # 1. Clonar e instalar dependencias
-git clone https://github.com/tuusuario/electroshop.git
+git clone https://github.com/ariel-seijo/electroshop.git
 cd electroshop
 npm install
 
@@ -340,6 +343,7 @@ npm run prisma.seed
 ```bash
 npm run dev       # http://localhost:3000
 npm run build     # npx prisma generate && next build
+npm run typecheck # tsc --noEmit (TypeScript estricto, 0 errores)
 npm run lint      # ESLint con boundary checks
 ```
 
@@ -365,7 +369,14 @@ SiteSettings (singleton)
 
 ## Nota del Desarrollador
 
-Este proyecto nacio como practica personal para dominar React y experimentar con IA como orquestador de desarrollo. La decision de usar **JavaScript puro** y **CSS Modules** fue deliberada: el objetivo era iterar rapido sobre la logica de negocio (carrito, auth, checkout, dashboard) sin la friccion de tooling que aun no dominaba. TypeScript y Tailwind se aprendieron durante el desarrollo y su migracion esta planificada como proxima iteracion.
+Este proyecto nacio como practica personal para dominar React y experimentar con IA como orquestador de desarrollo. La primera iteracion uso **JavaScript puro** y **CSS Modules** para iterar rapido sobre la logica de negocio (carrito, auth, checkout, dashboard) sin la friccion de tooling que aun no dominaba.
+
+La segunda iteracion completo dos migraciones simultaneas:
+
+- **TypeScript**: migracion bottom-up por capas de dependencia (0 dependencias → `lib/validations/` → `lib/utils/` → `lib/` → `features/` → `app/`). Resultado: 213 archivos `.ts`/`.tsx`, `strict: true`, 0 errores en `tsc --noEmit`, tipos canonicos de dominio en `src/types/`.
+- **Tailwind CSS v4**: reemplazo completo de CSS Modules (~60 `.module.css` eliminados). Design tokens via `@theme` en `globals.css`. Iconos con Lucide React. Build pipeline via `@tailwindcss/postcss`.
+
+Ambas migraciones se hicieron preservando runtime compatibility en cada commit — la app nunca dejo de funcionar.
 
 ---
 
