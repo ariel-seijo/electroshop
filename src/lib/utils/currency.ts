@@ -41,15 +41,24 @@ async function _fetchFromApi(): Promise<number> {
 
 function _bootstrap(): void {
   if (_loading) return;
-  const versionAtStart = _version;
 
   if (_isClient()) {
+    // Sync read from sessionStorage for instant correct rate on return visits
+    const cached = sessionStorage.getItem("usdToArs");
+    if (cached) {
+      const parsed = Number(cached);
+      if (!isNaN(parsed) && parsed > 0) {
+        _cachedRate = parsed;
+        _version++;
+      }
+    }
+
+    // Then refresh in background (updates if admin changed the rate)
     _loading = _fetchFromApi()
       .then((rate) => {
-        if (_version === versionAtStart) {
-          _cachedRate = rate;
-          sessionStorage.setItem("usdToArs", String(rate));
-        }
+        _cachedRate = rate;
+        _version++;
+        sessionStorage.setItem("usdToArs", String(rate));
       })
       .catch(() => {
         /* noop */
@@ -57,9 +66,8 @@ function _bootstrap(): void {
   } else {
     _loading = _fetchFromDb()
       .then((rate) => {
-        if (_version === versionAtStart) {
-          _cachedRate = rate;
-        }
+        _cachedRate = rate;
+        _version++;
       })
       .catch(() => {
         /* noop */

@@ -2,7 +2,7 @@ import "server-only";
 
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { arsToUsd, usdToArs } from "@/lib/utils/currency";
+import { arsToUsd, usdToArs, loadExchangeRate } from "@/lib/utils/currency";
 
 interface CategoryProductsParams {
     categoryName: string;
@@ -28,6 +28,9 @@ export function getCategoryProducts({
 
     return unstable_cache(
         async () => {
+            // Ensure exchange rate is loaded before any usdToArs/arsToUsd calls
+            await loadExchangeRate();
+
             const where: Record<string, unknown> = {
                 category: {
                     name: categoryName,

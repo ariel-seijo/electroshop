@@ -20,6 +20,7 @@ const inter = Inter({
 import { AuthProvider } from "@/features/auth";
 import { ToastContainer } from "@/features/toast";
 import { CartProvider } from "@/features/cart";
+import { loadExchangeRate } from "@/lib/utils/currency";
 
 export const metadata: Metadata = {
   icons: {
@@ -27,9 +28,20 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  // Preload exchange rate so all server-rendered prices use the real DB rate,
+  // not the hardcoded default of 1400.
+  const rate = await loadExchangeRate();
+
   return (
     <html lang="es" data-scroll-behavior="smooth">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{sessionStorage.setItem("usdToArs","${rate}")}catch(e){}`,
+          }}
+        />
+      </head>
       <body className={`${inter.className} ${fuenteGamer.variable} ${inter.variable}`}>
         <AuthProvider>
           <CartProvider>

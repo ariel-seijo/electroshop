@@ -4,7 +4,7 @@ import { revalidateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { sessionOptions, SessionData } from "@/lib/session";
 import { generateOrderNumber } from "@/features/orders/lib/orderNumber";
-import { usdToArs } from "@/lib/utils/currency";
+import { usdToArs, loadExchangeRate } from "@/lib/utils/currency";
 import { checkoutSchema, formatZodError } from "@/lib/validations";
 
 function calculateShipping(subtotal: number): number {
@@ -13,6 +13,9 @@ function calculateShipping(subtotal: number): number {
 
 export async function POST(request: NextRequest) {
   try {
+    // Ensure exchange rate is loaded before calculating shipping cost
+    await loadExchangeRate();
+
     const response = new NextResponse();
     const session = await getIronSession<SessionData>(request, response, sessionOptions);
 
