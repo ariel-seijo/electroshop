@@ -7,7 +7,6 @@ import SectionTitle from "@/components/SectionTitle";
 import Brands from "@/components/Brands";
 import PromoBanner from "@/components/PromoBanner";
 import { serializeProductsForClient } from "@/lib/utils/serialize-product";
-import { loadExchangeRate } from "@/lib/utils/currency";
 
 const getFeaturedProducts = unstable_cache(
     async () =>
@@ -29,8 +28,6 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-    await loadExchangeRate();
-
     const products = await getFeaturedProducts();
 
     return (

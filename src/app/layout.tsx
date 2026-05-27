@@ -38,7 +38,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{sessionStorage.setItem("usdToArs","${rate}")}catch(e){}`,
+            __html: `window.__EXCHANGE_RATE__=${rate};`,
           }}
         />
       </head>

@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { ProductPage, getProductBySlug, getRelatedProducts } from "@/features/products";
 import { prisma } from "@/lib/prisma";
 import { serializeProductForClient, serializeProductsForClient } from "@/lib/utils/serialize-product";
-import { loadExchangeRate } from "@/lib/utils/currency";
 
 export const dynamic = "force-dynamic";
 
@@ -29,10 +28,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-
-  // Pre-load exchange rate so formatPrice() uses the real DB rate during SSR,
-  // matching the client's sessionStorage cache from previous visits.
-  await loadExchangeRate();
 
   const product = await getProductBySlug(slug);
 
