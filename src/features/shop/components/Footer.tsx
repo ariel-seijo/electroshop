@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Footer() {
   return (
     <footer className="bg-[#111] text-[#8d8d8d] mt-16 border-t border-[#1f1f1f]">
@@ -17,10 +19,18 @@ export default function Footer() {
           <div className="[&>h4]:font-bold [&>h4]:text-[#d0d0d0] [&>h4]:text-base [&>h4]:mb-4 max-ms:[&>h4]:text-[0.95rem] [&>ul]:list-none [&>ul]:p-0 [&>ul]:m-0">
             <h4>Categorías</h4>
             <ul>
-              <li className="cursor-pointer text-[0.92rem] mb-[0.7rem] leading-[1.45] transition-colors duration-200 hover:text-[#cfcfcf] max-ms:text-[0.88rem]">Placas de video</li>
-              <li className="cursor-pointer text-[0.92rem] mb-[0.7rem] leading-[1.45] transition-colors duration-200 hover:text-[#cfcfcf] max-ms:text-[0.88rem]">Procesadores</li>
-              <li className="cursor-pointer text-[0.92rem] mb-[0.7rem] leading-[1.45] transition-colors duration-200 hover:text-[#cfcfcf] max-ms:text-[0.88rem]">Memorias RAM</li>
-              <li className="cursor-pointer text-[0.92rem] mb-[0.7rem] leading-[1.45] transition-colors duration-200 hover:text-[#cfcfcf] max-ms:text-[0.88rem]">Almacenamiento</li>
+              <li className="cursor-pointer text-[0.92rem] mb-[0.7rem] leading-[1.45] transition-colors duration-200 hover:text-[#cfcfcf] max-ms:text-[0.88rem]">
+                <Link href="/category/gpu" className="text-inherit no-underline">Placas de video</Link>
+              </li>
+              <li className="cursor-pointer text-[0.92rem] mb-[0.7rem] leading-[1.45] transition-colors duration-200 hover:text-[#cfcfcf] max-ms:text-[0.88rem]">
+                <Link href="/category/cpu" className="text-inherit no-underline">Procesadores</Link>
+              </li>
+              <li className="cursor-pointer text-[0.92rem] mb-[0.7rem] leading-[1.45] transition-colors duration-200 hover:text-[#cfcfcf] max-ms:text-[0.88rem]">
+                <Link href="/category/ram" className="text-inherit no-underline">Memorias RAM</Link>
+              </li>
+              <li className="cursor-pointer text-[0.92rem] mb-[0.7rem] leading-[1.45] transition-colors duration-200 hover:text-[#cfcfcf] max-ms:text-[0.88rem]">
+                <Link href="/category/storage" className="text-inherit no-underline">Almacenamiento</Link>
+              </li>
             </ul>
           </div>
 
@@ -51,6 +61,8 @@ export default function Footer() {
             <ul>
               <li className="cursor-pointer text-[0.92rem] mb-[0.7rem] leading-[1.45] transition-colors duration-200 hover:text-[#cfcfcf] max-ms:text-[0.88rem]">Next.js</li>
               <li className="cursor-pointer text-[0.92rem] mb-[0.7rem] leading-[1.45] transition-colors duration-200 hover:text-[#cfcfcf] max-ms:text-[0.88rem]">React</li>
+              <li className="cursor-pointer text-[0.92rem] mb-[0.7rem] leading-[1.45] transition-colors duration-200 hover:text-[#cfcfcf] max-ms:text-[0.88rem]">TypeScript</li>
+              <li className="cursor-pointer text-[0.92rem] mb-[0.7rem] leading-[1.45] transition-colors duration-200 hover:text-[#cfcfcf] max-ms:text-[0.88rem]">Tailwind CSS</li>
               <li className="cursor-pointer text-[0.92rem] mb-[0.7rem] leading-[1.45] transition-colors duration-200 hover:text-[#cfcfcf] max-ms:text-[0.88rem]">Prisma ORM</li>
               <li className="cursor-pointer text-[0.92rem] mb-[0.7rem] leading-[1.45] transition-colors duration-200 hover:text-[#cfcfcf] max-ms:text-[0.88rem]">PostgreSQL</li>
             </ul>
