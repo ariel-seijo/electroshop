@@ -1,5 +1,6 @@
 import { Suspense } from "react";
-import { UsersClient, UserTableSkeleton, getAllUsers } from "@/features/admin";
+import { getAllUsers } from "@/features/admin/services/user.service";
+import { UsersClient, UserTableSkeleton } from "@/features/admin";
 import { loadExchangeRate } from "@/lib/utils/currency";
 
 export default async function UsersPage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {

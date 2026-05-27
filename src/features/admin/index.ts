@@ -26,21 +26,6 @@ export { default as UserFilters } from "./components/users/UserFilters";
 export { default as UserActions } from "./components/users/UserActions";
 export { default as UserOrderHistory } from "./components/users/UserOrderHistory";
 export { default as UserTableSkeleton } from "./components/users/UserTableSkeleton";
-
-export {
-  getAllUsers,
-  getUserOrderHistory,
-  softDeleteUser,
-  toggleUserStatus,
-  updateUserRole,
-} from "./services/user.service";
-
-export { getDashboardData } from "./services/dashboard.service";
-
-export {
-  getUsersAction,
-  getUserOrderHistoryAction,
-  deleteUserAction,
-  toggleUserStatusAction,
-  updateUserRoleAction,
-} from "./actions/userActions";
+// ⚠️ Services & actions are server-only — import them directly in app/
+// (e.g. import { getDashboardData } from "@/features/admin/services/dashboard.service")
+// Do NOT re-export them here: Turbopack traces all barrel exports into client bundles.

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { LayoutDashboard } from "lucide-react";
-import { getDashboardData, StatsCards, RevenueChart, RecentActivity, LowStockAlert, DashboardSkeleton } from "@/features/admin";
+import { getDashboardData } from "@/features/admin/services/dashboard.service";
+import { StatsCards, RevenueChart, RecentActivity, LowStockAlert, DashboardSkeleton } from "@/features/admin";
 import { prisma } from "@/lib/prisma";
 import { formatArs } from "@/lib/utils/currency";
 

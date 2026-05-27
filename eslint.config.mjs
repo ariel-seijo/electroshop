@@ -27,10 +27,15 @@ const eslintConfig = defineConfig([
             except: [
               "**/index.{js,ts,tsx}",
               "**/styles/**",
+              "**/services/**",
+              "**/actions/**",
+              "**/lib/**",
             ],
             message:
-              "app/ must import features through their public barrel (index). " +
-              "Use e.g. @/features/cart instead of @/features/cart/useCart.",
+              "app/ must import features through their public barrel (index) " +
+              "or through services/, actions/, lib/ directories. " +
+              "Components must use the barrel. " +
+              "Use e.g. @/features/cart instead of @/features/cart/components/CartItem.",
           },
 
           // ── Layer 2: UI atoms must stay domain-agnostic ──
