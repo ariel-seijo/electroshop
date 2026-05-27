@@ -287,7 +287,7 @@ Estas reglas garantizan que:
 
 ```bash
 # 1. Clonar e instalar dependencias
-git clone https://github.com/tuusuario/electroshop.git
+git clone https://github.com/ariel-seijo/electroshop.git
 cd electroshop
 npm install
 
