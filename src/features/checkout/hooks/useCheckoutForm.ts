@@ -24,6 +24,7 @@ interface CheckoutFormResult {
   errors: Record<string, string>;
   validate: () => boolean;
   clearError: (name: string) => void;
+  clearAll: () => void;
   isValid: boolean;
 }
 
@@ -61,7 +62,11 @@ export function useCheckoutForm<T extends object>(
     });
   }, []);
 
+  const clearAll = useCallback(() => {
+    setErrors({});
+  }, []);
+
   const isValid = Object.keys(errors).length === 0;
 
-  return { errors, validate, clearError, isValid };
+  return { errors, validate, clearError, clearAll, isValid };
 }
