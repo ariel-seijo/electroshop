@@ -132,8 +132,12 @@ export default function ImageUploadWidget({
         setIsUploading(true);
 
         try {
+          if (!productId) {
+            toast("Falta el ID del producto", "error");
+            return;
+          }
           const saveResult = await saveProductImagesAction(
-            productId!,
+            productId,
             collectedRef.current
           );
 
@@ -148,7 +152,8 @@ export default function ImageUploadWidget({
             );
             onImagesUploaded?.();
           }
-        } catch {
+        } catch (error) {
+          console.error("[IMAGE UPLOAD ERROR]", error);
           toast("Error al guardar las imagenes", "error");
         } finally {
           setIsUploading(false);
@@ -179,28 +184,27 @@ export default function ImageUploadWidget({
     try {
       const sigResult = await getCloudinarySignatureAction();
 
-      const sigErrorMsg = "error" in sigResult ? sigResult.error : undefined;
-      if (sigErrorMsg) {
-        toast(sigErrorMsg, "error");
+      if ("error" in sigResult) {
+        toast(sigResult.error, "error");
         return;
       }
 
-      const successSig = sigResult as unknown as { cloudName: string; apiKey: string; signature: string; timestamp: string };
+      const { cloudName, apiKey, signature, timestamp } = sigResult;
 
       const widget = window.cloudinary!.createUploadWidget(
         {
-          cloudName: successSig.cloudName,
-          apiKey: successSig.apiKey,
+          cloudName,
+          apiKey,
           uploadSignature: async (callback: (signature: string) => void, paramsToSign: Record<string, string | number>) => {
             try {
               const res = await getCloudinarySignatureAction(paramsToSign);
-              const resErrorMsg = "error" in res ? res.error : undefined;
-              if (resErrorMsg) {
-                toast(resErrorMsg, "error");
+              if ("error" in res) {
+                toast(res.error, "error");
                 return;
               }
-              callback((res as { signature: string }).signature);
-            } catch {
+              callback(res.signature);
+            } catch (error) {
+              console.error("[IMAGE UPLOAD ERROR]", error);
               toast("Error al firmar la subida", "error");
             }
           },
@@ -214,7 +218,8 @@ export default function ImageUploadWidget({
 
       widgetRef.current = widget;
       widget.open();
-    } catch {
+    } catch (error) {
+      console.error("[IMAGE UPLOAD ERROR]", error);
       toast("Error al abrir el widget de subida", "error");
     }
   }, [scriptLoaded, productId, remainingSlots, handleUploadResult, toast]);

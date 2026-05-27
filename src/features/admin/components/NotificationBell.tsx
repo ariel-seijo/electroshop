@@ -4,9 +4,9 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Bell, X, Package, ShoppingCart, Clock, AlertTriangle } from "lucide-react";
+import type { LowStockProduct } from "@/types/product";
+import type { RecentOrder } from "@/types/order";
 
-interface LowStockProduct { id: number; title: string; stock: number; }
-interface RecentOrder { id: string; orderNumber: string; status: string; createdAt: Date; user?: { email: string } | null; }
 interface NotificationBellProps { lowStock?: { count: number; products: LowStockProduct[] }; recentOrders?: RecentOrder[]; pendingCount?: number; }
 
 function timeAgo(dateStr: string | Date): string {

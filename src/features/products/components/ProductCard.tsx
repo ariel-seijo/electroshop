@@ -3,26 +3,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ShoppingCart, Star, Check, Flame } from "lucide-react";
-import { useCart, type CartItem } from "@/features/cart";
+import { useCart } from "@/features/cart";
 import { formatPrice } from "@/lib/utils/currency";
 import { optimizeCloudinaryUrl } from "@/lib/utils/cloudinary-url";
+import type { SerializedProduct } from "@/types/product";
 
-interface ProductCardProduct {
-  id: number;
-  title: string;
-  slug: string;
-  price: number;
-  oldPrice: number | null;
-  thumbnail: string;
-  stock: number;
-  brand: string;
-  sku: string;
-  rating: number;
-  sold: number;
-  featured: boolean;
-  categoryId: number;
-  category?: { name: string } | null;
-}
+type ProductCardProduct = Pick<
+  SerializedProduct,
+  "id" | "title" | "slug" | "price" | "oldPrice" | "thumbnail" | "stock" |
+  "brand" | "sku" | "rating" | "sold" | "featured" | "categoryId" | "category"
+>;
 
 interface ProductCardProps {
   product: ProductCardProduct;
@@ -162,7 +152,7 @@ export default function ProductCard({ product, view = "grid", priority = false }
         }`}
         onClick={(e) => {
           e.preventDefault();
-          addToCart(product as unknown as CartItem);
+          addToCart(product);
         }}
         disabled={isOutOfStock || isMaxReached}
         aria-label={buyLabel}

@@ -1,5 +1,6 @@
 import "server-only";
 
+import { Prisma } from "@prisma/client";
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { arsToUsd, usdToArs, loadExchangeRate } from "@/lib/utils/currency";
@@ -22,16 +23,15 @@ export function getCategoryProducts({
     max,
     page = 1,
     limit = 9,
-}: CategoryProductsParams) {
-    const pageNum = Math.max(1, Number(page));
-    const skip = (pageNum - 1) * limit;
+}: CategoryProductsParams): Promise<{ products: Prisma.ProductGetPayload<{ include: { category: true } }>[]; brands: { brand: string; _count: number }[]; minPrice: number; maxPrice: number; page: number; totalPages: number; total: number }> {
+  const pageNum = Math.max(1, Number(page));
+  const skip = (pageNum - 1) * limit;
 
-    return unstable_cache(
+  return unstable_cache(
         async () => {
-            // Ensure exchange rate is loaded before any usdToArs/arsToUsd calls
             await loadExchangeRate();
 
-            const where: Record<string, unknown> = {
+            const where: Prisma.ProductWhereInput = {
                 category: {
                     name: categoryName,
                 },
@@ -43,38 +43,38 @@ export function getCategoryProducts({
             }
 
             if (min || max) {
-                where.price = {} as Record<string, number>;
+                const priceFilter: Prisma.FloatFilter = {};
 
                 if (min) {
-                    (where.price as Record<string, number>).gte = arsToUsd(Number(min));
+                    priceFilter.gte = arsToUsd(Number(min));
                 }
 
                 if (max) {
-                    (where.price as Record<string, number>).lte = arsToUsd(Number(max));
+                    priceFilter.lte = arsToUsd(Number(max));
                 }
+
+                where.price = priceFilter;
             }
 
-            let orderBy: Record<string, string> = {
+            const orderBy: Prisma.ProductOrderByWithRelationInput = {
                 createdAt: "desc",
             };
 
             if (sort === "popular") {
-                orderBy = { sold: "desc" };
+                orderBy.createdAt = undefined;
+                orderBy.sold = "desc";
+            } else if (sort === "rating") {
+                orderBy.createdAt = undefined;
+                orderBy.rating = "desc";
+            } else if (sort === "asc") {
+                orderBy.createdAt = undefined;
+                orderBy.price = "asc";
+            } else if (sort === "desc") {
+                orderBy.createdAt = undefined;
+                orderBy.price = "desc";
             }
 
-            if (sort === "rating") {
-                orderBy = { rating: "desc" };
-            }
-
-            if (sort === "asc") {
-                orderBy = { price: "asc" };
-            }
-
-            if (sort === "desc") {
-                orderBy = { price: "desc" };
-            }
-
-            const rangeWhere: Record<string, unknown> = {
+            const rangeWhere: Prisma.ProductWhereInput = {
                 category: {
                     name: categoryName,
                 },

@@ -4,14 +4,7 @@ import { useState, useEffect } from "react";
 import { X, Loader2, PackageOpen } from "lucide-react";
 import { getUserOrderHistoryAction } from "@/features/admin/actions/userActions";
 import { formatPrice } from "@/lib/utils/currency";
-
-interface OrderItem {
-  id: string;
-  orderNumber: string;
-  total: number;
-  status: string;
-  createdAt: string;
-}
+import type { OrderSummary } from "@/types/order";
 
 interface UserData {
   id: string;
@@ -21,7 +14,7 @@ interface UserData {
 
 interface OrderHistoryData {
   user: UserData;
-  orders: OrderItem[];
+  orders: OrderSummary[];
 }
 
 interface UserOrderHistoryProps {
@@ -56,11 +49,12 @@ export default function UserOrderHistory({ userId, isOpen, onClose }: UserOrderH
 
   useEffect(() => {
     if (!userId || !isOpen) return;
+    const uid = userId;
 
     async function fetchData() {
       setLoading(true);
       setError(null);
-      const result = await getUserOrderHistoryAction(userId!);
+      const result = await getUserOrderHistoryAction(uid);
       setLoading(false);
 
       const orderErrorMsg = "error" in result ? result.error : undefined;
@@ -68,7 +62,7 @@ export default function UserOrderHistory({ userId, isOpen, onClose }: UserOrderH
         setError(orderErrorMsg);
       } else {
         const successResult = result as { user: UserData; orders: unknown };
-        setData({ user: successResult.user, orders: successResult.orders as OrderItem[] });
+        setData({ user: successResult.user, orders: successResult.orders as OrderSummary[] });
       }
     }
 

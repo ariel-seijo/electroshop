@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getIronSession } from "iron-session";
 import { revalidateTag } from "next/cache";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { sessionOptions, SessionData } from "@/lib/session";
 import { generateOrderNumber } from "@/features/orders/lib/orderNumber";
@@ -85,7 +86,7 @@ export async function POST(request: NextRequest) {
             select: { title: true, stock: true },
           });
           throw new Error(
-            `Stock insuficiente para "${product!.title}". Stock actual: ${product!.stock}`
+            `Stock insuficiente para "${product?.title ?? item.title}". Stock actual: ${product?.stock ?? "desconocido"}`
           );
         }
       }
@@ -97,13 +98,13 @@ export async function POST(request: NextRequest) {
           status: "PENDING",
           shippingAddress: shipping,
           paymentMethod,
-          cardDetails: (cardDetails
-            ? {
+          cardDetails: cardDetails
+            ? ({
                 last4: cardDetails.cardNumber?.slice(-4) || null,
                 expiry: cardDetails.cardExpiry || null,
                 holder: cardDetails.cardHolder || null,
-              }
-            : undefined) as never,
+              } satisfies Prisma.InputJsonValue)
+            : undefined,
           subtotal,
           shippingCost,
           total,
@@ -117,7 +118,7 @@ export async function POST(request: NextRequest) {
               productTitle: item.title,
               productSku: item.sku || "N/A",
               productImage: item.thumbnail || "",
-            })) as unknown as never,
+            })),
           },
         },
         include: {

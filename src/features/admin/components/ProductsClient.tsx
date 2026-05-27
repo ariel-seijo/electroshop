@@ -5,11 +5,7 @@ import ProductSearch from "./ProductSearch";
 import ProductFilters from "./ProductFilters";
 import ProductTable from "./ProductTable";
 import type { TableProduct } from "./ProductTable";
-
-interface Category {
-  id: number;
-  name: string;
-}
+import type { Category } from "@/types/category";
 
 interface ProductsClientProps {
   products: TableProduct[];

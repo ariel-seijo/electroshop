@@ -19,7 +19,7 @@ export interface Product {
   sold: number;
   featured: boolean;
   categoryId: number;
-  category?: { name: string } | null;
+  category: { id: number; name: string } | null;
 }
 
 export interface FeaturedCarouselProps {

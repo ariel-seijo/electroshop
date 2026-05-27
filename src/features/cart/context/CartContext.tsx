@@ -11,30 +11,16 @@ import {
 } from "react";
 import { useAuthStore } from "@/features/auth";
 import { useToastStore } from "@/features/toast";
-import { cartReducer, initialState, CartItem, CartAction } from "./CartReducer";
+import { getErrorMessage } from "@/lib/errors";
+import { cartReducer, initialState, type CartItem, type CartItemInput, type CartAction } from "./CartReducer";
 import { syncCart } from "../actions/syncCart";
 import { fetchCart } from "../actions/fetchCart";
 import { saveCart } from "../actions/saveCart";
-
-interface DbCartItem {
-  product: {
-    id: number;
-    title: string;
-    slug: string;
-    price: number;
-    oldPrice: number | null;
-    thumbnail: string;
-    stock: number;
-    sku: string;
-    brand: string;
-    categoryId: number;
-  };
-  quantity: number;
-}
+import type { SyncedCartItem } from "../actions/syncCart";
 
 interface CartContextValue {
   cart: CartItem[];
-  addToCart: (product: CartItem, quantity?: number) => void;
+  addToCart: (product: CartItemInput, quantity?: number) => void;
   increaseQuantity: (id: number) => void;
   decreaseQuantity: (id: number) => void;
   removeFromCart: (id: number) => void;
@@ -56,7 +42,7 @@ function isClient(): boolean {
   return typeof window !== "undefined";
 }
 
-function mapDbCartToClient(dbCart: DbCartItem[]): CartItem[] {
+function mapDbCartToClient(dbCart: SyncedCartItem[]): CartItem[] {
   return dbCart.map((item) => ({
     id: item.product.id,
     title: item.product.title,
@@ -112,7 +98,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             .then((dbCart) => {
               dispatch({
                 type: "SET_CART",
-                payload: mapDbCartToClient(dbCart as DbCartItem[]),
+                payload: mapDbCartToClient(dbCart),
               });
             })
             .catch(() => {
@@ -144,13 +130,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           if (result && result.warnings && result.warnings.length > 0) {
             fetchCart()
               .then((dbCart) => {
-                dispatch({ type: "SET_CART", payload: mapDbCartToClient(dbCart as DbCartItem[]) });
+                dispatch({ type: "SET_CART", payload: mapDbCartToClient(dbCart) });
               })
               .catch(() => {});
           }
         })
         .catch((err) => {
-          console.error("Auto-save cart failed:", (err as Error).message);
+          console.error("Auto-save cart failed:", getErrorMessage(err));
         });
     }, 2000);
 
@@ -169,13 +155,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
       if (wasSynced) {
         const dbCart = await fetchCart();
-        dispatch({ type: "SET_CART", payload: mapDbCartToClient(dbCart as DbCartItem[]) });
+        dispatch({ type: "SET_CART", payload: mapDbCartToClient(dbCart) });
         return;
       }
 
       if (cart.length === 0) {
         const dbCart = await fetchCart();
-        dispatch({ type: "SET_CART", payload: mapDbCartToClient(dbCart as DbCartItem[]) });
+        dispatch({ type: "SET_CART", payload: mapDbCartToClient(dbCart) });
         try {
           localStorage.setItem(CART_SYNCED_KEY, "true");
         } catch {
@@ -198,9 +184,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         /* ignore */
       }
 
-      dispatch({ type: "SET_CART", payload: mapDbCartToClient(dbCart as unknown as DbCartItem[]) });
+      dispatch({ type: "SET_CART", payload: mapDbCartToClient(dbCart) });
     } catch (error) {
-      console.error("Cart sync failed — guest cart preserved:", (error as Error).message);
+      console.error("Cart sync failed — guest cart preserved:", getErrorMessage(error));
     } finally {
       setIsSyncing(false);
     }
@@ -258,7 +244,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     await performSync();
   }, [performSync]);
 
-  const addToCart = (product: CartItem, quantity = 1) => {
+  const addToCart = (product: CartItemInput, quantity = 1) => {
     const cartItem = cart.find((item) => item.id === product.id);
     const cartQty = cartItem ? cartItem.quantity : 0;
 

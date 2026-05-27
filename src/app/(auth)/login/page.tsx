@@ -26,7 +26,8 @@ export default function LoginPage() {
       toast(`¡Bienvenido de nuevo, ${user.name || user.email}!`, "success");
       window.location.href =
         redirect || (user.role === "ADMIN" ? "/admin" : "/");
-    } catch {
+    } catch (error) {
+      console.error("[LOGIN ERROR]", error);
       // Error handled in store
     }
   };

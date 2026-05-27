@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useCart, type CartItem } from "@/features/cart";
+import { useCart } from "@/features/cart";
 import { formatPrice } from "@/lib/utils/currency";
+import type { SerializedProduct } from "@/types/product";
 import ProductCard from "./ProductCard";
 import ProductGallery from "./ProductGallery";
 import Link from "next/link";
@@ -19,24 +20,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 
-interface ProductPageProduct {
-  id: number;
-  title: string;
-  slug: string;
-  description: string;
-  price: number;
-  oldPrice: number | null;
-  thumbnail: string;
-  stock: number;
-  brand: string;
-  sku: string;
-  rating: number;
-  sold: number;
-  featured: boolean;
-  categoryId: number;
-  category: { id: number; name: string };
-  imagesRel?: { url: string; width: number; height: number; format: string; blurDataURL?: string }[];
-}
+type ProductPageProduct = SerializedProduct;
 
 interface ProductPageProps {
   product: ProductPageProduct;
@@ -54,17 +38,17 @@ export default function ProductPage({ product, relatedProducts }: ProductPagePro
   const isMaxReached = cartQty >= product.stock;
   const isOutOfStock = product.stock <= 0;
   const hasDiscount = product.oldPrice && product.oldPrice > product.price;
-  const discount = hasDiscount
-    ? Math.round(((product.oldPrice! - product.price) / product.oldPrice!) * 100)
+  const discount = hasDiscount && product.oldPrice
+    ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
     : 0;
   const isLowStock = product.stock > 0 && product.stock <= 5;
 
   const formattedPrice = formatPrice(product.price);
-  const formattedOldPrice = hasDiscount ? formatPrice(product.oldPrice!) : null;
-  const formattedSavings = hasDiscount ? formatPrice(product.oldPrice! - product.price) : null;
+  const formattedOldPrice = hasDiscount && product.oldPrice ? formatPrice(product.oldPrice) : null;
+  const formattedSavings = hasDiscount && product.oldPrice ? formatPrice(product.oldPrice - product.price) : null;
 
   const handleAdd = () => {
-    addToCart(product as unknown as CartItem, quantity);
+    addToCart(product, quantity);
     setAdded(true);
     setTimeout(() => setAdded(false), 1800);
   };
@@ -76,8 +60,8 @@ export default function ProductPage({ product, relatedProducts }: ProductPagePro
       <nav className="flex flex-wrap items-center gap-[0.35rem] text-[0.8rem] font-semibold text-text-placeholder mb-8 max-ms:text-[0.72rem] [&>a]:text-text-muted [&>a]:no-underline [&>a]:transition-colors [&>a]:duration-200 [&>a:hover]:text-accent [&>svg]:shrink-0 [&>span:last-child]:text-text-secondary">
         <Link href="/">Inicio</Link>
         <ChevronRight size={14} />
-        <Link href={`/category/${product.category.name.toLowerCase()}`}>
-          {product.category.name}
+        <Link href={product.category ? `/category/${product.category.name.toLowerCase()}` : "#"}>
+          {product.category?.name}
         </Link>
         <ChevronRight size={14} />
         <span>{product.title}</span>
@@ -233,7 +217,7 @@ export default function ProductPage({ product, relatedProducts }: ProductPagePro
           <div className="flex items-center justify-between mb-[1.2rem]">
             <h2 className="text-[1.3rem] font-semibold text-text-body m-0">Productos similares</h2>
             <Link
-              href={`/category/${product.category.name.toLowerCase()}`}
+              href={product.category ? `/category/${product.category.name.toLowerCase()}` : "#"}
               className="inline-flex items-center gap-[0.3rem] text-[0.82rem] font-semibold text-accent no-underline uppercase tracking-[0.5px] transition-opacity duration-200 hover:opacity-80"
             >
               Ver todos

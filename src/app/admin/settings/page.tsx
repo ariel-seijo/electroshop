@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Settings, Lock, Eye, EyeOff, DollarSign, Loader2, AlertTriangle } from "lucide-react";
 import { useToastStore } from "@/features/toast";
+import { getErrorMessage } from "@/lib/errors";
 import { invalidateExchangeRate } from "@/lib/utils/currency";
 
 export default function SettingsPage() {
@@ -29,7 +30,7 @@ export default function SettingsPage() {
       try {
         const res = await fetch("/api/admin/settings");
         if (res.ok) {
-          const data = await res.json();
+          const data: { usdToArs?: number } = await res.json();
           setUsdToArs(data.usdToArs?.toString() || "1400");
         }
       } catch {
@@ -62,14 +63,14 @@ export default function SettingsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ currentPassword, newPassword, confirmPassword }),
       });
-      const data = await res.json();
+      const data: { error?: string } = await res.json();
       if (!res.ok) throw new Error(data.error || "Error al cambiar contraseña");
       toast("Contraseña actualizada exitosamente", "success");
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
     } catch (err) {
-      setPasswordError((err as Error).message);
+      setPasswordError(getErrorMessage(err));
     } finally {
       setChangingPassword(false);
     }
@@ -100,7 +101,7 @@ export default function SettingsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ usdToArs: Number(usdToArs) }),
       });
-      const data = await res.json();
+      const data: { usdToArs: number; error?: string } = await res.json();
       if (!res.ok) throw new Error(data.error || "Error al actualizar");
       invalidateExchangeRate(data.usdToArs);
       setUsdToArs(data.usdToArs.toString());
@@ -108,7 +109,7 @@ export default function SettingsPage() {
       setShowConfirmModal(false);
       setConfirmInput("");
     } catch (err) {
-      toast((err as Error).message, "error");
+      toast(getErrorMessage(err), "error");
     } finally {
       setSavingRate(false);
     }

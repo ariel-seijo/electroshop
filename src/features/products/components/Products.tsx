@@ -3,7 +3,7 @@
 import ProductCard from "./ProductCard";
 
 interface ProductsProps {
-  products: Array<{
+  products: {
     id: number;
     title: string;
     slug: string;
@@ -17,8 +17,8 @@ interface ProductsProps {
     sold: number;
     featured: boolean;
     categoryId: number;
-    category?: { name: string } | null;
-  }>;
+    category: { id: number; name: string } | null;
+  }[];
   view?: "grid" | "list";
 }
 

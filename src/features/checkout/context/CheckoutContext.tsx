@@ -8,6 +8,7 @@ import {
   useReducer,
   useRef,
 } from "react";
+import { getErrorMessage } from "@/lib/errors";
 import { useCart, type CartItem } from "@/features/cart";
 import { SHIPPING_DEMO, PAYMENT_DEMO } from "@/mocks/checkoutDemoData";
 
@@ -268,7 +269,7 @@ export function CheckoutProvider({ children }: { children: React.ReactNode }) {
         }),
       });
 
-      const data = await res.json();
+      const data: { order: OrderData; error?: string } = await res.json();
 
       if (!res.ok) {
         throw new Error(data.error || "Error al procesar el pedido");
@@ -278,7 +279,7 @@ export function CheckoutProvider({ children }: { children: React.ReactNode }) {
       clearCart();
       clearStorage();
     } catch (err) {
-      dispatch({ type: "PLACE_ORDER_ERROR", error: (err as Error).message });
+      dispatch({ type: "PLACE_ORDER_ERROR", error: getErrorMessage(err) });
       throw err;
     }
   }, [cart, state.shipping, state.paymentMethod, state.cardDetails, clearCart]);

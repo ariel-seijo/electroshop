@@ -25,7 +25,8 @@ export default function ReceiptDownload({ order }: ReceiptDownloadProps) {
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
-    } catch {
+    } catch (error) {
+      console.error("[RECEIPT DOWNLOAD ERROR]", error);
       // silently fail, user can retry
     } finally {
       setGenerating(false);

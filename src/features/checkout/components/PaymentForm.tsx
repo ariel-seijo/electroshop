@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { ChevronRight, CreditCard, ArrowLeft, Banknote, Building2, type LucideIcon } from "lucide-react";
 import { useCheckout } from "../context/CheckoutContext";
+import { useCheckoutForm } from "../hooks/useCheckoutForm";
 import { formatCardNumber, formatExpiry, formatCvc } from "@/lib/utils/input-formatters";
 import MagicFillButton from "./MagicFillButton";
 
@@ -11,6 +12,13 @@ const PAYMENT_METHODS: { id: string; label: string; icon: LucideIcon }[] = [
   { id: "transfer", label: "Transferencia Bancaria", icon: Building2 },
   { id: "cash", label: "Efectivo (al retirar)", icon: Banknote },
 ];
+
+const CARD_RULES = {
+  cardNumber: { required: true },
+  cardExpiry: { required: true },
+  cardCvc: { required: true },
+  cardHolder: { required: true },
+} as const;
 
 const formBase = "bg-surface-22 border border-[#1f1f1f] p-8 max-3md:px-[1.2rem] max-3md:py-[1.2rem]";
 const sectionHeader = "flex items-center justify-between mb-[1.8rem] pb-4 border-b border-[#1f1f1f] max-3md:flex-col max-3md:items-start max-3md:gap-3";
@@ -36,6 +44,16 @@ export default function PaymentForm() {
     goPrev,
   } = useCheckout();
 
+  const { errors, validate, clearError, clearAll } = useCheckoutForm(
+    cardDetails,
+    CARD_RULES,
+  );
+
+  // Limpiar errores cuando el usuario cambia de método de pago
+  useEffect(() => {
+    clearAll();
+  }, [paymentMethod, clearAll]);
+
   const handleCardChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
@@ -44,9 +62,15 @@ export default function PaymentForm() {
       else if (name === "cardExpiry") formatted = formatExpiry(value);
       else if (name === "cardCvc") formatted = formatCvc(value);
       setCardField(name, formatted);
+      clearError(name);
     },
-    [setCardField]
+    [setCardField, clearError]
   );
+
+  const handleContinue = useCallback(() => {
+    // Solo validar campos de tarjeta si el método seleccionado es "card"
+    if (paymentMethod !== "card" || validate()) goNext();
+  }, [paymentMethod, validate, goNext]);
 
   return (
     <div className={formBase}>
@@ -90,23 +114,27 @@ export default function PaymentForm() {
       {paymentMethod === "card" && (
         <div className="mb-2 p-6 bg-surface-18 border border-border-34">
           <div className={row}>
-            <div className={group}>
+            <div className={`${group} ${errors.cardNumber ? "[&>input]:border-danger" : ""}`}>
               <label>Número de tarjeta <span className={requiredStar}>*</span></label>
               <input name="cardNumber" value={cardDetails.cardNumber} onChange={handleCardChange} placeholder="0000 0000 0000 0000" inputMode="numeric" autoComplete="cc-number" className={inputField} />
+              {errors.cardNumber && <span className="text-[0.72rem] font-semibold text-danger">{errors.cardNumber}</span>}
             </div>
           </div>
           <div className={`${row} ${row3}`}>
-            <div className={group}>
+            <div className={`${group} ${errors.cardExpiry ? "[&>input]:border-danger" : ""}`}>
               <label>Vencimiento <span className={requiredStar}>*</span></label>
               <input name="cardExpiry" value={cardDetails.cardExpiry} onChange={handleCardChange} placeholder="MM/AA" inputMode="numeric" autoComplete="cc-exp" className={inputField} />
+              {errors.cardExpiry && <span className="text-[0.72rem] font-semibold text-danger">{errors.cardExpiry}</span>}
             </div>
-            <div className={group}>
+            <div className={`${group} ${errors.cardCvc ? "[&>input]:border-danger" : ""}`}>
               <label>CVC <span className={requiredStar}>*</span></label>
               <input name="cardCvc" value={cardDetails.cardCvc} onChange={handleCardChange} placeholder="123" inputMode="numeric" autoComplete="cc-csc" className={inputField} />
+              {errors.cardCvc && <span className="text-[0.72rem] font-semibold text-danger">{errors.cardCvc}</span>}
             </div>
-            <div className={group}>
+            <div className={`${group} ${errors.cardHolder ? "[&>input]:border-danger" : ""}`}>
               <label>Titular <span className={requiredStar}>*</span></label>
               <input name="cardHolder" value={cardDetails.cardHolder} onChange={handleCardChange} placeholder="Nombre en la tarjeta" autoComplete="cc-name" className={inputField} />
+              {errors.cardHolder && <span className="text-[0.72rem] font-semibold text-danger">{errors.cardHolder}</span>}
             </div>
           </div>
         </div>
@@ -117,7 +145,7 @@ export default function PaymentForm() {
           <ArrowLeft size={18} />
           Volver
         </button>
-        <button className={btnPrimary} onClick={goNext}>
+        <button className={btnPrimary} onClick={handleContinue}>
           Revisar pedido
           <ChevronRight size={18} />
         </button>

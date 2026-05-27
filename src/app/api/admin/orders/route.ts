@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getIronSession } from "iron-session";
+import { Prisma } from "@prisma/client";
+import type { OrderStatus } from "@prisma/client";
 import { sessionOptions, SessionData } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 
@@ -15,9 +17,9 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get("status");
 
-    const where: Record<string, unknown> = {};
+    const where: Prisma.OrderWhereInput = {};
     if (status && ["PENDING", "PAID", "SHIPPED", "CANCELLED"].includes(status)) {
-      where.status = status;
+      where.status = status as OrderStatus;
     }
 
     const orders = await prisma.order.findMany({
@@ -45,7 +47,8 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json({ orders, stats });
-  } catch {
+  } catch (error) {
+    console.error("[ADMIN ORDERS ERROR]", error);
     return NextResponse.json(
       { error: "Error al obtener pedidos" },
       { status: 500 }
@@ -114,7 +117,7 @@ export async function PATCH(request: NextRequest) {
 
       const updated = await tx.order.update({
         where: { id },
-        data: { status: status as import("@prisma/client").OrderStatus },
+        data: { status: status as OrderStatus },
         include: {
           items: true,
           user: { select: { id: true, name: true, email: true } },

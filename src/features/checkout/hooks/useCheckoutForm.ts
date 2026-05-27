@@ -14,7 +14,7 @@ const MESSAGES: Record<string, string> = {
   minLength: "Demasiado corto",
 };
 
-interface FieldRules {
+export interface FieldRules {
   required?: boolean;
   email?: boolean;
   minLength?: number;
@@ -24,11 +24,12 @@ interface CheckoutFormResult {
   errors: Record<string, string>;
   validate: () => boolean;
   clearError: (name: string) => void;
+  clearAll: () => void;
   isValid: boolean;
 }
 
-export function useCheckoutForm(
-  fields: Record<string, unknown>,
+export function useCheckoutForm<T extends object>(
+  fields: T,
   ruleSet: Record<string, FieldRules>
 ): CheckoutFormResult {
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -61,7 +62,11 @@ export function useCheckoutForm(
     });
   }, []);
 
+  const clearAll = useCallback(() => {
+    setErrors({});
+  }, []);
+
   const isValid = Object.keys(errors).length === 0;
 
-  return { errors, validate, clearError, isValid };
+  return { errors, validate, clearError, clearAll, isValid };
 }

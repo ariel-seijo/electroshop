@@ -15,6 +15,8 @@ import {
   Printer,
 } from "lucide-react";
 import { formatPrice, formatArs, usdToArs } from "@/lib/utils/currency";
+import { getErrorMessage } from "@/lib/errors";
+import type { AdminOrder, AdminOrderItem } from "@/types/order";
 import OrderStatusTimeline from "@/features/orders/components/OrderStatusTimeline";
 
 const ReceiptDownload = dynamic(
@@ -54,35 +56,9 @@ function formatDate(dateStr: string): string {
   });
 }
 
-interface OrderItem {
-  id: number;
-  productTitle: string;
-  productSku: string;
-  quantity: number;
-  unitPrice: number;
-  totalPrice: number;
-  productImage: string;
-  productId: number;
-}
-
-interface Order {
-  id: string;
-  orderNumber: string;
-  status: string;
-  subtotal: number;
-  shippingCost: number;
-  total: number;
-  paymentMethod: string;
-  createdAt: string;
-  shippingAddress?: Record<string, string>;
-  cardDetails?: { last4?: string; holder?: string };
-  items: OrderItem[];
-  user?: { id: string; name: string; email: string };
-}
-
 export default function AdminOrderDetailPage() {
   const params = useParams<{ id: string }>();
-  const [order, setOrder] = useState<Order | null>(null);
+  const [order, setOrder] = useState<AdminOrder | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -95,10 +71,10 @@ export default function AdminOrderDetailPage() {
           if (res.status === 403) throw new Error("No autorizado");
           throw new Error("Error al cargar el pedido");
         }
-        const data = await res.json();
+        const data: { order: AdminOrder; error?: string } = await res.json();
         setOrder(data.order);
       } catch (err) {
-        setError((err as Error).message);
+        setError(getErrorMessage(err));
       } finally {
         setLoading(false);
       }

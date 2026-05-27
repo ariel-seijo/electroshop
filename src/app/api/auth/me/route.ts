@@ -23,7 +23,8 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json({ user }, { status: 200 });
-  } catch {
+  } catch (error) {
+    console.error("[AUTH ME ERROR]", error);
     return NextResponse.json({ user: null }, { status: 200 });
   }
 }

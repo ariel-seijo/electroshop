@@ -42,8 +42,8 @@ export default function ShippingForm() {
   const { shipping, setShippingField, autoFillShipping, goNext } =
     useCheckout();
   const { errors, validate, clearError } = useCheckoutForm(
-    shipping as unknown as Record<string, unknown>,
-    SHIPPING_RULES as unknown as Record<string, { [key: string]: boolean }>,
+    shipping,
+    SHIPPING_RULES,
   );
 
   const handleChange = useCallback(

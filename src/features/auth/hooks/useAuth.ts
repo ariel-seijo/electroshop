@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { getErrorMessage } from "@/lib/errors";
 
 export interface AuthUser {
   id: string;
@@ -38,12 +39,12 @@ export const useAuthStore = create<AuthState>((set) => ({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      const data = await res.json();
+      const data: { user: import("@/types/api").AuthUserPayload; error?: string } = await res.json();
       if (!res.ok) throw new Error(data.error || "No se pudo iniciar sesión");
       set({ user: data.user, loading: false });
       return data.user;
     } catch (error) {
-      set({ error: (error as Error).message, loading: false });
+      set({ error: getErrorMessage(error), loading: false });
       throw error;
     }
   },
@@ -56,12 +57,12 @@ export const useAuthStore = create<AuthState>((set) => ({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password, confirmPassword }),
       });
-      const data = await res.json();
+      const data: { user: import("@/types/api").AuthUserPayload; error?: string } = await res.json();
       if (!res.ok) throw new Error(data.error || "No se pudo crear la cuenta");
       set({ user: data.user, loading: false });
       return data.user;
     } catch (error) {
-      set({ error: (error as Error).message, loading: false });
+      set({ error: getErrorMessage(error), loading: false });
       throw error;
     }
   },
@@ -78,7 +79,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ loading: true });
     try {
       const res = await fetch("/api/auth/me");
-      const data = await res.json();
+      const data: { user: import("@/types/api").AuthUserPayload | null } = await res.json();
       set({ user: data.user, loading: false, initialized: true });
     } catch {
       set({ user: null, loading: false, initialized: true });

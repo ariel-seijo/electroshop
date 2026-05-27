@@ -1,7 +1,9 @@
 import "server-only";
 
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { VALID_STATUSES, canTransitionOrderStatus, type OrderStatus } from "@/lib/order-state";
+import type { OrderFilters } from "@/types/order";
 
 const VALID_SORT_FIELDS = ["createdAt", "total", "status"];
 
@@ -39,17 +41,6 @@ const ORDER_DETAIL_INCLUDE = {
   },
 } as const;
 
-interface OrderFilters {
-  page?: string | number;
-  limit?: string | number;
-  status?: string;
-  search?: string;
-  dateFrom?: string;
-  dateTo?: string;
-  sort?: string;
-  order?: string;
-}
-
 export interface DashboardMetrics {
   totalRevenue: number;
   pendingCount: number;
@@ -59,15 +50,15 @@ export interface DashboardMetrics {
   averageTicket: number;
 }
 
-export async function getAllOrders(params: OrderFilters = {}) {
+export async function getAllOrders(params: OrderFilters = {}): Promise<{ orders: Prisma.OrderGetPayload<{ select: typeof ORDER_LIST_SELECT }>[]; total: number; page: number; totalPages: number }> {
   const page = Math.max(1, parseInt(String(params.page)) || 1);
   const limit = Math.min(50, Math.max(1, parseInt(String(params.limit)) || 10));
   const skip = (page - 1) * limit;
 
-  const where: Record<string, unknown> = {};
+  const where: Prisma.OrderWhereInput = {};
 
   if (params.status && VALID_STATUSES.includes(params.status as OrderStatus)) {
-    where.status = params.status;
+    where.status = params.status as OrderStatus;
   }
 
   if (params.search) {
@@ -78,23 +69,21 @@ export async function getAllOrders(params: OrderFilters = {}) {
   }
 
   if (params.dateFrom || params.dateTo) {
-    where.createdAt = {} as Record<string, Date>;
+    const createdAt: Prisma.DateTimeFilter = {};
     if (params.dateFrom) {
-      (where.createdAt as Record<string, Date>).gte = new Date(params.dateFrom);
+      createdAt.gte = new Date(params.dateFrom);
     }
     if (params.dateTo) {
       const endDate = new Date(params.dateTo);
       endDate.setHours(23, 59, 59, 999);
-      (where.createdAt as Record<string, Date>).lte = endDate;
+      createdAt.lte = endDate;
     }
+    where.createdAt = createdAt;
   }
 
-  const orderBy: Record<string, string> = {};
-  if (VALID_SORT_FIELDS.includes(params.sort || "")) {
-    orderBy[params.sort!] = params.order === "asc" ? "asc" : "desc";
-  } else {
-    orderBy.createdAt = "desc";
-  }
+  const sortField: string = VALID_SORT_FIELDS.includes(params.sort || "") ? params.sort as string : "createdAt";
+  const sortDir = params.order === "asc" ? "asc" : "desc";
+  const orderBy: Prisma.OrderOrderByWithRelationInput = { [sortField]: sortDir };
 
   const [orders, total] = await Promise.all([
     prisma.order.findMany({
@@ -115,7 +104,7 @@ export async function getAllOrders(params: OrderFilters = {}) {
   };
 }
 
-export async function getOrderById(id: string) {
+export async function getOrderById(id: string): Promise<Prisma.OrderGetPayload<{ include: typeof ORDER_DETAIL_INCLUDE }>> {
   const order = await prisma.order.findUnique({
     where: { id },
     include: ORDER_DETAIL_INCLUDE,
@@ -128,7 +117,7 @@ export async function getOrderById(id: string) {
   return order;
 }
 
-export async function updateOrderStatus(id: string, newStatus: string) {
+export async function updateOrderStatus(id: string, newStatus: string): Promise<Prisma.OrderGetPayload<{ include: typeof ORDER_DETAIL_INCLUDE }>> {
   if (!VALID_STATUSES.includes(newStatus as OrderStatus)) {
     throw new Error("Estado no válido");
   }

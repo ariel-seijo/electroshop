@@ -14,6 +14,8 @@ import ImageUploadWidget from "./ImageUploadWidget";
 import AdminGallery from "./AdminGallery";
 import ThumbnailUploader from "./ThumbnailUploader";
 import ProductCardPreview from "./ProductCardPreview";
+import type { Category } from "@/types/category";
+import type { AdminProductData, AdminImageAsset } from "@/types/product";
 
 interface FormData {
   title: string;
@@ -33,36 +35,10 @@ interface FormData {
   active: boolean;
 }
 
-interface ProductRecord {
-  id: number;
-  title: string;
-  slug: string;
-  description: string | null;
-  price: number;
-  oldPrice: number | null;
-  stock: number;
-  brand: string;
-  sku: string | null;
-  categoryId: number | null;
-  thumbnail: string | null;
-  images: string[] | null;
-  imagesRel?: { id: string; url: string; format: string; width: number; height: number }[];
-  rating: number;
-  sold: number;
-  featured: boolean;
-  active: boolean;
-  category?: { name: string } | null;
-}
-
-interface Category {
-  id: number;
-  name: string;
-}
-
 interface ProductFormProps {
   mode: "create" | "edit";
   productId?: number | null;
-  product?: ProductRecord | null;
+  product?: AdminProductData | null;
   categories: Category[];
   brands?: string[];
   onRefreshProduct?: () => void;
@@ -71,15 +47,6 @@ interface ProductFormProps {
 }
 
 type FormErrors = Partial<Record<keyof FormData, string>>;
-
-interface GalleryImage {
-  id: string;
-  url: string;
-  format: string;
-  width: number;
-  height: number;
-  _legacy?: boolean;
-}
 
 const initialFormState: FormData = {
   title: "",
@@ -140,7 +107,7 @@ export default function ProductForm({
   const [isGeneratingSku, setIsGeneratingSku] = useState<boolean>(false);
   const [formVersion, setFormVersion] = useState<number>(0);
   const [createdProductId, setCreatedProductId] = useState<number | null>(null);
-  const [localProduct, setLocalProduct] = useState<ProductRecord | null>(null);
+  const [localProduct, setLocalProduct] = useState<AdminProductData | null>(null);
   const [galleryOrder, setGalleryOrder] = useState<string[] | null>(null);
   const [isCustomBrand, setIsCustomBrand] = useState<boolean>(() => {
     if (product && brands.length > 0) {
@@ -154,7 +121,7 @@ export default function ProductForm({
 
   const productImagesRel = effectiveProduct?.imagesRel || [];
   const productImagesLegacy = effectiveProduct?.images || [];
-  const productImages: GalleryImage[] =
+  const productImages: AdminImageAsset[] =
     productImagesRel.length > 0
       ? productImagesRel
       : productImagesLegacy.map((url, i) => ({
@@ -202,7 +169,7 @@ export default function ProductForm({
     } else if (createdProductId) {
       const res = await getProductAction(createdProductId);
       if ("success" in res && res.success) {
-        setLocalProduct(res.product as unknown as ProductRecord);
+        setLocalProduct(res.product as AdminProductData);
       }
     }
   }
@@ -308,9 +275,18 @@ export default function ProductForm({
 
     const isFirstCreate = !isEdit && !createdProductId;
 
-    const result = isFirstCreate
-      ? await createProductAction(data)
-      : await updateProductAction(effectiveProductId!, data);
+    let result: Awaited<ReturnType<typeof createProductAction>>;
+    if (!isFirstCreate) {
+      const pid = effectiveProductId;
+      if (pid == null) {
+        toast("Error: ID de producto no disponible", "error");
+        setIsSubmitting(false);
+        return;
+      }
+      result = await updateProductAction(pid, data);
+    } else {
+      result = await createProductAction(data);
+    }
 
     const submitErrorMsg = "error" in result ? result.error : undefined;
     if (submitErrorMsg) {
@@ -322,7 +298,7 @@ export default function ProductForm({
     let currentProductId = effectiveProductId;
 
     if (isFirstCreate) {
-      const product = result.product as unknown as ProductRecord;
+      const product = result.product as AdminProductData;
       setCreatedProductId(product.id);
       setLocalProduct(product);
       currentProductId = product.id;

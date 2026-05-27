@@ -67,7 +67,8 @@ function ResetPasswordForm() {
 
       toast(data.message, "success");
       router.push("/login");
-    } catch {
+    } catch (error) {
+      console.error("[RESET PASSWORD ERROR]", error);
       setError("Error de conexión. Intentá de nuevo");
     } finally {
       setLoading(false);

@@ -3,18 +3,11 @@
 import { useState } from "react";
 import Image from "next/image";
 import { optimizeCloudinaryUrl } from "@/lib/utils/cloudinary-url";
-
-interface GalleryImage {
-  url: string;
-  blurDataURL?: string;
-  width: number;
-  height: number;
-  format: string;
-}
+import type { SerializedProductImage } from "@/types/product";
 
 interface ProductGalleryProps {
   product: {
-    imagesRel?: GalleryImage[];
+    imagesRel?: SerializedProductImage[];
     thumbnail: string;
     title: string;
   };
@@ -24,7 +17,7 @@ export default function ProductGallery({ product }: ProductGalleryProps) {
   const imagesRel = product?.imagesRel || [];
   const thumbnail = product?.thumbnail;
 
-  const images: GalleryImage[] = [];
+  const images: SerializedProductImage[] = [];
 
   if (thumbnail) {
     images.push({

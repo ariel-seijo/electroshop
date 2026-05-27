@@ -12,11 +12,14 @@ export interface CartItem {
   quantity: number;
 }
 
+/** Product data passed to `addToCart` — quantity is determined by the reducer. */
+export type CartItemInput = Omit<CartItem, "quantity">;
+
 export type CartState = CartItem[];
 
 export type CartAction =
   | { type: "SET_CART"; payload: CartItem[] }
-  | { type: "ADD_TO_CART"; payload: { product: CartItem; quantity?: number } }
+  | { type: "ADD_TO_CART"; payload: { product: CartItemInput; quantity?: number } }
   | { type: "INCREASE_QUANTITY"; payload: number }
   | { type: "DECREASE_QUANTITY"; payload: number }
   | { type: "REMOVE_FROM_CART"; payload: number }

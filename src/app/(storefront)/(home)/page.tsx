@@ -35,7 +35,7 @@ export default async function Home() {
             <Slider />
             <section>
                 <SectionTitle>PRODUCTOS DESTACADOS</SectionTitle>
-                <FeaturedCarouselDynamic products={serializeProductsForClient(products) as unknown as Product[]} />
+                <FeaturedCarouselDynamic products={serializeProductsForClient(products)} />
             </section>
             <PromoBanner />
             <section>

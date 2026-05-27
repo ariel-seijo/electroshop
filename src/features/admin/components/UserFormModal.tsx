@@ -120,7 +120,8 @@ export default function UserFormModal({
     try {
       await onSubmit(formData);
       onClose();
-    } catch {
+    } catch (error) {
+      console.error("[USER FORM ERROR]", error);
       // error handled by parent
     } finally {
       setIsSubmitting(false);

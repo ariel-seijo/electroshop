@@ -3,6 +3,7 @@
 import { revalidateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth-guards";
+import { getErrorMessage } from "@/lib/errors";
 import {
   generateSignature,
   generateBlurDataURL,
@@ -10,7 +11,7 @@ import {
 } from "@/lib/cloudinary";
 import { saveProductImagesSchema, formatZodError } from "@/lib/validations";
 
-export async function getCloudinarySignatureAction(paramsToSign?: Record<string, string | number>) {
+export async function getCloudinarySignatureAction(paramsToSign?: Record<string, string | number>): Promise<{ timestamp: number; signature: string; cloudName: string; apiKey: string } | { error: string }> {
   try {
     await requireAdmin();
 
@@ -19,7 +20,7 @@ export async function getCloudinarySignatureAction(paramsToSign?: Record<string,
 
     return { timestamp, signature, cloudName, apiKey };
   } catch (error) {
-    if ((error as Error).message === "Unauthorized") {
+    if (getErrorMessage(error) === "Unauthorized") {
       return { error: "No autorizado" };
     }
     console.error("[SIGNATURE ERROR]", error);
@@ -101,7 +102,7 @@ export async function saveProductImagesAction(productId: number, images: Cloudin
 
     return { images: imageRecords };
   } catch (error) {
-    if ((error as Error).message === "Unauthorized") {
+    if (getErrorMessage(error) === "Unauthorized") {
       return { error: "No autorizado" };
     }
     console.error("[SAVE IMAGES ERROR]", error);
@@ -151,7 +152,7 @@ export async function deleteProductImageAction(imageId: string) {
 
     return { success: true as const };
   } catch (error) {
-    if ((error as Error).message === "Unauthorized") {
+    if (getErrorMessage(error) === "Unauthorized") {
       return { error: "No autorizado" };
     }
     console.error("[DELETE IMAGE ERROR]", error);
@@ -189,7 +190,7 @@ export async function reorderProductImagesAction(productId: number, imageIds: st
 
     return { success: true as const };
   } catch (error) {
-    if ((error as Error).message === "Unauthorized") {
+    if (getErrorMessage(error) === "Unauthorized") {
       return { error: "No autorizado" };
     }
     console.error("[REORDER IMAGES ERROR]", error);

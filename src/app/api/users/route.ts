@@ -26,7 +26,8 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: "desc" },
     });
     return NextResponse.json(users);
-  } catch {
+  } catch (error) {
+    console.error("[USERS ERROR]", error);
     return NextResponse.json({ error: "Failed to fetch users" }, { status: 500 });
   }
 }

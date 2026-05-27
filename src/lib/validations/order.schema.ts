@@ -40,6 +40,35 @@ export const checkoutSchema = z.object({
   paymentMethod: z.string().min(1, "El método de pago es obligatorio").max(50, "El método de pago es inválido"),
   cardDetails: cardDetailsSchema,
   notes: z.string().max(500, "Las notas son demasiado largas").nullable().optional(),
+}).superRefine((data, ctx) => {
+  if (data.paymentMethod !== "card") return;
+
+  if (!data.cardDetails) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Los datos de la tarjeta son obligatorios para pago con tarjeta",
+      path: ["cardDetails"],
+    });
+    return;
+  }
+
+  const requiredCardFields = [
+    { key: "cardNumber", label: "El número de tarjeta" },
+    { key: "cardExpiry", label: "La fecha de expiración" },
+    { key: "cardCvc", label: "El CVC" },
+    { key: "cardHolder", label: "El nombre del titular" },
+  ] as const;
+
+  for (const { key, label } of requiredCardFields) {
+    const value = data.cardDetails[key];
+    if (!value || (typeof value === "string" && value.trim().length === 0)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `${label} es obligatorio`,
+        path: ["cardDetails", key],
+      });
+    }
+  }
 });
 
 export type CheckoutItem = z.infer<typeof checkoutItemSchema>;

@@ -89,7 +89,7 @@ export default async function CategoryPage({
 
             {products.length > 0 ? (
               <>
-                <Products products={serializeProductsForClient(products) as never} view={view as "grid" | "list"} />
+                <Products products={serializeProductsForClient(products)} view={view as "grid" | "list"} />
                 <Pagination
                   name={name}
                   page={currentPage}

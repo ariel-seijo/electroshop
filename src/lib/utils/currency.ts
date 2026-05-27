@@ -43,6 +43,15 @@ function _bootstrap(): void {
   if (_loading) return;
 
   if (_isClient()) {
+    // Read server-embedded rate first (injected via <script> in root layout).
+    // This guarantees the initial client render matches the server's SSR output,
+    // eliminating hydration mismatches on first visits.
+    const w = window as unknown as { __EXCHANGE_RATE__?: number };
+    if (typeof w.__EXCHANGE_RATE__ === "number" && w.__EXCHANGE_RATE__ > 0) {
+      _cachedRate = w.__EXCHANGE_RATE__;
+      _version++;
+    }
+
     // Sync read from sessionStorage for instant correct rate on return visits
     const cached = sessionStorage.getItem("usdToArs");
     if (cached) {

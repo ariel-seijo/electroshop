@@ -32,7 +32,8 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json({ orders });
-  } catch {
+  } catch (error) {
+    console.error("[ORDERS ERROR]", error);
     return NextResponse.json(
       { error: "Error al obtener pedidos" },
       { status: 500 }
