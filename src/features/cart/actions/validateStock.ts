@@ -1,10 +1,9 @@
 import { prisma } from "@/lib/prisma";
 
-interface StockValidationResult {
-  valid: boolean;
-  maxAvailable: number;
-  error?: string;
-}
+/** Discriminated union — invalid states always carry an error message. */
+export type StockValidationResult =
+  | { valid: true; maxAvailable: number }
+  | { valid: false; maxAvailable: number; error: string };
 
 export async function validateStock(productId: number, requestedQuantity: number): Promise<StockValidationResult> {
   const product = await prisma.product.findUnique({

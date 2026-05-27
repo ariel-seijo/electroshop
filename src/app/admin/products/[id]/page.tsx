@@ -7,36 +7,12 @@ import Link from "next/link";
 import ProductForm from "@/features/admin/components/ProductForm";
 import { useToastStore } from "@/features/toast";
 import { getErrorMessage } from "@/lib/errors";
-
-interface ProductRecord {
-  id: number;
-  title: string;
-  slug: string;
-  description: string | null;
-  price: number;
-  oldPrice: number | null;
-  stock: number;
-  brand: string;
-  sku: string | null;
-  categoryId: number | null;
-  thumbnail: string | null;
-  images: string[] | null;
-  imagesRel?: { id: string; url: string; format: string; width: number; height: number }[];
-  rating: number;
-  sold: number;
-  featured: boolean;
-  active: boolean;
-  category?: { name: string } | null;
-}
-
-interface Category {
-  id: number;
-  name: string;
-}
+import type { Category } from "@/types/category";
+import type { AdminProductData } from "@/types/product";
 
 export default function EditProductPage() {
   const params = useParams<{ id: string }>();
-  const [product, setProduct] = useState<ProductRecord | null>(null);
+  const [product, setProduct] = useState<AdminProductData | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [brands, setBrands] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
@@ -55,7 +31,7 @@ export default function EditProductPage() {
       ]);
 
       if (!productRes.ok) throw new Error("Error al obtener el producto");
-      const productData = await productRes.json() as ProductRecord;
+      const productData = await productRes.json() as AdminProductData;
       setProduct(productData);
 
       if (categoriesRes.ok) {

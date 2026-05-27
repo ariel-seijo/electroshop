@@ -3,6 +3,7 @@ import "server-only";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { VALID_STATUSES, canTransitionOrderStatus, type OrderStatus } from "@/lib/order-state";
+import type { OrderFilters } from "@/types/order";
 
 const VALID_SORT_FIELDS = ["createdAt", "total", "status"];
 
@@ -39,17 +40,6 @@ const ORDER_DETAIL_INCLUDE = {
     select: { id: true, name: true, email: true },
   },
 } as const;
-
-interface OrderFilters {
-  page?: string | number;
-  limit?: string | number;
-  status?: string;
-  search?: string;
-  dateFrom?: string;
-  dateTo?: string;
-  sort?: string;
-  order?: string;
-}
 
 export interface DashboardMetrics {
   totalRevenue: number;

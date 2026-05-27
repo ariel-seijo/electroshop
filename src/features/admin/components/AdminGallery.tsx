@@ -9,10 +9,10 @@ import { SortableContext, useSortable, rectSortingStrategy, arrayMove } from "@d
 import { CSS } from "@dnd-kit/utilities";
 import { deleteProductImageAction } from "@/features/admin/actions/imageActions";
 import { useToastStore } from "@/features/toast";
+import type { AdminImageAsset } from "@/types/product";
 
-interface GalleryImage { id: string; url: string; format: string; width: number; height: number; _legacy?: boolean; }
-interface AdminGalleryProps { images: GalleryImage[]; onImageDeleted?: () => void; onDelete?: (imageId: string) => Promise<void>; onReorder?: (ids: string[]) => void; }
-interface SortableImageProps { img: GalleryImage; isDeleting: boolean; onDelete: (imageId: string, isLegacy: boolean) => void; }
+interface AdminGalleryProps { images: AdminImageAsset[]; onImageDeleted?: () => void; onDelete?: (imageId: string) => Promise<void>; onReorder?: (ids: string[]) => void; }
+interface SortableImageProps { img: AdminImageAsset; isDeleting: boolean; onDelete: (imageId: string, isLegacy: boolean) => void; }
 
 function SortableImage({ img, isDeleting, onDelete }: SortableImageProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: img.id });
@@ -45,7 +45,7 @@ function SortableImage({ img, isDeleting, onDelete }: SortableImageProps) {
 }
 
 export default function AdminGallery({ images, onImageDeleted, onDelete, onReorder }: AdminGalleryProps) {
-  const [items, setItems] = useState<GalleryImage[]>(images);
+  const [items, setItems] = useState<AdminImageAsset[]>(images);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const toast = useToastStore((s) => s.toast);
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));

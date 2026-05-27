@@ -1,9 +1,6 @@
 "use client";
 
-interface Category {
-  id: number;
-  name: string;
-}
+import type { Category } from "@/types/category";
 
 interface ProductFiltersProps {
   categories: Category[];

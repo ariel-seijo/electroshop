@@ -3,14 +3,7 @@
 import { ShoppingCart, TrendingUp, ArrowRight } from "lucide-react";
 import { formatArs } from "@/lib/utils/currency";
 import Link from "next/link";
-
-interface RecentOrder {
-  id: string;
-  orderNumber: string;
-  status: string;
-  total: number;
-  user?: { name?: string | null; email?: string } | null;
-}
+import type { RecentOrder } from "@/types/order";
 
 interface TopProduct {
   id: number;
@@ -74,7 +67,7 @@ export default function RecentActivity({ latestOrders, topProducts, exchangeRate
                       </span>
                     </td>
                     <td>
-                      <span className="font-mono text-[0.75rem] text-[#e4e4e4] max-[640px]:text-[0.72rem]">{formatArs(order.total * exchangeRate)}</span>
+                      <span className="font-mono text-[0.75rem] text-[#e4e4e4] max-[640px]:text-[0.72rem]">{formatArs((order.total ?? 0) * exchangeRate)}</span>
                     </td>
                   </tr>
                 ))

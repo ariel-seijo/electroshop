@@ -15,6 +15,7 @@ import {
 import dynamic from "next/dynamic";
 import { formatPrice, formatArs, usdToArs } from "@/lib/utils/currency";
 import { getErrorMessage } from "@/lib/errors";
+import type { CustomerOrder, CustomerOrderItem } from "@/types/order";
 
 const ReceiptDownload = dynamic(
   () => import("@/features/orders/components/ReceiptDownload"),
@@ -53,30 +54,9 @@ function formatDate(dateStr: string): string {
   });
 }
 
-interface OrderItem {
-  id: number;
-  productTitle: string;
-  productSku: string;
-  quantity: number;
-  unitPrice: number;
-  totalPrice: number;
-}
-
-interface Order {
-  orderNumber: string;
-  status: string;
-  subtotal: number;
-  shippingCost: number;
-  paymentMethod: string;
-  createdAt: string;
-  shippingAddress?: Record<string, string>;
-  cardDetails?: { last4?: string; holder?: string };
-  items: OrderItem[];
-}
-
 export default function OrderDetailPage() {
   const params = useParams<{ id: string }>();
-  const [order, setOrder] = useState<Order | null>(null);
+  const [order, setOrder] = useState<CustomerOrder | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -89,7 +69,7 @@ export default function OrderDetailPage() {
           if (res.status === 403) throw new Error("No tenés acceso a este pedido");
           throw new Error("Error al cargar el pedido");
         }
-        const data: { order: Order } = await res.json();
+        const data: { order: CustomerOrder } = await res.json();
         setOrder(data.order);
       } catch (err) {
         setError(getErrorMessage(err));

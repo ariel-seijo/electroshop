@@ -3,18 +3,8 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { requireAdmin } from "@/lib/auth-guards";
 import { getErrorMessage } from "@/lib/errors";
+import type { OrderFilters } from "@/types/order";
 import * as orderService from "@/features/orders/services/order.service";
-
-interface OrderFilters {
-  page?: string | number;
-  limit?: string | number;
-  status?: string;
-  search?: string;
-  dateFrom?: string;
-  dateTo?: string;
-  sort?: string;
-  order?: string;
-}
 
 export async function getOrdersAction(filters?: OrderFilters) {
   try {

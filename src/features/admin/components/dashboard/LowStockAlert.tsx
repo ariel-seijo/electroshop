@@ -2,12 +2,7 @@
 
 import { AlertTriangle, ArrowRight } from "lucide-react";
 import Link from "next/link";
-
-interface LowStockProduct {
-  id: number;
-  title: string;
-  stock: number;
-}
+import type { LowStockProduct } from "@/types/product";
 
 interface LowStockAlertProps {
   lowStockCount?: number;
