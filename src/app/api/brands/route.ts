@@ -9,7 +9,8 @@ export async function GET() {
     });
     const brands = results.map((r) => r.brand);
     return NextResponse.json(brands);
-  } catch {
+  } catch (error) {
+    console.error("[BRANDS ERROR]", error);
     return NextResponse.json({ error: "Failed to fetch brands" }, { status: 500 });
   }
 }

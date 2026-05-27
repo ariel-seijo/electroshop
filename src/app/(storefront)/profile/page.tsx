@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/features/auth";
 import { useToastStore } from "@/features/toast";
+import { getErrorMessage } from "@/lib/errors";
 import {
   User,
   Package,
@@ -71,13 +72,13 @@ export default function ProfilePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: nameInput.trim() }),
       });
-      const data = await res.json();
+      const data: { user: { name: string }; error?: string } = await res.json();
       if (!res.ok) throw new Error(data.error || "Error al actualizar");
       updateUser({ name: data.user.name });
       toast("Nombre actualizado exitosamente", "success");
       setIsEditing(false);
     } catch (err) {
-      toast((err as Error).message, "error");
+      toast(getErrorMessage(err), "error");
     } finally {
       setSaving(false);
     }
@@ -98,13 +99,13 @@ export default function ProfilePage() {
     setDeleting(true);
     try {
       const res = await fetch("/api/user", { method: "DELETE" });
-      const data = await res.json();
+      const data: { message?: string; error?: string } = await res.json();
       if (!res.ok) throw new Error(data.error || "Error al eliminar");
       setUser(null);
       toast("Cuenta eliminada exitosamente", "success");
       router.push("/");
     } catch (err) {
-      toast((err as Error).message, "error");
+      toast(getErrorMessage(err), "error");
       setDeleting(false);
       setShowDeleteConfirm(false);
     }
@@ -131,14 +132,14 @@ export default function ProfilePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ currentPassword, newPassword, confirmPassword }),
       });
-      const data = await res.json();
+      const data: { error?: string } = await res.json();
       if (!res.ok) throw new Error(data.error || "Error al cambiar contraseña");
       toast("Contraseña actualizada exitosamente", "success");
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
     } catch (err) {
-      setPasswordError((err as Error).message);
+      setPasswordError(getErrorMessage(err));
     } finally {
       setChangingPassword(false);
     }

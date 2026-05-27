@@ -47,7 +47,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     return NextResponse.json({ order });
-  } catch {
+  } catch (error) {
+    console.error("[ORDER BY ID ERROR]", error);
     return NextResponse.json(
       { error: "Error al obtener el pedido" },
       { status: 500 }

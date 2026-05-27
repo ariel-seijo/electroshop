@@ -11,6 +11,7 @@ import {
 } from "react";
 import { useAuthStore } from "@/features/auth";
 import { useToastStore } from "@/features/toast";
+import { getErrorMessage } from "@/lib/errors";
 import { cartReducer, initialState, CartItem, CartAction } from "./CartReducer";
 import { syncCart } from "../actions/syncCart";
 import { fetchCart } from "../actions/fetchCart";
@@ -150,7 +151,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           }
         })
         .catch((err) => {
-          console.error("Auto-save cart failed:", (err as Error).message);
+          console.error("Auto-save cart failed:", getErrorMessage(err));
         });
     }, 2000);
 
@@ -200,7 +201,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
       dispatch({ type: "SET_CART", payload: mapDbCartToClient(dbCart as unknown as DbCartItem[]) });
     } catch (error) {
-      console.error("Cart sync failed — guest cart preserved:", (error as Error).message);
+      console.error("Cart sync failed — guest cart preserved:", getErrorMessage(error));
     } finally {
       setIsSyncing(false);
     }

@@ -2,6 +2,7 @@
 
 import { revalidatePath, revalidateTag } from "next/cache";
 import { requireAdmin } from "@/lib/auth-guards";
+import { getErrorMessage } from "@/lib/errors";
 import * as userService from "@/features/admin/services/user.service";
 
 export async function getUsersAction(filters?: Record<string, unknown>) {
@@ -10,11 +11,11 @@ export async function getUsersAction(filters?: Record<string, unknown>) {
     const result = await userService.getAllUsers(filters);
     return { success: true as const, ...result };
   } catch (error) {
-    if ((error as Error).message === "Unauthorized") {
+    if (getErrorMessage(error) === "Unauthorized") {
       return { error: "No autorizado" };
     }
     console.error("[GET USERS ERROR]", error);
-    return { error: (error as Error).message || "Error al obtener usuarios" };
+    return { error: getErrorMessage(error) || "Error al obtener usuarios" };
   }
 }
 
@@ -24,14 +25,14 @@ export async function getUserOrderHistoryAction(id: string) {
     const result = await userService.getUserOrderHistory(id);
     return { success: true as const, ...result };
   } catch (error) {
-    if ((error as Error).message === "Unauthorized") {
+    if (getErrorMessage(error) === "Unauthorized") {
       return { error: "No autorizado" };
     }
-    if ((error as Error).message === "Usuario no encontrado") {
+    if (getErrorMessage(error) === "Usuario no encontrado") {
       return { error: "Usuario no encontrado" };
     }
     console.error("[GET USER ORDER HISTORY ERROR]", error);
-    return { error: (error as Error).message || "Error al obtener el historial" };
+    return { error: getErrorMessage(error) || "Error al obtener el historial" };
   }
 }
 
@@ -43,17 +44,17 @@ export async function deleteUserAction(id: string) {
     revalidateTag("admin-dashboard", "max");
     return { success: true as const, user };
   } catch (error) {
-    if ((error as Error).message === "Unauthorized") {
+    if (getErrorMessage(error) === "Unauthorized") {
       return { error: "No autorizado" };
     }
-    if ((error as Error).message === "Usuario no encontrado") {
+    if (getErrorMessage(error) === "Usuario no encontrado") {
       return { error: "Usuario no encontrado" };
     }
-    if ((error as Error).message === "El usuario ya fue eliminado") {
+    if (getErrorMessage(error) === "El usuario ya fue eliminado") {
       return { error: "El usuario ya fue eliminado" };
     }
     console.error("[DELETE USER ERROR]", error);
-    return { error: (error as Error).message || "Error al eliminar el usuario" };
+    return { error: getErrorMessage(error) || "Error al eliminar el usuario" };
   }
 }
 
@@ -65,17 +66,17 @@ export async function toggleUserStatusAction(id: string) {
     revalidateTag("admin-dashboard", "max");
     return { success: true as const, user };
   } catch (error) {
-    if ((error as Error).message === "Unauthorized") {
+    if (getErrorMessage(error) === "Unauthorized") {
       return { error: "No autorizado" };
     }
-    if ((error as Error).message === "Usuario no encontrado") {
+    if (getErrorMessage(error) === "Usuario no encontrado") {
       return { error: "Usuario no encontrado" };
     }
-    if ((error as Error).message === "No se puede modificar un usuario eliminado") {
+    if (getErrorMessage(error) === "No se puede modificar un usuario eliminado") {
       return { error: "No se puede modificar un usuario eliminado" };
     }
     console.error("[TOGGLE USER STATUS ERROR]", error);
-    return { error: (error as Error).message || "Error al cambiar el estado del usuario" };
+    return { error: getErrorMessage(error) || "Error al cambiar el estado del usuario" };
   }
 }
 
@@ -87,22 +88,22 @@ export async function updateUserRoleAction(id: string, role: string) {
     revalidateTag("admin-dashboard", "max");
     return { success: true as const, user: userData };
   } catch (error) {
-    if ((error as Error).message === "Unauthorized") {
+    if (getErrorMessage(error) === "Unauthorized") {
       return { error: "No autorizado" };
     }
-    if ((error as Error).message === "Usuario no encontrado") {
+    if (getErrorMessage(error) === "Usuario no encontrado") {
       return { error: "Usuario no encontrado" };
     }
-    if ((error as Error).message === "Rol no válido") {
+    if (getErrorMessage(error) === "Rol no válido") {
       return { error: "Rol no válido" };
     }
-    if ((error as Error).message === "El usuario ya tiene este rol") {
+    if (getErrorMessage(error) === "El usuario ya tiene este rol") {
       return { error: "El usuario ya tiene este rol" };
     }
-    if ((error as Error).message === "No se puede modificar un usuario eliminado") {
+    if (getErrorMessage(error) === "No se puede modificar un usuario eliminado") {
       return { error: "No se puede modificar un usuario eliminado" };
     }
     console.error("[UPDATE USER ROLE ERROR]", error);
-    return { error: (error as Error).message || "Error al cambiar el rol del usuario" };
+    return { error: getErrorMessage(error) || "Error al cambiar el rol del usuario" };
   }
 }

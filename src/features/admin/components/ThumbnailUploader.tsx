@@ -115,7 +115,8 @@ export default function ThumbnailUploader({ value, onChange }: ThumbnailUploader
                 return;
               }
               callback((res as { signature: string }).signature);
-            } catch {
+            } catch (error) {
+              console.error("[THUMBNAIL UPLOAD ERROR]", error);
               toast("Error al firmar la subida", "error");
             }
           },
@@ -128,7 +129,8 @@ export default function ThumbnailUploader({ value, onChange }: ThumbnailUploader
 
       widgetRef.current = widget;
       widget.open();
-    } catch {
+    } catch (error) {
+      console.error("[THUMBNAIL UPLOAD ERROR]", error);
       toast("Error al abrir el widget de subida", "error");
     }
   }, [scriptLoaded, handleResult, toast]);

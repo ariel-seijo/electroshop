@@ -6,6 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import ProductForm from "@/features/admin/components/ProductForm";
 import { useToastStore } from "@/features/toast";
+import { getErrorMessage } from "@/lib/errors";
 
 interface ProductRecord {
   id: number;
@@ -67,7 +68,7 @@ export default function EditProductPage() {
         setBrands(brandsData);
       }
     } catch (err) {
-      setError((err as Error).message);
+      setError(getErrorMessage(err));
     } finally {
       setLoading(false);
     }

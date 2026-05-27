@@ -45,7 +45,8 @@ export default function RegisterPage() {
       const user = await register(name, email, password, confirmPassword);
       toast(`¡Bienvenido, ${user.name || user.email}!`, "success");
       window.location.href = redirect || "/";
-    } catch {
+    } catch (error) {
+      console.error("[REGISTER ERROR]", error);
       // Error handled in store
     }
   };

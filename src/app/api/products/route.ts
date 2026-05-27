@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getErrorMessage } from "@/lib/errors";
 import * as productService from "@/features/products/services/product.service";
 
 export async function GET(request: NextRequest) {
@@ -35,7 +36,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("[API POST /products]", error);
 
-    const message = (error as Error).message || "Failed to create product";
+    const message = getErrorMessage(error) || "Failed to create product";
 
     if (message.includes("Missing required fields")) {
       return NextResponse.json({ error: message }, { status: 400 });

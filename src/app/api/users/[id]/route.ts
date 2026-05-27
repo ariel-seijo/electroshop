@@ -33,7 +33,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     return NextResponse.json(user);
-  } catch {
+  } catch (error) {
+    console.error("[USER BY ID ERROR]", error);
     return NextResponse.json({ error: "Failed to fetch user" }, { status: 500 });
   }
 }

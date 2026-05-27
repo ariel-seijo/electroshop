@@ -28,7 +28,8 @@ export default function NewProductPage() {
           const brandsData = await brandsRes.json() as string[];
           setBrands(brandsData);
         }
-      } catch {
+      } catch (error) {
+        console.error("[LOAD FORM DATA ERROR]", error);
         toast("Error al cargar categorías", "error");
       } finally {
         setLoading(false);

@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { formatPrice, formatArs, usdToArs } from "@/lib/utils/currency";
+import { getErrorMessage } from "@/lib/errors";
 
 const ReceiptDownload = dynamic(
   () => import("@/features/orders/components/ReceiptDownload"),
@@ -88,10 +89,10 @@ export default function OrderDetailPage() {
           if (res.status === 403) throw new Error("No tenés acceso a este pedido");
           throw new Error("Error al cargar el pedido");
         }
-        const data = await res.json();
+        const data: { order: Order } = await res.json();
         setOrder(data.order);
       } catch (err) {
-        setError((err as Error).message);
+        setError(getErrorMessage(err));
       } finally {
         setLoading(false);
       }

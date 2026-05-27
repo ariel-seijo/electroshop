@@ -148,7 +148,8 @@ export default function ImageUploadWidget({
             );
             onImagesUploaded?.();
           }
-        } catch {
+        } catch (error) {
+          console.error("[IMAGE UPLOAD ERROR]", error);
           toast("Error al guardar las imagenes", "error");
         } finally {
           setIsUploading(false);
@@ -200,7 +201,8 @@ export default function ImageUploadWidget({
                 return;
               }
               callback((res as { signature: string }).signature);
-            } catch {
+            } catch (error) {
+              console.error("[IMAGE UPLOAD ERROR]", error);
               toast("Error al firmar la subida", "error");
             }
           },
@@ -214,7 +216,8 @@ export default function ImageUploadWidget({
 
       widgetRef.current = widget;
       widget.open();
-    } catch {
+    } catch (error) {
+      console.error("[IMAGE UPLOAD ERROR]", error);
       toast("Error al abrir el widget de subida", "error");
     }
   }, [scriptLoaded, productId, remainingSlots, handleUploadResult, toast]);

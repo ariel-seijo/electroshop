@@ -15,6 +15,7 @@ import {
   Printer,
 } from "lucide-react";
 import { formatPrice, formatArs, usdToArs } from "@/lib/utils/currency";
+import { getErrorMessage } from "@/lib/errors";
 import OrderStatusTimeline from "@/features/orders/components/OrderStatusTimeline";
 
 const ReceiptDownload = dynamic(
@@ -95,10 +96,10 @@ export default function AdminOrderDetailPage() {
           if (res.status === 403) throw new Error("No autorizado");
           throw new Error("Error al cargar el pedido");
         }
-        const data = await res.json();
+        const data: { order: Order; error?: string } = await res.json();
         setOrder(data.order);
       } catch (err) {
-        setError((err as Error).message);
+        setError(getErrorMessage(err));
       } finally {
         setLoading(false);
       }

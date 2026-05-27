@@ -42,7 +42,8 @@ export default function ForgotPasswordPage() {
       const data = await res.json();
       setSent(true);
       toast(data.message || "Revisá tu email para continuar", "success");
-    } catch {
+    } catch (error) {
+      console.error("[FORGOT PASSWORD ERROR]", error);
       setError("Error de conexión. Intentá de nuevo");
     } finally {
       setLoading(false);

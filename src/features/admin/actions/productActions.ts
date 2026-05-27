@@ -2,6 +2,7 @@
 
 import { revalidatePath, revalidateTag } from "next/cache";
 import { requireAdmin } from "@/lib/auth-guards";
+import { getErrorMessage } from "@/lib/errors";
 import * as productService from "@/features/products/services/product.service";
 import type { CreateProductInput, UpdateProductInput } from "@/lib/validations";
 
@@ -40,11 +41,11 @@ export async function getProductsAction(filters?: ProductFilters) {
     const result = await productService.getAllProducts(filters);
     return { success: true as const, ...result };
   } catch (error) {
-    if ((error as Error).message === "Unauthorized") {
+    if (getErrorMessage(error) === "Unauthorized") {
       return { error: "No autorizado" };
     }
     console.error("[GET PRODUCTS ERROR]", error);
-    return { error: (error as Error).message || "Error al obtener productos" };
+    return { error: getErrorMessage(error) || "Error al obtener productos" };
   }
 }
 
@@ -54,14 +55,14 @@ export async function getProductAction(id: number) {
     const product = await productService.getProductById(id);
     return { success: true as const, product };
   } catch (error) {
-    if ((error as Error).message === "Unauthorized") {
+    if (getErrorMessage(error) === "Unauthorized") {
       return { error: "No autorizado" };
     }
-    if ((error as Error).message === "Product not found") {
+    if (getErrorMessage(error) === "Product not found") {
       return { error: "Producto no encontrado" };
     }
     console.error("[GET PRODUCT ERROR]", error);
-    return { error: (error as Error).message || "Error al obtener el producto" };
+    return { error: getErrorMessage(error) || "Error al obtener el producto" };
   }
 }
 
@@ -78,11 +79,11 @@ export async function createProductAction(data: CreateProductInput) {
     }
     return { success: true as const, product };
   } catch (error) {
-    if ((error as Error).message === "Unauthorized") {
+    if (getErrorMessage(error) === "Unauthorized") {
       return { error: "No autorizado" };
     }
     console.error("[CREATE PRODUCT ERROR]", error);
-    return { error: (error as Error).message || "Error al crear el producto" };
+    return { error: getErrorMessage(error) || "Error al crear el producto" };
   }
 }
 
@@ -99,14 +100,14 @@ export async function updateProductAction(id: number, data: UpdateProductInput) 
     }
     return { success: true as const, product };
   } catch (error) {
-    if ((error as Error).message === "Unauthorized") {
+    if (getErrorMessage(error) === "Unauthorized") {
       return { error: "No autorizado" };
     }
-    if ((error as Error).message === "Product not found") {
+    if (getErrorMessage(error) === "Product not found") {
       return { error: "Producto no encontrado" };
     }
     console.error("[UPDATE PRODUCT ERROR]", error);
-    return { error: (error as Error).message || "Error al actualizar el producto" };
+    return { error: getErrorMessage(error) || "Error al actualizar el producto" };
   }
 }
 
@@ -120,14 +121,14 @@ export async function deleteProductAction(id: number) {
     revalidateTag("home-featured", "max");
     return { success: true as const };
   } catch (error) {
-    if ((error as Error).message === "Unauthorized") {
+    if (getErrorMessage(error) === "Unauthorized") {
       return { error: "No autorizado" };
     }
-    if ((error as Error).message === "Product not found") {
+    if (getErrorMessage(error) === "Product not found") {
       return { error: "Producto no encontrado" };
     }
     console.error("[DELETE PRODUCT ERROR]", error);
-    return { error: (error as Error).message || "Error al eliminar el producto" };
+    return { error: getErrorMessage(error) || "Error al eliminar el producto" };
   }
 }
 
@@ -144,14 +145,14 @@ export async function toggleProductActiveAction(id: number, active: boolean) {
     }
     return { success: true as const, product };
   } catch (error) {
-    if ((error as Error).message === "Unauthorized") {
+    if (getErrorMessage(error) === "Unauthorized") {
       return { error: "No autorizado" };
     }
-    if ((error as Error).message === "Product not found") {
+    if (getErrorMessage(error) === "Product not found") {
       return { error: "Producto no encontrado" };
     }
     console.error("[TOGGLE ACTIVE ERROR]", error);
-    return { error: (error as Error).message || "Error al cambiar el estado del producto" };
+    return { error: getErrorMessage(error) || "Error al cambiar el estado del producto" };
   }
 }
 
@@ -166,14 +167,14 @@ export async function toggleProductFeaturedAction(id: number, featured: boolean)
     revalidateTag(`product-${product.slug}`, "max");
     return { success: true as const, product };
   } catch (error) {
-    if ((error as Error).message === "Unauthorized") {
+    if (getErrorMessage(error) === "Unauthorized") {
       return { error: "No autorizado" };
     }
-    if ((error as Error).message === "Product not found") {
+    if (getErrorMessage(error) === "Product not found") {
       return { error: "Producto no encontrado" };
     }
     console.error("[TOGGLE FEATURED ERROR]", error);
-    return { error: (error as Error).message || "Error al cambiar el destacado del producto" };
+    return { error: getErrorMessage(error) || "Error al cambiar el destacado del producto" };
   }
 }
 
@@ -191,14 +192,14 @@ export async function updateProductStockAction(id: number, stock: number) {
     }
     return { success: true as const, product };
   } catch (error) {
-    if ((error as Error).message === "Unauthorized") {
+    if (getErrorMessage(error) === "Unauthorized") {
       return { error: "No autorizado" };
     }
-    if ((error as Error).message === "Product not found") {
+    if (getErrorMessage(error) === "Product not found") {
       return { error: "Producto no encontrado" };
     }
     console.error("[UPDATE STOCK ERROR]", error);
-    return { error: (error as Error).message || "Error al actualizar el inventario" };
+    return { error: getErrorMessage(error) || "Error al actualizar el inventario" };
   }
 }
 
@@ -208,10 +209,10 @@ export async function generateSkuAction(categoryId: string | number, brand: stri
     const sku = await productService.generateSku(parseInt(String(categoryId)), brand, title);
     return { success: true as const, sku };
   } catch (error) {
-    if ((error as Error).message === "Unauthorized") {
+    if (getErrorMessage(error) === "Unauthorized") {
       return { error: "No autorizado" };
     }
     console.error("[GENERATE SKU ERROR]", error);
-    return { error: (error as Error).message || "Error al generar el SKU" };
+    return { error: getErrorMessage(error) || "Error al generar el SKU" };
   }
 }

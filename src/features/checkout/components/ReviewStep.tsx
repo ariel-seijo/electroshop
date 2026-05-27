@@ -5,6 +5,7 @@ import Image from "next/image";
 import { PackageOpen, ArrowLeft, Check, Loader2 } from "lucide-react";
 import { useCart } from "@/features/cart";
 import { formatPrice } from "@/lib/utils/currency";
+import { getErrorMessage } from "@/lib/errors";
 import { useCheckout } from "../context/CheckoutContext";
 
 const PAYMENT_METHODS = [
@@ -36,7 +37,7 @@ export default function ReviewStep() {
     try {
       await placeOrder();
     } catch (err) {
-      setInternalError((err as Error).message);
+      setInternalError(getErrorMessage(err));
     }
   }, [placeOrder]);
 

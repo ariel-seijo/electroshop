@@ -21,7 +21,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     return {
       title: `Pedido #${num} - Detalle de Compra | ElectroShop`,
     };
-  } catch {
+  } catch (error) {
+    console.error("[ORDER LAYOUT ERROR]", error);
     return { title: "Pedido | ElectroShop" };
   }
 }
