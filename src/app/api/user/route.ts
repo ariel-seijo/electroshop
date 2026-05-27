@@ -21,6 +21,7 @@ export async function DELETE(request: NextRequest) {
         name: "Usuario eliminado",
         email: `${anonymousTag}@deleted.local`,
         password: "DELETED",
+        status: "BANNED",
         deletedAt: now,
         anonymizedAt: now,
         resetToken: null,
