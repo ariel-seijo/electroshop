@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getErrorMessage } from "@/lib/errors";
-import * as productService from "@/features/products/services/product.service";
+import { getProductById, updateProduct, deleteProduct } from "@/features/products";
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id: productId } = await params;
@@ -12,7 +12,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: "Invalid product ID" }, { status: 400 });
     }
 
-    const product = await productService.getProductById(id);
+    const product = await getProductById(id);
     return NextResponse.json(product);
   } catch (error) {
     if (getErrorMessage(error) === "Product not found") {
@@ -37,7 +37,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     const body = await request.json();
-    const product = await productService.updateProduct(id, body);
+    const product = await updateProduct(id, body);
     return NextResponse.json(product);
   } catch (error) {
     const message = getErrorMessage(error) || "Failed to update product";
@@ -70,7 +70,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
       return NextResponse.json({ error: "Invalid product ID" }, { status: 400 });
     }
 
-    await productService.deleteProduct(id);
+    await deleteProduct(id);
     return NextResponse.json({ message: "Product deleted successfully" });
   } catch (error) {
     if (getErrorMessage(error) === "Product not found") {

@@ -23,13 +23,13 @@ const eslintConfig = defineConfig([
         zones: [
           {
             target: "./src/app",
-            from: "./src/features",
+            from: "./src/features/**",
             except: [
-              "./index.js",
-              "./styles/",
+              "**/index.{js,ts,tsx}",
+              "**/styles/**",
             ],
             message:
-              "app/ must import features through their public barrel (index.js). " +
+              "app/ must import features through their public barrel (index). " +
               "Use e.g. @/features/cart instead of @/features/cart/useCart.",
           },
 

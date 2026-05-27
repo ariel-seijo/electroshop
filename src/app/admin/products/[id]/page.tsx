@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import ProductForm from "@/features/admin/components/ProductForm";
+import { ProductForm } from "@/features/admin";
 import { useToastStore } from "@/features/toast";
 import { getErrorMessage } from "@/lib/errors";
 import type { Category } from "@/types/category";

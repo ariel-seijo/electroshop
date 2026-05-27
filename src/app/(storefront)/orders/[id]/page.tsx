@@ -18,7 +18,7 @@ import { getErrorMessage } from "@/lib/errors";
 import type { CustomerOrder, CustomerOrderItem } from "@/types/order";
 
 const ReceiptDownload = dynamic(
-  () => import("@/features/orders/components/ReceiptDownload"),
+  () => import("@/features/orders").then((m) => ({ default: m.ReceiptDownload })),
   { ssr: false }
 );
 

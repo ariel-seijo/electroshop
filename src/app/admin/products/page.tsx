@@ -2,13 +2,12 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { prisma } from "@/lib/prisma";
-import * as productService from "@/features/products/services/product.service";
-import ProductsClient from "@/features/admin/components/ProductsClient";
-import ProductTableSkeleton from "@/features/admin/components/ProductTableSkeleton";
+import { getAllProducts } from "@/features/products";
+import { ProductsClient, ProductTableSkeleton } from "@/features/admin";
 
 export default async function ProductsPage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
   const params = await searchParams;
-  const { products, total, page, totalPages } = await productService.getAllProducts(params);
+  const { products, total, page, totalPages } = await getAllProducts(params);
   const categories = await prisma.category.findMany({ orderBy: { name: "asc" } });
 
   return (

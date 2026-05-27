@@ -1,12 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { AlertCircle } from "lucide-react";
-import { getOrdersAction, getDashboardMetricsAction } from "@/features/orders/actions/orderActions";
-import OrderMetrics from "@/features/orders/components/OrderMetrics";
-import OrderFilters from "@/features/orders/components/OrderFilters";
-import OrderTable from "@/features/orders/components/OrderTable";
-import OrderTableSkeleton from "@/features/orders/components/OrderTableSkeleton";
-import OrdersRefreshOnMount from "@/features/orders/components/OrdersRefreshOnMount";
+import { getOrdersAction, getDashboardMetricsAction, OrderMetrics, OrderFilters, OrderTable, OrderTableSkeleton, OrdersRefreshOnMount } from "@/features/orders";
 
 export const metadata: Metadata = {
   title: "Pedidos | Panel de Administración",

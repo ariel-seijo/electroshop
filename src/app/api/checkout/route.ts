@@ -4,7 +4,7 @@ import { revalidateTag } from "next/cache";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { sessionOptions, SessionData } from "@/lib/session";
-import { generateOrderNumber } from "@/features/orders/lib/orderNumber";
+import { generateOrderNumber } from "@/features/orders";
 import { usdToArs, loadExchangeRate } from "@/lib/utils/currency";
 import { checkoutSchema, formatZodError } from "@/lib/validations";
 

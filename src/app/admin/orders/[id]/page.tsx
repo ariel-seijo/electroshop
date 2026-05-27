@@ -17,10 +17,10 @@ import {
 import { formatPrice, formatArs, usdToArs } from "@/lib/utils/currency";
 import { getErrorMessage } from "@/lib/errors";
 import type { AdminOrder, AdminOrderItem } from "@/types/order";
-import OrderStatusTimeline from "@/features/orders/components/OrderStatusTimeline";
+import { OrderStatusTimeline } from "@/features/orders";
 
 const ReceiptDownload = dynamic(
-  () => import("@/features/orders/components/ReceiptDownload"),
+  () => import("@/features/orders").then((m) => ({ default: m.ReceiptDownload })),
   { ssr: false }
 );
 

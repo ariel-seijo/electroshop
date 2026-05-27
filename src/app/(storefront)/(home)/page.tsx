@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import FeaturedCarouselDynamic, { type Product } from "@/features/products/components/FeaturedCarouselDynamic";
+import { FeaturedCarouselDynamic } from "@/features/products";
+import type { Product } from "@/features/products";
 import Slider from "@/components/Slider";
 import SectionTitle from "@/components/SectionTitle";
 import Brands from "@/components/Brands";

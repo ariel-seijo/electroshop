@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import ProductForm from "@/features/admin/components/ProductForm";
+import { ProductForm } from "@/features/admin";
 import { useToastStore } from "@/features/toast";
 
 export default function NewProductPage() {

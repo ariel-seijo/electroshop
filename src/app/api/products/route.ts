@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getErrorMessage } from "@/lib/errors";
-import * as productService from "@/features/products/services/product.service";
+import { getAllProducts, createProduct } from "@/features/products";
 
 export async function GET(request: NextRequest) {
   try {
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
       order: searchParams.get("order") || undefined,
     };
 
-    const result = await productService.getAllProducts(filters);
+    const result = await getAllProducts(filters);
     return NextResponse.json(result);
   } catch (error) {
     console.error("[API GET /products]", error);
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const product = await productService.createProduct(body);
+    const product = await createProduct(body);
     return NextResponse.json(product, { status: 201 });
   } catch (error) {
     console.error("[API POST /products]", error);

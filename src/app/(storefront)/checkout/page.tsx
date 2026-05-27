@@ -1,7 +1,7 @@
 "use client";
 
 import { useLayoutEffect } from "react";
-import { CheckoutProvider, useCheckout } from "@/features/checkout/context/CheckoutContext";
+import { CheckoutProvider, useCheckout } from "@/features/checkout";
 import { useCart } from "@/features/cart";
 import {
   Stepper,

@@ -1,5 +1,7 @@
 export { default as AdminSidebar } from "./components/AdminSidebar";
 export { default as AdminHeader } from "./components/AdminHeader";
+export { default as AdminMobileMenuButton } from "./components/AdminMobileMenuButton";
+export { SidebarProvider } from "./components/SidebarContext";
 export { default as ProductTable } from "./components/ProductTable";
 export { default as ProductForm } from "./components/ProductForm";
 export { default as ProductSearch } from "./components/ProductSearch";
@@ -17,6 +19,7 @@ export { default as StatsCards } from "./components/dashboard/StatsCards";
 export { default as RevenueChart } from "./components/dashboard/RevenueChart";
 export { default as RecentActivity } from "./components/dashboard/RecentActivity";
 export { default as LowStockAlert } from "./components/dashboard/LowStockAlert";
+export { default as DashboardSkeleton } from "./components/dashboard/DashboardSkeleton";
 
 export { default as UsersClient } from "./components/users/UsersClient";
 export { default as UserFilters } from "./components/users/UserFilters";
@@ -31,6 +34,8 @@ export {
   toggleUserStatus,
   updateUserRole,
 } from "./services/user.service";
+
+export { getDashboardData } from "./services/dashboard.service";
 
 export {
   getUsersAction,

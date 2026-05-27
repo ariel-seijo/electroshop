@@ -1,6 +1,6 @@
 "use client";
 
-import MyOrders from "@/features/orders/components/MyOrders";
+import { MyOrders } from "@/features/orders";
 
 export default function OrdersPage() {
   return <MyOrders />;

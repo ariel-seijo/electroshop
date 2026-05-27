@@ -1,14 +1,9 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { LayoutDashboard } from "lucide-react";
-import { getDashboardData } from "@/features/admin/services/dashboard.service";
+import { getDashboardData, StatsCards, RevenueChart, RecentActivity, LowStockAlert, DashboardSkeleton } from "@/features/admin";
 import { prisma } from "@/lib/prisma";
 import { formatArs } from "@/lib/utils/currency";
-import StatsCards from "@/features/admin/components/dashboard/StatsCards";
-import RevenueChart from "@/features/admin/components/dashboard/RevenueChart";
-import RecentActivity from "@/features/admin/components/dashboard/RecentActivity";
-import LowStockAlert from "@/features/admin/components/dashboard/LowStockAlert";
-import DashboardSkeleton from "@/features/admin/components/dashboard/DashboardSkeleton";
 
 export const metadata: Metadata = {
   title: "Panel de Control | ElectroShop Admin",
