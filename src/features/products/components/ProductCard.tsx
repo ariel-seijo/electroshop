@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ShoppingCart, Star, Check, Flame } from "lucide-react";
-import { useCart, type CartItem } from "@/features/cart";
+import { useCart } from "@/features/cart";
 import { formatPrice } from "@/lib/utils/currency";
 import { optimizeCloudinaryUrl } from "@/lib/utils/cloudinary-url";
 import type { SerializedProduct } from "@/types/product";
@@ -152,7 +152,7 @@ export default function ProductCard({ product, view = "grid", priority = false }
         }`}
         onClick={(e) => {
           e.preventDefault();
-          addToCart(product as unknown as CartItem);
+          addToCart(product);
         }}
         disabled={isOutOfStock || isMaxReached}
         aria-label={buyLabel}

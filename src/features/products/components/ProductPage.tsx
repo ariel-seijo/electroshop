@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useCart, type CartItem } from "@/features/cart";
+import { useCart } from "@/features/cart";
 import { formatPrice } from "@/lib/utils/currency";
 import type { SerializedProduct } from "@/types/product";
 import ProductCard from "./ProductCard";
@@ -48,7 +48,7 @@ export default function ProductPage({ product, relatedProducts }: ProductPagePro
   const formattedSavings = hasDiscount && product.oldPrice ? formatPrice(product.oldPrice - product.price) : null;
 
   const handleAdd = () => {
-    addToCart(product as unknown as CartItem, quantity);
+    addToCart(product, quantity);
     setAdded(true);
     setTimeout(() => setAdded(false), 1800);
   };

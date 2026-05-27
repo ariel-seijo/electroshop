@@ -50,7 +50,7 @@ export interface DashboardMetrics {
   averageTicket: number;
 }
 
-export async function getAllOrders(params: OrderFilters = {}) {
+export async function getAllOrders(params: OrderFilters = {}): Promise<{ orders: Prisma.OrderGetPayload<{ select: typeof ORDER_LIST_SELECT }>[]; total: number; page: number; totalPages: number }> {
   const page = Math.max(1, parseInt(String(params.page)) || 1);
   const limit = Math.min(50, Math.max(1, parseInt(String(params.limit)) || 10));
   const skip = (page - 1) * limit;
@@ -104,7 +104,7 @@ export async function getAllOrders(params: OrderFilters = {}) {
   };
 }
 
-export async function getOrderById(id: string) {
+export async function getOrderById(id: string): Promise<Prisma.OrderGetPayload<{ include: typeof ORDER_DETAIL_INCLUDE }>> {
   const order = await prisma.order.findUnique({
     where: { id },
     include: ORDER_DETAIL_INCLUDE,
@@ -117,7 +117,7 @@ export async function getOrderById(id: string) {
   return order;
 }
 
-export async function updateOrderStatus(id: string, newStatus: string) {
+export async function updateOrderStatus(id: string, newStatus: string): Promise<Prisma.OrderGetPayload<{ include: typeof ORDER_DETAIL_INCLUDE }>> {
   if (!VALID_STATUSES.includes(newStatus as OrderStatus)) {
     throw new Error("Estado no válido");
   }

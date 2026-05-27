@@ -15,7 +15,7 @@ interface StockInfo {
   active: boolean;
 }
 
-interface SyncedCartItem {
+export interface SyncedCartItem {
   id: number;
   quantity: number;
   userId: string;

@@ -49,11 +49,12 @@ export default function UserOrderHistory({ userId, isOpen, onClose }: UserOrderH
 
   useEffect(() => {
     if (!userId || !isOpen) return;
+    const uid = userId;
 
     async function fetchData() {
       setLoading(true);
       setError(null);
-      const result = await getUserOrderHistoryAction(userId!);
+      const result = await getUserOrderHistoryAction(uid);
       setLoading(false);
 
       const orderErrorMsg = "error" in result ? result.error : undefined;

@@ -23,11 +23,11 @@ export function getCategoryProducts({
     max,
     page = 1,
     limit = 9,
-}: CategoryProductsParams) {
-    const pageNum = Math.max(1, Number(page));
-    const skip = (pageNum - 1) * limit;
+}: CategoryProductsParams): Promise<{ products: Prisma.ProductGetPayload<{ include: { category: true } }>[]; brands: { brand: string; _count: number }[]; minPrice: number; maxPrice: number; page: number; totalPages: number; total: number }> {
+  const pageNum = Math.max(1, Number(page));
+  const skip = (pageNum - 1) * limit;
 
-    return unstable_cache(
+  return unstable_cache(
         async () => {
             await loadExchangeRate();
 

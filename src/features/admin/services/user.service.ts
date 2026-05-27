@@ -47,7 +47,7 @@ interface UserFilters {
   order?: string;
 }
 
-export async function getAllUsers(params: UserFilters = {}) {
+export async function getAllUsers(params: UserFilters = {}): Promise<{ users: (Prisma.UserGetPayload<{ select: typeof USER_LIST_SELECT }> & { lifetimeValue: number })[]; total: number; page: number; totalPages: number }> {
   const page = Math.max(1, parseInt(String(params.page)) || 1);
   const limit = Math.min(50, Math.max(1, parseInt(String(params.limit)) || 10));
   const skip = (page - 1) * limit;
@@ -162,7 +162,7 @@ export async function getAllUsers(params: UserFilters = {}) {
   };
 }
 
-export async function getUserOrderHistory(id: string) {
+export async function getUserOrderHistory(id: string): Promise<{ user: Prisma.UserGetPayload<{ select: { id: true; name: true; email: true; status: true; role: true; createdAt: true } }>; orders: Prisma.OrderGetPayload<{ select: typeof ORDER_HISTORY_SELECT }>[] }> {
   const user = await prisma.user.findUnique({
     where: { id },
     select: {
@@ -188,7 +188,7 @@ export async function getUserOrderHistory(id: string) {
   return { user, orders };
 }
 
-export async function softDeleteUser(id: string) {
+export async function softDeleteUser(id: string): Promise<Prisma.UserGetPayload<{ select: { id: true; name: true; email: true; role: true; status: true; deletedAt: true } }>> {
   const existing = await prisma.user.findUnique({
     where: { id },
     select: { id: true, deletedAt: true },
@@ -234,7 +234,7 @@ export async function softDeleteUser(id: string) {
   return user;
 }
 
-export async function toggleUserStatus(id: string) {
+export async function toggleUserStatus(id: string): Promise<Prisma.UserGetPayload<{ select: { id: true; name: true; email: true; role: true; status: true } }>> {
   const existing = await prisma.user.findUnique({
     where: { id },
     select: { id: true, status: true, deletedAt: true },
@@ -265,7 +265,7 @@ export async function toggleUserStatus(id: string) {
   return user;
 }
 
-export async function updateUserRole(id: string, newRole: string) {
+export async function updateUserRole(id: string, newRole: string): Promise<Prisma.UserGetPayload<{ select: { id: true; name: true; email: true; role: true; status: true } }>> {
   if (!VALID_ROLES.includes(newRole)) {
     throw new Error("Rol no válido");
   }

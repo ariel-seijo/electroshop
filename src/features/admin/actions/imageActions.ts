@@ -11,7 +11,7 @@ import {
 } from "@/lib/cloudinary";
 import { saveProductImagesSchema, formatZodError } from "@/lib/validations";
 
-export async function getCloudinarySignatureAction(paramsToSign?: Record<string, string | number>) {
+export async function getCloudinarySignatureAction(paramsToSign?: Record<string, string | number>): Promise<{ timestamp: number; signature: string; cloudName: string; apiKey: string } | { error: string }> {
   try {
     await requireAdmin();
 

@@ -18,7 +18,7 @@ interface ProductFilters {
   order?: string;
 }
 
-export async function getAllProducts(params: ProductFilters = {}) {
+export async function getAllProducts(params: ProductFilters = {}): Promise<{ products: Prisma.ProductGetPayload<{ include: { category: true } }>[]; total: number; page: number; totalPages: number }> {
   const page = Math.max(1, parseInt(String(params.page)) || 1);
   const limit = Math.min(50, Math.max(1, parseInt(String(params.limit)) || 10));
   const skip = (page - 1) * limit;
@@ -69,7 +69,7 @@ export async function getAllProducts(params: ProductFilters = {}) {
   };
 }
 
-export async function getProductById(id: number) {
+export async function getProductById(id: number): Promise<Prisma.ProductGetPayload<{ include: { category: true; imagesRel: true } }>> {
   const product = await prisma.product.findUnique({
     where: { id },
     include: {
@@ -85,7 +85,7 @@ export async function getProductById(id: number) {
   return product;
 }
 
-export async function createProduct(data: unknown) {
+export async function createProduct(data: unknown): Promise<Prisma.ProductGetPayload<{ include: { category: true } }>> {
   const parsed = createProductSchema.safeParse(data);
   if (!parsed.success) {
     throw new Error(`Missing required fields: ${formatZodError(parsed.error)}`);
@@ -119,7 +119,7 @@ export async function createProduct(data: unknown) {
   });
 }
 
-export async function updateProduct(id: number, data: unknown) {
+export async function updateProduct(id: number, data: unknown): Promise<Prisma.ProductGetPayload<{ include: { category: true } }>> {
   const existing = await prisma.product.findUnique({ where: { id }, include: { category: true } });
   if (!existing) throw new Error("Product not found");
 
@@ -142,7 +142,7 @@ export async function updateProduct(id: number, data: unknown) {
   });
 }
 
-export async function deleteProduct(id: number) {
+export async function deleteProduct(id: number): Promise<void> {
   const product = await prisma.product.findUnique({
     where: { id },
     include: { imagesRel: true },
@@ -161,7 +161,7 @@ export async function deleteProduct(id: number) {
   await prisma.product.delete({ where: { id } });
 }
 
-export async function toggleProductStatus(id: number, active: boolean) {
+export async function toggleProductStatus(id: number, active: boolean): Promise<Prisma.ProductGetPayload<{ include: { category: true } }>> {
   const existing = await prisma.product.findUnique({ where: { id }, select: { id: true } });
   if (!existing) throw new Error("Product not found");
 
@@ -172,7 +172,7 @@ export async function toggleProductStatus(id: number, active: boolean) {
   });
 }
 
-export async function toggleProductFeatured(id: number, featured: boolean) {
+export async function toggleProductFeatured(id: number, featured: boolean): Promise<Prisma.ProductGetPayload<{ include: { category: true } }>> {
   const existing = await prisma.product.findUnique({ where: { id }, select: { id: true } });
   if (!existing) throw new Error("Product not found");
 
@@ -183,7 +183,7 @@ export async function toggleProductFeatured(id: number, featured: boolean) {
   });
 }
 
-export async function updateProductStock(id: number, stock: number) {
+export async function updateProductStock(id: number, stock: number): Promise<Prisma.ProductGetPayload<{ include: { category: true } }>> {
   const existing = await prisma.product.findUnique({ where: { id }, select: { id: true } });
   if (!existing) throw new Error("Product not found");
 

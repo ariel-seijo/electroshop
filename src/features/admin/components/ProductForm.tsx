@@ -169,7 +169,7 @@ export default function ProductForm({
     } else if (createdProductId) {
       const res = await getProductAction(createdProductId);
       if ("success" in res && res.success) {
-        setLocalProduct(res.product as unknown as AdminProductData);
+        setLocalProduct(res.product as AdminProductData);
       }
     }
   }
@@ -275,9 +275,18 @@ export default function ProductForm({
 
     const isFirstCreate = !isEdit && !createdProductId;
 
-    const result = isFirstCreate
-      ? await createProductAction(data)
-      : await updateProductAction(effectiveProductId!, data);
+    let result: Awaited<ReturnType<typeof createProductAction>>;
+    if (!isFirstCreate) {
+      const pid = effectiveProductId;
+      if (pid == null) {
+        toast("Error: ID de producto no disponible", "error");
+        setIsSubmitting(false);
+        return;
+      }
+      result = await updateProductAction(pid, data);
+    } else {
+      result = await createProductAction(data);
+    }
 
     const submitErrorMsg = "error" in result ? result.error : undefined;
     if (submitErrorMsg) {
@@ -289,7 +298,7 @@ export default function ProductForm({
     let currentProductId = effectiveProductId;
 
     if (isFirstCreate) {
-      const product = result.product as unknown as AdminProductData;
+      const product = result.product as AdminProductData;
       setCreatedProductId(product.id);
       setLocalProduct(product);
       currentProductId = product.id;
