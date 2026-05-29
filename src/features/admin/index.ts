@@ -1,5 +1,6 @@
 export { default as AdminSidebar } from "./components/AdminSidebar";
-export { default as AdminHeader } from "./components/AdminHeader";
+// AdminHeader is a Server Component (uses prisma) — import directly:
+//   import AdminHeader from "@/features/admin/components/AdminHeader";
 export { default as AdminMobileMenuButton } from "./components/AdminMobileMenuButton";
 export { SidebarProvider } from "./components/SidebarContext";
 export { default as ProductTable } from "./components/ProductTable";

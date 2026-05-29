@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Suspense, type ReactNode } from "react";
 import Sidebar from "@/components/admin/Sidebar";
-import { AdminHeader, AdminMobileMenuButton, SidebarProvider } from "@/features/admin";
+import AdminHeader from "@/features/admin/components/AdminHeader";
+import { AdminMobileMenuButton, SidebarProvider } from "@/features/admin";
 import Skeleton from "@/components/ui/Skeleton";
 
 export const metadata: Metadata = {
