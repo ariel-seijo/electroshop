@@ -1,1 +1,1 @@
-export { AdminHeader as default } from "@/features/admin";
+export { default } from "@/features/admin/components/AdminHeader";
