@@ -63,7 +63,7 @@ export default function HeroSlider() {
       >
         {slides.map((slide, index) => (
           <div
-            className="min-w-full relative aspect-[1920/511] max-xl:aspect-[1920/750] max-md:aspect-[1920/900] max-ms:aspect-[1920/1100]"
+            className="min-w-full relative aspect-[1920/511] max-xl:aspect-[1920/750] max-md:aspect-[1920/900] max-ms:h-[30vh]"
             key={index}
           >
             <Image
@@ -76,7 +76,7 @@ export default function HeroSlider() {
               className="object-cover block"
             />
             <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(10,10,10,0.95)_0%,rgba(10,10,10,0.6)_45%,rgba(10,10,10,0.25)_70%,transparent_100%)] pointer-events-none max-md:bg-[linear-gradient(0deg,rgba(10,10,10,0.9)_0%,rgba(10,10,10,0.4)_60%,transparent_100%)]" />
-            <div className="absolute left-[7%] top-1/2 -translate-y-1/2 max-w-[520px] z-[2] max-xl:left-[5%] max-xl:max-w-[400px] max-md:left-0 max-md:right-0 max-md:top-auto max-md:bottom-12 max-md:px-6 max-md:max-w-full max-md:text-center max-md:-translate-y-0 max-ms:bottom-10">
+            <div className="absolute left-[7%] top-1/2 -translate-y-1/2 max-w-[520px] z-[2] max-xl:left-[5%] max-xl:max-w-[400px] max-md:left-0 max-md:right-0 max-md:px-6 max-md:max-w-full max-md:text-center">
               <h2 className="font-cosmic text-[3rem] font-thin tracking-[4px] text-white [text-shadow:0_0_40px_rgba(36,171,243,0.5)] leading-[1.1] m-0 mb-[0.8rem] animate-[slideFadeUp_0.8s_ease-out] max-xl:text-[2.2rem] max-xl:tracking-[2px] max-md:text-[1.6rem] max-md:tracking-[2px] max-ms:text-[1.3rem]">
                 {slide.title}
               </h2>
