@@ -71,7 +71,7 @@ export default function ForgotPasswordPage() {
           </div>
 
           <p className="mt-6 text-center text-[0.88rem] text-text-dim">
-            <Link href="/login" className="text-accent no-underline font-semibold transition-all duration-200 hover:text-accent-hover hover:underline">
+            <Link href="/login" className="text-accent no-underline font-semibold transition-all duration-200 hover:text-accent-hover hover:underline flex items-center justify-center">
               <ArrowLeft size={14} style={{ marginRight: "0.25rem", verticalAlign: "middle" }} />
               Volver al inicio de sesión
             </Link>
