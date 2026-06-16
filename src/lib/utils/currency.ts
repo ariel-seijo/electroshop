@@ -19,10 +19,16 @@ async function _fetchFromDb(): Promise<number> {
 
 export async function loadExchangeRate(): Promise<number> {
   if (!_loading) {
-    _loading = _fetchFromDb().then((rate) => {
-      _cachedRate = rate;
-      _version++;
-    });
+    _loading = _fetchFromDb()
+      .then((rate) => {
+        _cachedRate = rate;
+        _version++;
+      })
+      .catch((err) => {
+        console.error("Exchange rate fetch failed:", err);
+        _loading = null;
+        throw err;
+      });
   }
   await _loading;
   return _cachedRate;

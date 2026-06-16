@@ -30,8 +30,13 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   // Preload exchange rate so all server-rendered prices use the real DB rate,
-  // not the hardcoded default of 1400.
-  const rate = await loadExchangeRate();
+  // not the hardcoded default of 1400. Falls back to default on transient failures.
+  let rate = 1400;
+  try {
+    rate = await loadExchangeRate();
+  } catch (err) {
+    console.error("Failed to preload exchange rate, using default:", err);
+  }
 
   return (
     <html lang="es" data-scroll-behavior="smooth">
